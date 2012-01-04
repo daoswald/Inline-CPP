@@ -1,0 +1,67 @@
+INTRODUCTION:
+
+Inline::CPP -- Write Perl subroutines and classes in C++.
+
+Inline::CPP lets you write Perl subroutines and classes in C++. You
+don't have to learn XS or SWIG, you can just put code right "inline"
+in your source.
+
+Example:
+
+   use Inline CPP => <<'END';
+
+   class JAxH {
+     public:
+       JAxH(char *x);
+
+       SV* data();
+     private:
+       SV *dat;
+   };
+
+   JAxH::JAxH(char *x) { dat = newSVpvf("Just Another %s Hacker", x); }
+   SV* JAxH::data() { return dat; }
+
+   END
+
+   print JAxH->new('Inline')->data(), "\n";
+
+When run, this complete program prints:
+
+   Just Another Inline Hacker.
+
+-----------------------------------------------------------------------------
+FEATURES:
+
+Inline::CPP version 0.32 includes new bug-fixes that were preventing
+Inline::CPP from installing cleanly on many systems.
+
+-----------------------------------------------------------------------------
+INSTALLATION:
+
+This module requires Inline::C.pm version 0.49 or higher to be installed.
+
+To install Inline::CPP do this:
+
+perl Makefile.PL
+make
+make test
+make install
+
+(On ActivePerl for MSWin32, use nmake instead of make.)
+
+You have to 'make install' before you can run it successfully.
+
+-----------------------------------------------------------------------------
+INFORMATION:
+
+- For more information on Inline::CPP see 'perldoc Inline::CPP'.
+- For information about Inline.pm, see 'perldoc Inline'.
+- For information on using Perl with C or C++, see 'perldoc perlapi'
+
+The Inline mailing list is inline@perl.org. Send mail to
+inline-subscribe@perl.org to subscribe.
+
+Please send questions and comments to "David Oswald" <DAVIDO@cpan.org>
+
+Copyright (c) 2003, Neil Watkiss. All Rights Reserved.

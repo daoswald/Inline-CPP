@@ -1,0 +1,29 @@
+Changes
+CPP.pm
+MANIFEST
+Makefile.PL
+README
+TESTED
+grammar/grammar.pm
+grammar/Makefile.PL
+grammar/t/01nherit.t
+grammar/t/02scope.t
+grammar/t/03inline.t
+grammar/t/04const.t
+grammar/t/05virt.t
+grammar/t/06deflt.t
+grammar/t/07static.t
+grammar/t/08anon.t
+grammar/t/09purevt.t
+grammar/t/10struct.t
+grammar/t/11minhrt.t
+grammar/t/12retlst.t
+grammar/t/13vararg.t
+grammar/t/14const.t
+grammar/t/15stvar.t
+grammar/t/16varlst.t
+lib/Inline/CPP.pod
+t/01basic.t
+t/02prefix.t
+META.yml                                 Module YAML meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)
