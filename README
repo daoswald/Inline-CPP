@@ -33,13 +33,19 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.32 includes new bug-fixes that were preventing
-Inline::CPP from installing cleanly on many systems.
+Inline::CPP version 0.33_003 is a dev. version.  It includes a bug fix aimed
+at better detecting Standard C++ headers versus pre-Standard .h headers.
+
+It also includes the #define definitions of __INLINE_CPP_STANDARD_HEADERS
+and __INLINE_CPP_NAMESPACE_STD to assist users in determining the capabilities
+of the target compiler, and in selecting headers and namespace directives
+in portable ways.
 
 -----------------------------------------------------------------------------
 INSTALLATION:
 
 This module requires Inline::C.pm version 0.49 or higher to be installed.
+It also uses Parse::RecDescent.
 
 To install Inline::CPP do this:
 
@@ -51,12 +57,16 @@ make install
 (On ActivePerl for MSWin32, use nmake instead of make.)
 
 You have to 'make install' before you can run it successfully.
+You will be prompted for what C++ compiler and library to use.  Accepting
+the default should work in nearly every case (and if it doesn't, let me know).
 
 -----------------------------------------------------------------------------
 INFORMATION:
 
 - For more information on Inline::CPP see 'perldoc Inline::CPP'.
 - For information about Inline.pm, see 'perldoc Inline'.
+- For information about Inline::C (of which this is a subclass)
+  see 'perldoc Inline::C', as well as 'perldoc Inline::C-Cookbook'.
 - For information on using Perl with C or C++, see 'perldoc perlapi'
 
 The Inline mailing list is inline@perl.org. Send mail to

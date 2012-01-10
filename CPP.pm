@@ -16,7 +16,13 @@ use Carp;
 use vars qw(@ISA $VERSION);
 
 @ISA = qw(Inline::C);
-$VERSION = '0.33';
+
+# Development releases will have a _0xx version suffix.
+$VERSION = '0.33_003';
+$VERSION = eval $VERSION; # To accommodate dev. version numbers.
+
+
+
 my $TYPEMAP_KIND = $Inline::CPP::grammar::TYPEMAP_KIND;
 
 #============================================================================
@@ -37,6 +43,8 @@ sub register {
 #============================================================================
 sub validate {
     my $o = shift;
+    # Do not alter the following two lines: Makefile.PL locates them by
+    # their comment text and alters them based on install inputs.
  $o->{ILSM}{MAKEFILE}{CC} ||= 'g++'; # default compiler
  $o->{ILSM}{MAKEFILE}{LIBS} ||= ['-lstdc++']; # default libs
 
@@ -45,7 +53,7 @@ sub validate {
     $o->{STRUCT} ||= {
               '.macros' => '',
               '.xs' => '',
-              '.any' => 0, 
+              '.any' => 0,
               '.all' => 0,
              };
     $o->{ILSM}{AUTO_INCLUDE} ||= <<END;
@@ -63,8 +71,30 @@ extern "C" {
 #include <%iostream%>
 #endif
 
+
 END
-    $o->{ILSM}{PRESERVE_ELLIPSIS} = 0 
+
+
+# Don't edit this here-doc.  These are set by Makefile.PL.  Override
+# by supplying undefs in an AUTO_INCLUDE configuration.
+my $flavor_defs =  <<END_FLAVOR_DEFINITIONS;
+
+#define __INLINE_CPP_STANDARD_HEADERS 1
+#define __INLINE_CPP_NAMESPACE_STD 1
+
+END_FLAVOR_DEFINITIONS
+
+
+    # Prepend the compiler flavor (Standard versus Legacy) #define's
+    # to the AUTO_INCLUDE boilerplate.  We prepend because that way
+    # it's easy for a user to #undef them in a custom-supplied
+    # AUTO_INCLUDE.  May be useful for overriding errant defaults,
+    # or testing.
+    $o->{ILSM}{AUTO_INCLUDE} = 
+        $flavor_defs . $o->{ILSM}{AUTO_INCLUDE};
+
+
+    $o->{ILSM}{PRESERVE_ELLIPSIS} = 0
       unless defined $o->{ILSM}{PRESERVE_ELLIPSIS};
 
     # Filter out the parameters we treat differently than Inline::C
@@ -86,9 +116,9 @@ END
           for (@$value);
         next;
     }
-    if ($key eq 'PRESERVE_ELLIPSIS' or 
+    if ($key eq 'PRESERVE_ELLIPSIS' or
         $key eq 'STD_IOSTREAM') {
-        croak "Argument to $key must be 0 or 1" 
+        croak "Argument to $key must be 0 or 1"
           unless $value == 0 or $value == 1;
         $o->{ILSM}{$key} = $value;
         next;
@@ -97,12 +127,11 @@ END
     }
 
     # Replace %iostream% with the correct iostream library
-    my $iostream = "iostream";
-#    $iostream .= ".h" unless $o->{ILSM}{STD_IOSTREAM};
-    if($o->{ILSM}{MAKEFILE}{CC} =~ /^cl/) { 
-        $iostream .= ".h" 
-            unless $o->{ILSM}{STD_IOSTREAM}; 
-    }
+
+    # It is critical that the following line not have its "comment"
+    # altered: Makefile.PL finds the line and alters the iostream name.
+ my $iostream = 'iostream'; # default iostream filename
+
     $o->{ILSM}{AUTO_INCLUDE} =~ s|%iostream%|$iostream|g;
 
     # Forward all unknown requests up to Inline::C
@@ -125,12 +154,12 @@ sub info {
         my @parents = grep { $_->{thing} eq 'inherits' }
           @{$data->{class}{$class}};
         push @class, "\tclass $class";
-        push @class, (" : " 
-              . join (', ', 
+        push @class, (" : "
+              . join (', ',
                   map { $_->{scope} . " " . $_->{name} } @parents)
              ) if @parents;
         push @class, " {\n";
-        for my $thing (sort { $a->{name} cmp $b->{name} } 
+        for my $thing (sort { $a->{name} cmp $b->{name} }
                @{$data->{class}{$class}}) {
         my ($name, $scope, $type) = @{$thing}{qw(name scope thing)};
         next unless $scope eq 'public' and $type eq 'method';
@@ -144,7 +173,7 @@ sub info {
         push @class, $class . "::$name(";
         my @args = grep { $_->{name} ne '...' } @{$thing->{args}};
         my $ellipsis = (scalar @{$thing->{args}} - scalar @args) != 0;
-        push @class, join ', ', (map "$_->{type} $_->{name}", @args), 
+        push @class, join ', ', (map "$_->{type} $_->{name}", @args),
           $ellipsis ? "..." : ();
         push @class, ");\n";
         }
@@ -160,7 +189,7 @@ sub info {
         push @func, $func->{name} . "(";
         my @args = grep { $_->{name} ne '...' } @{$func->{args}};
         my $ellipsis = (scalar @{$func->{args}} - scalar @args) != 0;
-        push @func, join ', ', (map "$_->{type} $_->{name}", @args), 
+        push @func, join ', ', (map "$_->{type} $_->{name}", @args),
           $ellipsis ? "..." : ();
         push @func, ");\n";
     }
@@ -213,7 +242,7 @@ sub xs_bindings {
 
     warn("Warning: No Inline C++ functions or classes bound to Perl\n" .
      "Check your C++ for Inline compatibility.\n\n")
-      if ((not defined $data->{classes}) 
+      if ((not defined $data->{classes})
       and (not defined $data->{functions})
       and ($^W));
 
@@ -462,7 +491,7 @@ sub write_typemap {
     my $filename = "$o->{API}{build_dir}/CPP.map";
     my $type_kind = $o->{ILSM}{typeconv}{type_kind};
     my $typemap = "";
-    $typemap .= $_ . "\t"x2 . $TYPEMAP_KIND . "\n" 
+    $typemap .= $_ . "\t"x2 . $TYPEMAP_KIND . "\n"
       for grep { $type_kind->{$_} eq $TYPEMAP_KIND } keys %$type_kind;
     return unless length $typemap;
     open TYPEMAP, "> $filename"
@@ -493,7 +522,7 @@ sub typeconv {
     my $ret;
     {
         no strict;
-        $ret = 
+        $ret =
             eval qq{qq{$o->{ILSM}{typeconv}{$dir}{$tkind}}};
     }
     chomp $ret;

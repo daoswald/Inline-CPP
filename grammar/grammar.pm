@@ -2,7 +2,10 @@ package Inline::CPP::grammar;
 
 use strict;
 use vars qw($TYPEMAP_KIND $VERSION $class_part $class_decl $star);
-$VERSION = '0.33';
+
+# Dev versions will have a _0xx suffix.
+$VERSION = '0.33_003';
+$VERSION = eval $VERSION;  # To accommodate dev version numbers.
 
 # Parse::RecDescent 1.90 and later have an incompatible change
 # 'The key of an %item entry for a repeated subrule now includes
@@ -29,8 +32,8 @@ require Parse::RecDescent;
     }
     ($class_part, $class_decl, $star) =
         map {
-            ($stable_version > 1.89) 
-            ? "$_(s?)" 
+            ($stable_version > 1.89)
+            ? "$_(s?)"
             : $_
         } qw (class_part class_decl star);
 # End our lexical scope.
@@ -49,7 +52,7 @@ require Parse::RecDescent;
 # expressions, function calls, and macros. The more complex regexes are only
 # implemented in 5.6.0 and above, so they're in eval-blocks.
 #
-# These are all adapted from the output of Damian Conway's excellent 
+# These are all adapted from the output of Damian Conway's excellent
 # Regexp::Common module. In future, Inline::CPP may depend directly on it,
 # but for now I'll just duplicate the code.
 use vars qw($code_block $string $number $parens $funccall);
@@ -89,8 +92,8 @@ sub grammar {
          push @{$thisparser->{data}{classes}}, $class
            unless defined $thisparser->{data}{class}{$class};
          $thisparser->{data}{class}{$class} = \@parts;
-#	 print "Class $class:\n", Dumper \@parts;
-	 Inline::CPP::grammar::typemap($thisparser, $class);
+#    print "Class $class:\n", Dumper \@parts;
+     Inline::CPP::grammar::typemap($thisparser, $class);
          [$class, \@parts];
     }
     sub handle_typedef {
@@ -105,7 +108,7 @@ sub grammar {
              && !exists($thisparser->{data}{class}{$name})) {
              push @{$thisparser->{data}{classes}}, $name;
              $thisparser->{data}{class}{$name} = $thisparser->{data}{class}{$type};
-    	     Inline::CPP::grammar::typemap($thisparser, $name);
+             Inline::CPP::grammar::typemap($thisparser, $name);
          }
          $t;
     }
@@ -132,32 +135,32 @@ part: comment
     | class_def
       {
          handle_class_def($thisparser, $item[1]);
-	 1;
+     1;
       }
     | function_def
       {
 #         print "found a function: $item[1]->{name}\n";
          my $name = $item[1]->{name};
-	 my $i=0;
-	 for my $arg (@{$item[1]->{args}}) {
-	    $arg->{name} = 'dummy' . ++$i unless defined $arg->{name};
-	 }
-	 Inline::CPP::grammar::strip_ellipsis($thisparser,
-					      $item[1]->{args});
-	 push @{$thisparser->{data}{functions}}, $name
+     my $i=0;
+     for my $arg (@{$item[1]->{args}}) {
+        $arg->{name} = 'dummy' . ++$i unless defined $arg->{name};
+     }
+     Inline::CPP::grammar::strip_ellipsis($thisparser,
+                          $item[1]->{args});
+     push @{$thisparser->{data}{functions}}, $name
            unless defined $thisparser->{data}{function}{$name};
-	 $thisparser->{data}{function}{$name} = $item[1];
-#	 print Dumper $item[1];
-	 1;
+     $thisparser->{data}{function}{$name} = $item[1];
+#    print Dumper $item[1];
+     1;
       }
     | all
 
 typedef: 'typedef' class IDENTIFIER(?) '{' <commit> class_part(s?) '}' IDENTIFIER ';'
        {
-	 my ($class, $parts);
+     my ($class, $parts);
          $class = $item[3][0] || 'anon_class'.($thisparser->{data}{anonclass}++);
          ($class, $parts)= handle_class_def($thisparser, [$class, $item{$Inline::CPP::grammar::class_part}]);
-	 { thing => 'typedef', name => $item[8], type => $class, body => $parts }
+     { thing => 'typedef', name => $item[8], type => $class, body => $parts }
        }
        | 'typedef' IDENTIFIER IDENTIFIER ';'
        { { thing => 'typedef', name => $item[3], type => $item[2] } }
@@ -169,7 +172,7 @@ typedef: 'typedef' class IDENTIFIER(?) '{' <commit> class_part(s?) '}' IDENTIFIE
 
 enum: 'enum' IDENTIFIER(?) '{' <leftop: enum_item ',' enum_item> '}' ';'
        {
-	{ thing => 'enum', name => $item{IDENTIFIER}[0],
+    { thing => 'enum', name => $item{IDENTIFIER}[0],
           body => $item{__DIRECTIVE1__} }
        }
 
@@ -178,36 +181,36 @@ enum_item: IDENTIFIER '=' <commit> /[0-9]+/
          | IDENTIFIER
          { [$item{IDENTIFIER}, undef] }
 
-class_def: class IDENTIFIER '{' <commit> class_part(s?) '}' ';' 
-           { 
+class_def: class IDENTIFIER '{' <commit> class_part(s?) '}' ';'
+           {
               [@item{'IDENTIFIER',$Inline::CPP::grammar::class_part}]
-	   }
-	 | class IDENTIFIER ':' <commit> <leftop: inherit ',' inherit>
+       }
+     | class IDENTIFIER ':' <commit> <leftop: inherit ',' inherit>
             '{' class_part(s?) '}' ';'
-	   {
-	      push @{$item{$Inline::CPP::grammar::class_part}}, [$item{__DIRECTIVE2__}];
-	      [@item{'IDENTIFIER',$Inline::CPP::grammar::class_part}]
-	   }
+       {
+          push @{$item{$Inline::CPP::grammar::class_part}}, [$item{__DIRECTIVE2__}];
+          [@item{'IDENTIFIER',$Inline::CPP::grammar::class_part}]
+       }
 
-inherit: scope IDENTIFIER 
-	{ {thing => 'inherits', name => $item[2], scope => $item[1]} }
+inherit: scope IDENTIFIER
+    { {thing => 'inherits', name => $item[2], scope => $item[1]} }
 
 class_part: comment { [ {thing => 'comment'} ] }
-	  | scope ':' <commit> class_decl(s?)
+      | scope ':' <commit> class_decl(s?)
             {
-	      for my $part (@{$item{$Inline::CPP::grammar::class_decl}}) {
+          for my $part (@{$item{$Inline::CPP::grammar::class_decl}}) {
                   $_->{scope} = $item[1] for @$part;
-	      }
-	      $item{$Inline::CPP::grammar::class_decl}
-	    }
-	  | class_decl(s)
+          }
+          $item{$Inline::CPP::grammar::class_decl}
+        }
+      | class_decl(s)
             {
-	      for my $part (@{$item[1]}) {
-                  $_->{scope} = $thisparser->{data}{defaultscope} 
-		    for @$part;
-	      }
-	      $item[1]
-	    }
+          for my $part (@{$item[1]}) {
+                  $_->{scope} = $thisparser->{data}{defaultscope}
+            for @$part;
+          }
+          $item[1]
+        }
 
 class_decl: comment { [{thing => 'comment'}] }
           | typedef { [ handle_typedef($thisparser, $item[1]) ] }
@@ -218,23 +221,23 @@ class_decl: comment { [{thing => 'comment'}] }
                [{ thing => 'class', name => $class, body => $parts }];
             }
           | method_def
-	    {
+        {
               $item[1]->{thing} = 'method';
-#	      print "class_decl found a method: $item[1]->{name}\n";
-	      my $i=0;
-	      for my $arg (@{$item[1]->{args}}) {
-		$arg->{name} = 'dummy' . ++$i unless defined $arg->{name};
-	      }
-	      Inline::CPP::grammar::strip_ellipsis($thisparser,
-						   $item[1]->{args});
-	      [$item[1]];
-	    }
+#         print "class_decl found a method: $item[1]->{name}\n";
+          my $i=0;
+          for my $arg (@{$item[1]->{args}}) {
+        $arg->{name} = 'dummy' . ++$i unless defined $arg->{name};
+          }
+          Inline::CPP::grammar::strip_ellipsis($thisparser,
+                           $item[1]->{args});
+          [$item[1]];
+        }
           | member_def
-	    {
-#	      print "class_decl found one or more members:\n", Dumper(\@item);
+        {
+#         print "class_decl found one or more members:\n", Dumper(\@item);
               $_->{thing} = 'member' for @{$item[1]};
-	      $item[1];
-	    }
+          $item[1];
+        }
 
 function_def: operator <commit> ';'
               {
@@ -265,18 +268,18 @@ method_def: operator <commit> method_imp
 
           | IDENTIFIER '(' <commit> <leftop: arg ',' arg>(s?) ')' method_imp
             {
-#	      print "con-/de-structor found: $item[1]\n";
+#         print "con-/de-structor found: $item[1]\n";
               {name => $item[1], args => $item{__DIRECTIVE2__}, abstract => ${$item{method_imp}} };
             }
           | rtype IDENTIFIER '(' <leftop: arg ',' arg>(s?) ')' method_imp
             {
-#	      print "method found: $item[2]\n";
-	      $return = 
-                {name => $item[2], rtype => $item[1], args => $item[4], 
-	         abstract => ${$item[6]},
+#         print "method found: $item[2]\n";
+          $return =
+                {name => $item[2], rtype => $item[1], args => $item[4],
+             abstract => ${$item[6]},
                  rconst => $thisparser->{data}{smod}{const},
                 };
-	      $thisparser->{data}{smod}{const} = 0; 
+          $thisparser->{data}{smod}{const} = 0;
             }
 
 operator: rtype(?) 'operator' /\(\)|[^()]+/ '(' <leftop: arg ',' arg>(s?) ')'
@@ -300,39 +303,39 @@ method_imp: smod(?) ';' { \0 }
 initlist: ':' <leftop: subexpr ',' subexpr>
 
 member_def: anytype <leftop: var ',' var> ';'
-            { 
-	      my @retval;
-	      for my $def (@{$item[2]}) {
-	          my $type = join '', $item[1], @{$def->[0]};
-		  my $name = $def->[1];
-#	          print "member found: type=$type, name=$name\n";
-		  push @retval, { name => $name, type => $type };
-	      }
-	      \@retval;
+            {
+          my @retval;
+          for my $def (@{$item[2]}) {
+              my $type = join '', $item[1], @{$def->[0]};
+          my $name = $def->[1];
+#             print "member found: type=$type, name=$name\n";
+          push @retval, { name => $name, type => $type };
+          }
+          \@retval;
             }
 
 var: star(s?) IDENTIFIER '=' expr { [@item[1,2]] }
    | star(s?) IDENTIFIER          { [@item[1,2]] }
 
 arg: type IDENTIFIER '=' expr
-     { 
+     {
 #       print "argument $item{IDENTIFIER} found\n";
 #       print "expression: $item{expr}\n";
-	{type => $item[1], name => $item{IDENTIFIER}, optional => 1, 
-	 offset => $thisoffset} 
+    {type => $item[1], name => $item{IDENTIFIER}, optional => 1,
+     offset => $thisoffset}
      }
    | type IDENTIFIER
-     { 
+     {
 #       print "argument $item{IDENTIFIER} found\n";
        {type => $item[1], name => $item{IDENTIFIER}, offset => $thisoffset}
      }
    | type { {type => $item[1]} }
-   | '...' 
+   | '...'
      { {name => '...', type => '...', offset => $thisoffset} }
 
 ident_part: /[~_a-z]\w*/i '<' <commit> <leftop: IDENTIFIER ',' IDENTIFIER>(s?) '>'
         {
-	   $item[1].'<'.join('', @{$item[4]}).'>'
+       $item[1].'<'.join('', @{$item[4]}).'>'
         }
 
       | /[~_a-z]\w*/i
@@ -341,55 +344,55 @@ ident_part: /[~_a-z]\w*/i '<' <commit> <leftop: IDENTIFIER ',' IDENTIFIER>(s?) '
         }
 
 IDENTIFIER: <leftop: ident_part '::' ident_part>
- 	    {
+        {
               my $x = join '::', @{$item[1]};
 #              print "IDENTIFIER: $x\n";
               $x
- 	    }
+        }
 
 # Parse::RecDescent is retarded in this one case: if a subrule fails, it
-# gives up the entire rule. This is a stupid way to get around that. 
+# gives up the entire rule. This is a stupid way to get around that.
 rtype: rtype2 | rtype1
 rtype1: TYPE star(s?)
         {
          $return = $item[1];
          $return .= join '',' ',@{$item[2]} if @{$item[2]};
-#	 print "rtype1: $return\n";
-#          return undef 
+#    print "rtype1: $return\n";
+#          return undef
 #            unless(defined$thisparser->{data}{typeconv}{valid_rtypes}{$return});
         }
 rtype2: modifier(s) TYPE star(s?)
-	{
+    {
          $return = $item[2];
          $return = join ' ',grep{$_}@{$item[1]},$return
            if @{$item[1]};
          $return .= join '',' ',@{$item[3]} if @{$item[3]};
-#	 print "rtype2: $return\n";
+#    print "rtype2: $return\n";
 #          return undef
 #            unless(defined$thisparser->{data}{typeconv}{valid_rtypes}{$return});
-	 $return = 'static ' . $return
-	   if $thisparser->{data}{smod}{static};
+     $return = 'static ' . $return
+       if $thisparser->{data}{smod}{static};
          $thisparser->{data}{smod}{static} = 0;
-	}
+    }
 
 type: type2 | type1
 type1: TYPE star(s?)
         {
          $return = $item[1];
          $return .= join '',' ',@{$item{$Inline::CPP::grammar::star}} if @{$item{$Inline::CPP::grammar::star}};
-#	 print "type1: $return\n";
+#    print "type1: $return\n";
 #          return undef
 #            unless(defined$thisparser->{data}{typeconv}{valid_types}{$return});
         }
 type2: modifier(s) TYPE star(s?)
-	{
+    {
          $return = $item{TYPE};
          $return = join ' ',grep{$_}@{$item[1]},$return if @{$item[1]};
          $return .= join '',' ',@{$item{$Inline::CPP::grammar::star}} if @{$item{$Inline::CPP::grammar::star}};
-#	 print "type2: $return\n";
+#    print "type2: $return\n";
 #          return undef
 #            unless(defined$thisparser->{data}{typeconv}{valid_types}{$return});
-	}
+    }
 
 anytype: anytype2 | anytype1
 anytype1: TYPE star(s?)
@@ -409,12 +412,12 @@ comment: m{\s* // [^\n]* \n }x
 
 # long and short aren't recognized as modifiers because they break when used
 # as regular types. Another Parse::RecDescent problem is greedy matching; I
-# need tmodifier to "give back" long or short in cases where keeping them would 
+# need tmodifier to "give back" long or short in cases where keeping them would
 # cause the modifier rule to fail. One side-effect is 'long long' can never
 # be parsed correctly here.
 modifier: tmod
         | smod { ++$thisparser->{data}{smod}{$item[1]}; ''}
-	| nmod { '' }
+    | nmod { '' }
 tmod: 'unsigned' # | 'long' | 'short'
 smod: 'const' | 'static'
 nmod: 'extern' | 'virtual' | 'mutable' | 'volatile' | 'inline'
@@ -429,10 +432,10 @@ star: '*' | '&'
 code_block: /$Inline::CPP::grammar::code_block/
 
 # Consume expressions
-expr: <leftop: subexpr OP subexpr> { 
-	my $o = join '', @{$item[1]}; 
-#	print "expr: $o\n";
-	$o;
+expr: <leftop: subexpr OP subexpr> {
+    my $o = join '', @{$item[1]};
+#   print "expr: $o\n";
+    $o;
 }
 subexpr: /$Inline::CPP::grammar::funccall/ # Matches a macro, too
        | /$Inline::CPP::grammar::string/
@@ -451,7 +454,7 @@ END
 
 #============================================================================
 # Generate typemap code for the classes and structs we bind to. This allows
-# functions declared after a class to return or accept class objects as 
+# functions declared after a class to return or accept class objects as
 # parameters.
 #============================================================================
 $TYPEMAP_KIND = 'O_Inline_CPP_Class';
@@ -493,16 +496,16 @@ sub strip_ellipsis {
     my $args = shift;
     return if $parser->{ILSM}{PRESERVE_ELLIPSIS};
     for (my $i=0; $i<@$args; $i++) {
-	next unless $args->[$i]{name} eq '...';
-	# if it's the first one, just strip it
-	if ($i==0) {
-	    substr($parser->{ILSM}{code}, $args->[$i]{offset} - 3, 3) = "   ";
-	}
-	else {
-	    my $prev = $i - 1;
-	    my $prev_offset = $args->[$prev]{offset};
-	    my $length = $args->[$i]{offset} - $prev_offset;
-	    substr($parser->{ILSM}{code}, $prev_offset, $length) =~ s/\S/ /g;
-	}
+    next unless $args->[$i]{name} eq '...';
+    # if it's the first one, just strip it
+    if ($i==0) {
+        substr($parser->{ILSM}{code}, $args->[$i]{offset} - 3, 3) = "   ";
+    }
+    else {
+        my $prev = $i - 1;
+        my $prev_offset = $args->[$prev]{offset};
+        my $length = $args->[$i]{offset} - $prev_offset;
+        substr($parser->{ILSM}{code}, $prev_offset, $length) =~ s/\S/ /g;
+    }
     }
 }
