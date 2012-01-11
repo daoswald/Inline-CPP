@@ -42,7 +42,7 @@ if ($Config{gccversion} and $Config{cc} =~ m#\bgcc\b[^/]*$# ) {
     $libs_guess = '-lstdc++';
 }
 elsif ($Config{osname} =~ /^MSWin/) {
-    $cc_guess = 'cl -TP';
+    $cc_guess = 'cl -TP -EHsc';
     $libs_guess = 'MSVCIRT.LIB';
 }
 elsif ($Config{osname} eq 'linux') {
