@@ -18,7 +18,7 @@ use vars qw(@ISA $VERSION);
 @ISA = qw(Inline::C);
 
 # Development releases will have a _0xx version suffix.
-$VERSION = '0.33_003';
+$VERSION = '0.33_004';
 $VERSION = eval $VERSION; # To accommodate dev. version numbers.
 
 
@@ -90,7 +90,7 @@ END_FLAVOR_DEFINITIONS
     # it's easy for a user to #undef them in a custom-supplied
     # AUTO_INCLUDE.  May be useful for overriding errant defaults,
     # or testing.
-    $o->{ILSM}{AUTO_INCLUDE} = 
+    $o->{ILSM}{AUTO_INCLUDE} =
         $flavor_defs . $o->{ILSM}{AUTO_INCLUDE};
 
 

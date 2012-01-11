@@ -12,7 +12,7 @@ Inline::CPP - Write Perl subroutines and classes in C++.
    __END__
    __CPP__
 
-   int add(int x, int y) { 
+   int add(int x, int y) {
       return x + y;
    }
 
@@ -28,17 +28,17 @@ C++, and you can use them as if they were written in Perl.
 
 =head1 Choosing a C++ Compiler
 
-Inline::CPP just parses your C++ code and creates bindings to it. Like 
+Inline::CPP just parses your C++ code and creates bindings to it. Like
 Inline::C, you will need a suitable compiler the first time you run the
-script. Choosing a C++ compiler can prove difficult, because Perl is 
+script. Choosing a C++ compiler can prove difficult, because Perl is
 written in C, not C++.
 
 Here's the rule: use any C++ compiler that's compatible with the compiler
-which built C<perl>. For instance, if C<perl> was built with C<gcc>, 
-use C<g++>.  If you're on a Sun or an IRIX box and the system C compiler 
-C<cc> built C<perl>, then use the system C++ compiler, C<CC>. 
+which built C<perl>. For instance, if C<perl> was built with C<gcc>,
+use C<g++>.  If you're on a Sun or an IRIX box and the system C compiler
+C<cc> built C<perl>, then use the system C++ compiler, C<CC>.
 
-Some compilers actually compile both C and C++ with the same compiler. 
+Some compilers actually compile both C and C++ with the same compiler.
 Microsoft's C<cl.exe> is one such compiler -- you pass it the <-TP> flag
 to convince it that you want C++ mode.
 
@@ -49,7 +49,7 @@ parse your C++ code, and binds to functions or classes which are
 recognized. If a function is recognized, it will be available from
 Perl space. If the function's signature is not recognized, it will not
 be available from Perl space, but will be available from other
-functions in C++. 
+functions in C++.
 
 For more information about the grammar used to parse C++ code, see the
 section called "Grammar".
@@ -62,7 +62,7 @@ Example 1:
    use Inline CPP => <<'END';
 
    using namespace std;
-   
+
    int doodle() { }
 
    class Foo {
@@ -115,7 +115,7 @@ L<perlxs>.
 
 =head2 ALTLIBS
 
-Adds a new entry to the end of the list of alternative libraries to 
+Adds a new entry to the end of the list of alternative libraries to
 bind with. MakeMaker will search through this list and use the first
 entry where all the libraries are found.
 
@@ -127,7 +127,7 @@ the list.
 =head2 AUTO_INCLUDE
 
 Specifies extra statements to be automatically included. They will be
-added on to the defaults. A newline char will automatically be added. 
+added on to the defaults. A newline char will automatically be added.
 
    use Inline Config => AUTO_INCLUDE => '#include "something.h"';
 
@@ -148,7 +148,7 @@ Specifies extra compiler flags. Corresponds to the MakeMaker option.
 
 =head2 FILTERS
 
-Specifies one (or more, in an array ref) filter which is to be applied to 
+Specifies one (or more, in an array ref) filter which is to be applied to
 the code just prior to parsing. The filters are executed one after another,
 each operating on the output of the previous one. You can pass in a code
 reference or the name of a prepackaged filter.
@@ -189,7 +189,7 @@ calls to LIBS append to the previous calls. For example,
 
    use Inline Config => LIBS => '-L/my/path', LIBS => '-lyourlib';
 
-will work correctly. If you want to add a new element to the list of 
+will work correctly. If you want to add a new element to the list of
 possible libraries to link with, use the Inline::CPP configuration ALTLIBS.
 
 =head2 MAKE
@@ -211,43 +211,43 @@ C++ mangles its function names to facilitate function overloading.
 
    use Inline Config => PREFIX => 'ZLIB_';
 
-This only affects C++ function names, not C++ class names or methods. 
+This only affects C++ function names, not C++ class names or methods.
 
 =head2 PRESERVE_ELLIPSIS
 
-By default, Inline::CPP replaces C<...> in bound functions with three 
+By default, Inline::CPP replaces C<...> in bound functions with three
 spaces, since the arguments are always passed on the Perl Stack, not on
 the C stack. This is usually desired, since it allows functions with
-no fixed arguments (most compilers require at least one fixed argument). 
+no fixed arguments (most compilers require at least one fixed argument).
 
    use Inline Config => PRESERVE_ELLIPSIS => 1;
 or
    use Inline Config => ENABLE => PRESERVE_ELLIPSIS;
 
-For an example of why PRESERVE_ELLIPSIS is normally not needed, see the 
+For an example of why PRESERVE_ELLIPSIS is normally not needed, see the
 examples section, below.
 
 =head2 STD_IOSTREAM
 
 By default, Inline::CPP includes the standard iostream header at the top
-of your code.  Inline::CPP will try to make the proper selection between 
+of your code.  Inline::CPP will try to make the proper selection between
 C<iostream.h> (for older compilers) and C<iostream> (for newer "Standard
 compliant" compilers).
 
 This option assures that it include C<iostream>, which is the
 ANSI-compliant version of the header. For most compilers the use of this
-configuration option should no longer be necessary.  It is still included 
+configuration option should no longer be necessary.  It is still included
 to maintain backward compatibility with code that used to need it.
 
    use Inline CPP => Config => ENABLE => STD_IOSTREAM;
 
 =head2 STRUCTS
 
-Specifies whether to bind C structs into Perl using Inline::Struct. 
+Specifies whether to bind C structs into Perl using Inline::Struct.
 NOTE: Support for this option is experimental. Inline::CPP already binds
 to structs defined in your code. Structs and classes are treated as the
-same construct, except that a struct's initial scope is public, not 
-private. Inline::Struct provides autogenerated get/set methods, an 
+same construct, except that a struct's initial scope is public, not
+private. Inline::Struct provides autogenerated get/set methods, an
 overloaded constructor, and several other features not available in
 Inline::CPP.
 
@@ -257,7 +257,7 @@ You can invoke STRUCTS in several ways:
 or
    use Inline Config => STRUCTS => ['Bar', 'Baz'];
 
-Binds the named structs to Perl. Emits warnings if a struct was requested 
+Binds the named structs to Perl. Emits warnings if a struct was requested
 but could not be bound for some reason.
 
    use Inline Config => ENABLE => 'STRUCTS';
@@ -298,12 +298,12 @@ various XS macro calls, casts, and the Perl API. XS also allows you to
 define your own mappings.
 
 C<Inline::CPP> uses a much simpler approach. It parses the system's
-typemap files and only binds to functions with supported types. You 
+typemap files and only binds to functions with supported types. You
 can tell C<Inline::CPP> about custom typemap files too.
 
 If you have very complicated data structures in either C++ or Perl,
 you should just pass them as an SV* and do the conversion yourself in
-your C++ function. 
+your C++ function.
 
 In C++, a struct is a class whose default scope is public, not
 private.  Inline::CPP binds to structs with this in mind -- get/set
@@ -320,16 +320,16 @@ details.
 
 =head1 <iostream>, Standard Headers, Namespaces, and Portability Solutions
 
-As mentioned earlier, Inline::CPP automatically includes <iostream>, or 
-<iostream.h>, depending on the preference of the target compiler.  This 
+As mentioned earlier, Inline::CPP automatically includes <iostream>, or
+<iostream.h>, depending on the preference of the target compiler.  This
 distinction illustrates a potential problem when trying to write portable code
-in C++.  Legacy C++ (pre-ANSI-Standard) used headers named, for example, 
+in C++.  Legacy C++ (pre-ANSI-Standard) used headers named, for example,
 <iostream.h>.  As legacy C++ didn't fully support namespaces, these standard
 tools were not segregated into a separate namespace.
 
 ANSI Standard C++ changed that.  Headers were renamed without the '.h' suffix,
-and standard tools were placed in the 'C<std>' namespace.  The 
-C<using namespace> construct was also added to facilitate working with 
+and standard tools were placed in the 'C<std>' namespace.  The
+C<using namespace> construct was also added to facilitate working with
 namespaces.
 
 So pre-Standard (Legacy) C++ code might look like this:
@@ -361,29 +361,29 @@ Obviously the first snippet is going to be completely incompabible with the
 second or third snippet.  This is no problem for a C++ developer who knows his
 target compiler.  But Perl runs just about everywhere.  If similar portability
 is a design goal, Inline::CPP helps by providing two C<#define> constants that
-may be checked to ascertain which style of headers are being used.  The 
+may be checked to ascertain which style of headers are being used.  The
 constants are:
 
    __INLINE_CPP_STANDARD_HEADERS
    __INLINE_CPP_NAMESPACE_STD
 
 C<__INLINE_CPP_STANDARD_HEADERS> will be defined if the target compiler
-accepts ANSI Standard headers, such as <iostream>.  
+accepts ANSI Standard headers, such as <iostream>.
 C<__INLINE_CPP_NAMESPACE_STD> will be defined if the target compiler supports
 namespaces.  Realistically the two are synonymous; ANSI Standard C++ uses
-namespaces, places standard library tools in the C<std> namespace, and 
-invokes headers with the modern (no '.h' suffix) naming convention.  So if 
+namespaces, places standard library tools in the C<std> namespace, and
+invokes headers with the modern (no '.h' suffix) naming convention.  So if
 one is defined they both should be.
 
 They can be used as follows:
 
     use Inline CPP => 'DATA';
-    
+
     greet();
-    
+
     __DATA__
     __CPP__
-    
+
     #ifdef __INLINE_CPP_STANDARD_HEADERS
     #include <string>
     #else
@@ -393,18 +393,18 @@ They can be used as follows:
     #ifdef __INLINE_CPP_NAMESPACE_STD
     using namespace std;
     #endif
-    
+
     void greet() {
         string mygreeting = "Hello world!\n";
         cout << mygreeting;
     }
 
-You may decide that you don't care about maintaining portability with 
+You may decide that you don't care about maintaining portability with
 compilers that are a decade (or more) old.  But if you do care (maybe you're
 basing a CPAN module on Inline::CPP), use these constant definitions as a tool
 in building a widely portable solution.
 
-If you wish, you may C<#undef> either of those constants.  The constants are 
+If you wish, you may C<#undef> either of those constants.  The constants are
 defined before any C<AUTO_INCLUDE>s -- even <iostream>.  Consequently, you may
 even list C<#undef __INLINE_CPP_....> within an C<AUTO_INCLUDE> configuration
 directive.  I'm not sure why it would be necessary, but could be useful in
@@ -469,9 +469,9 @@ with inline method definitions:
 =head2 Example 2 - Plane and Simple
 
 This example demonstrates some new features of Inline::CPP: support for
-inheritance and abstract classes. The defined methods of the abstract 
-class C<Object> are bound to Perl, but there is no constructor or 
-destructor, meaning you cannot instantiate an C<Object>. 
+inheritance and abstract classes. The defined methods of the abstract
+class C<Object> are bound to Perl, but there is no constructor or
+destructor, meaning you cannot instantiate an C<Object>.
 
 The C<Airplane> is a fully-bound class which can be created and
 manipulated from Perl.
@@ -504,7 +504,7 @@ manipulated from Perl.
 
      virtual void info() { print(); }
      virtual bool isa(char *klass) { return strcmp(klass, "Object")==0; }
-     virtual bool can(char *method) { 
+     virtual bool can(char *method) {
        bool yes = false;
        yes |= strcmp(method, "print")==0;
        yes |= strcmp(method, "info")==0;
@@ -516,15 +516,15 @@ manipulated from Perl.
 
 =head2 Example 3 - The Ellipsis Abridged
 
-One of the big advantages of Perl over C or C++ is the ability to pass an 
-arbitrary number of arguments to a subroutine. You can do it in C, but it's 
+One of the big advantages of Perl over C or C++ is the ability to pass an
+arbitrary number of arguments to a subroutine. You can do it in C, but it's
 messy and difficult to get it right. All of this mess is necessary because
 C doesn't give the programmer access to the stack. Perl, on the other hand,
 gives you access to everything.
 
 Here's a useful function written in Perl that is relatively slow:
 
-   sub average { 
+   sub average {
       my $average = 0;
       for (my $i=0; $i<@_; $i++) {
          $average *= $i;
@@ -592,26 +592,26 @@ random numbers. And by varying the number of elements in the array and the
 number of repetitions of the function, we can change this number a lot.
 
 What's the point? Of B<course> C or C++ is faster than Perl. Well..., actually,
-that wasn't really the point; that was an aside. Look at the function 
+that wasn't really the point; that was an aside. Look at the function
 declaration:
 
    double avg(...)
 
-Why didn't we need to use varargs macros to get at the arguments? Why didn't 
-the compiler complain that there were no required arguments? Because 
+Why didn't we need to use varargs macros to get at the arguments? Why didn't
+the compiler complain that there were no required arguments? Because
 Inline::C++ actually compiled this:
 
    double avg(   )
 
 When it bound to the function, it noticed the ellipsis and decided to get rid
-of it. Any function bound to Perl that has an ellipsis in it will have its 
+of it. Any function bound to Perl that has an ellipsis in it will have its
 arguments passed via the Perl stack, not the C stack. That means if you write
 a function like this:
 
    void myprintf(char *format, ...);
 
 then you'd better be reading things from the Perl stack. If you aren't, then
-specify the PRESERVE_ELLIPSIS option in your script. That will leave the 
+specify the PRESERVE_ELLIPSIS option in your script. That will leave the
 ellipsis in the code for the compiler to whine about. :)
 
 =head2 Example 4 - Stacks and Queues
@@ -621,7 +621,7 @@ later. I might as well try it from Inline. But why reinvent the wheel?
 Perl has a perfectly good Array type, which can easily implement both
 a Queue and a Stack.
 
-This example implements a Queue and a Stack class, and shows off just 
+This example implements a Queue and a Stack class, and shows off just
 a few more new features of Inline::CPP: default values to arguments,
 
    use Inline CPP;
@@ -681,11 +681,11 @@ a few more new features of Inline::CPP: default values to arguments,
 =head1 Grammar Details
 
 As Inline currently requires Perl 5.6.0 or newer, and Inline::CPP depends on
-Inline, Perl 5.6.0 is required for Inline::CPP too.  Historically 5.6.0 was 
+Inline, Perl 5.6.0 is required for Inline::CPP too.  Historically 5.6.0 was
 required to get all the "new" features, although Perl 5.005_03 was supported
 with limited functionality up to Inline::CPP version 0.25.  It's hard to
 imagine anyone still using a Perl older than 5.6.0 wanting to interface with
-C++, but if you're in that camp, you'll need to roll back Inline and 
+C++, but if you're in that camp, you'll need to roll back Inline and
 Inline::CPP to older versions through the magic of backpan.
 
 =head2 Inline function definitions
@@ -698,8 +698,8 @@ described by this example:
        Foo() { /* Do something */ }
    };
 
-This example shows a class with a constructor defined inline. Inline::CPP 
-version 0.25 or older could parse this example with 5.005. But this example 
+This example shows a class with a constructor defined inline. Inline::CPP
+version 0.25 or older could parse this example with 5.005. But this example
 requires Perl 5.6.0:
 
    class Foo {
@@ -708,12 +708,12 @@ requires Perl 5.6.0:
    };
 
 Here's what happened: Inline::CPP saw a class, saw the method, then noticed
-it was an inline method. So it grabbed this text: 
+it was an inline method. So it grabbed this text:
 
    "{ if(1) { /* Do something */ }"
 
-And then it tried to match another part of the class. But it failed because 
-the next part of the string is this (with newlines trimmed): 
+And then it tried to match another part of the class. But it failed because
+the next part of the string is this (with newlines trimmed):
 
    "} };"
 
@@ -738,13 +738,13 @@ Again, default parameters are best described by example:
    int root(double number, int whatroot=2);
 
 This function takes one or two arguments. If the second is missing, C++ gives
-it the value 2. Inline::CPP can parse this simple example regardless of your 
+it the value 2. Inline::CPP can parse this simple example regardless of your
 perl version. But the following example requires 5.6.0:
 
    int root(double number, int whatroot=((2)));
 
 That's because if you're using 5.005, your arguments are parsed with a regular
-expression that looks for only one closing parenthesis. Any more than that, 
+expression that looks for only one closing parenthesis. Any more than that,
 and you get a parse error.
 
 Again, there are two solutions:
@@ -765,9 +765,9 @@ Make the strange expression a constant or macro and use that.
 
 Inline::CPP no longer actively supports Perl versions prior to 5.6.0.  This
 shouldn't be an issue for anyone because Inline and Inline::C also no longer
-support Perl versions prior to 5.6.0.  If you are in the unlikely position 
+support Perl versions prior to 5.6.0.  If you are in the unlikely position
 of having a code base that uses Inline::CPP, and operates under a Perl older
-than 5.6.0, don't upgrade L<Inline>, L<Inline::C>, or Inline::CPP (unless you 
+than 5.6.0, don't upgrade L<Inline>, L<Inline::C>, or Inline::CPP (unless you
 intend to also upgrade to a version of Perl released in the 21st Century.)
 
 
@@ -780,17 +780,43 @@ For information on using C with Perl, see L<Inline::C> and
 L<Inline::C-Cookbook>. For C<WMTYEWTK>, see L<perlguts>, L<perlxs>,
 L<perlxstut>, L<perlapi>, and L<perlcall>.
 
-For information on using C and C++ structs with Perl, see 
+For information on using C and C++ structs with Perl, see
 L<Inline::Struct>.
+
+User and development discussion for Inline modules, including
+Inline::CPP occurs on the inline.perl.org mailing list.  See
+L<http://lists.perl.org/list/inline.html> to learn how to subscribe.
 
 =head1 BUGS AND DEFICIENCIES
 
 When reporting a bug, please do the following:
 
- - Put "use Inline REPORTBUG;" at the top of your code, or 
+ - If possible, create a brief stand-alone snippet of code that
+   demonstrates the issue.
+ - Use rt.cpan.org's bug reporting facility:
+   L<https://rt.cpan.org/Public/Dist/Display.html?Name=Inline-CPP>
+ - Patches are always welcome.
+
+...or...
+
+ - Put "use Inline REPORTBUG;" at the top of your code, or
    use the command line option "perl -MInline=REPORTBUG ...".
  - Run your code.
  - Follow the printed instructions.
+
+B<Get involved!>  Module development is being tracked on a github
+repository: L<https://github.com/daoswald/Inline-CPP>
+
+The master branch will always hold the latest stable CPAN release.
+(Stable releases have version numbers in the following format: 'x.xx'.)
+
+The dev branch will hold a combination of minor commits and CPAN
+"Developer" releases (these will have a version number formatted as:
+'x.xx_xxx').
+
+Most discussion relating to this module (user or developer) occurs on
+the Inline mailing list, inline.perl.org.  See
+L<http://lists.perl.org/list/inline.html> for details on subscribing.
 
 Here are some things to watch out for:
 
@@ -828,21 +854,27 @@ future are:
 
 =item a
 
-Improvements to the test suite.
+Work through issues relating to successful installation and use on
+as many platforms as possible.  The goal is to achieve a smoke-test
+"pass" rate similar to Inline::C.
 
 =item b
 
-Support for overloaded functions and methods
+Improvements to the test suite.
 
 =item c
 
-Binding to constants and constant #defines
+Support for overloaded functions and methods
 
 =item d
 
-Binding to unions
+Binding to constants and constant #defines
 
 =item e
+
+Binding to unions
+
+=item f
 
 Autogenerated get/set methods on public members
 
@@ -854,7 +886,7 @@ Autogenerated get/set methods on public members
 
 Neil Watkiss <NEILW@cpan.org>
 
-David Oswald <DAVIDO@cpan.org> is the current co-maintainer.
+David Oswald <DAVIDO@cpan.org> is the current maintainer.
 
 Brian Ingerson <INGY@cpan.org> is the author of C<Inline>,
 C<Inline::C> and C<Inline::CPR>. He is known in the innermost Inline

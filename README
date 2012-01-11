@@ -33,13 +33,12 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.33_003 is a dev. version.  It includes a bug fix aimed
-at better detecting Standard C++ headers versus pre-Standard .h headers.
+Inline::CPP version 0.33_004 is a dev. release.  It includes POD revisions,
+and compiler flag tweaks for Microsoft compilers.  It's being pushed
+to CPAN to generate fresh smoke tests.
 
-It also includes the #define definitions of __INLINE_CPP_STANDARD_HEADERS
-and __INLINE_CPP_NAMESPACE_STD to assist users in determining the capabilities
-of the target compiler, and in selecting headers and namespace directives
-in portable ways.
+The most recent stable release is 0.33.  Releases ending in _xxx are
+experimental/developmental.
 
 -----------------------------------------------------------------------------
 INSTALLATION:

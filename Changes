@@ -1,4 +1,10 @@
 Revision history for Perl extension Inline::CPP.
+0.33_004  Wed Jan 11 18:16:00 GMT+8 2011 (Manila)
+    [Patches pushed out by David Oswald]
+    - Developer release
+    - Tweaked compiler flags for Microsoft compilers (per sisyphus)
+    - Added github repo information to POD.
+    - Added inline mailing list information to POD.
 0.33_003  Thu Dec 22 01:20:00 PST 2011
     [Feature added by David Oswald]
     - Added two #define definitions to assist users in determining if the
