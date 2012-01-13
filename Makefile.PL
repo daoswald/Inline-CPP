@@ -2,8 +2,8 @@ use ExtUtils::MakeMaker;
 use Config;
 
 my %PREREQ_PM = (
-    'Inline' => '0.49',
-    'Inline::C' => '0.49',
+    'Inline'            => '0.49',
+    'Inline::C'         => '0.49',
     'Parse::RecDescent' => '0',
 );
 
@@ -165,14 +165,10 @@ print CPP @lines;
 close CPP or die "Can't close CPP.pm after output!";
 
 WriteMakefile(
-    NAME         => 'Inline::CPP',
-    VERSION_FROM => 'CPP.pm',
-    PREREQ_PM    => {
-        'Inline'            => '0.49',
-        'Inline::C'         => '0.49',
-        'Parse::RecDescent' => 0,
-    },
-    clean        => {
-        FILES        => '_Inline/ grammar/_Inline'
+    NAME            => 'Inline::CPP',
+    VERSION_FROM    => 'CPP.pm',
+    PREREQ_PM       => \%PREREQ_PM,
+    clean           => {
+        FILES               => '_Inline/ grammar/_Inline'
     },
 );
