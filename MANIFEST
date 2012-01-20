@@ -1,6 +1,7 @@
 Changes
 CPP.pm
 MANIFEST
+MANIFEST.SKIP
 Makefile.PL
 README
 TESTED
@@ -23,6 +24,7 @@ grammar/t/14const.t
 grammar/t/15stvar.t
 grammar/t/16varlst.t
 lib/Inline/CPP.pod
+t/00load_prereqs.t
 t/01basic.t
 t/02prefix.t
 META.yml                                 Module YAML meta-data (added by MakeMaker)

@@ -33,9 +33,9 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.33_004 is a dev. release.  It includes POD revisions,
-and compiler flag tweaks for Microsoft compilers.  It's being pushed
-to CPAN to generate fresh smoke tests.
+Inline::CPP version 0.33_005 is a dev. release.  It adds a test to provide
+more thorough diagnostics for the "Can't find Parse::RecDescent" issue.
+It's being pushed to CPAN to generate fresh smoke tests.
 
 The most recent stable release is 0.33.  Releases ending in _xxx are
 experimental/developmental.

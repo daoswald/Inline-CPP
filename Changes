@@ -1,4 +1,8 @@
 Revision history for Perl extension Inline::CPP.
+0.33_005  Sat Jan 21 00:36:00 PST 2011
+    [Added suggestion from sisyphus]
+    - Created a 00load_prereqs.t test to provide better diagnostics when
+      confronted with the "Unable to find Parse::RecDescent" error.
 0.33_004  Wed Jan 11 18:16:00 GMT+8 2011 (Manila)
     [Patches pushed out by David Oswald]
     - Developer release

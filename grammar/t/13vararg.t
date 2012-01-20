@@ -15,9 +15,10 @@ __CPP__
 int sum(...) {
     Inline_Stack_Vars;
     int s = 0;
-    for (int i=0; i<items; i++) {
-	int tmp = SvIV(Inline_Stack_Item(i));
-	s += tmp;
+    for (int i=0; i<items; i++)
+    {
+    int tmp = SvIV(Inline_Stack_Item(i));
+    s += tmp;
     }
     return s;
 }

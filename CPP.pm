@@ -18,7 +18,7 @@ use vars qw(@ISA $VERSION);
 @ISA = qw(Inline::C);
 
 # Development releases will have a _0xx version suffix.
-$VERSION = '0.33_004';
+$VERSION = '0.33_005';
 $VERSION = eval $VERSION; # To accommodate dev. version numbers.
 
 
