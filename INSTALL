@@ -1,0 +1,34 @@
+Installing Inline::CPP
+
+For most installations, the following should be all that is necessary:
+
+cpan install Inline::CPP
+
+...or...
+
+Download the distribution's .tar.gz file, unpack it into its own directory,
+then repeat after me:
+
+perl Makefile.PL
+make
+make test
+make install
+
+
+*** Note regarding Parse::RecDescent dependency ***
+
+There seem to be a growing number of cases where the automated tools
+such as 'cpan' and CPANPLUS fail to cleanly install Parse::RecDescent, which
+is an important prerequisite for Inline::CPP
+
+If you experience difficulty installing Inline::CPP where the test suite fails
+with a message about Parse::RecDescent, install Parse::RecDescent first, then
+go ahead and try installing Inline::CPP again.
+
+
+--- Other considerations ---
+
+At install time you will be prompted about what C++ compiler and accompanying
+library to use.  Under most circumstances just accepting the defaults will
+be fine.  The best possible situation is to use the same compiler (or
+compiler family) as what was used to compile Perl.

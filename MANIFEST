@@ -4,6 +4,7 @@ MANIFEST
 MANIFEST.SKIP
 Makefile.PL
 README
+INSTALL
 TESTED
 grammar/grammar.pm
 grammar/Makefile.PL

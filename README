@@ -33,9 +33,9 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.33_005 is a dev. release.  It adds a test to provide
-more thorough diagnostics for the "Can't find Parse::RecDescent" issue.
-It's being pushed to CPAN to generate fresh smoke tests.
+Inline::CPP version 0.33_006 is a dev. release.  It focuses on documenting the
+install issue relating to the Parse::RecDescent dependency.  See INSTALL
+for details if you experience problems installing Inline::CPP.
 
 The most recent stable release is 0.33.  Releases ending in _xxx are
 experimental/developmental.
@@ -54,10 +54,21 @@ make test
 make install
 
 (On ActivePerl for MSWin32, use nmake instead of make.)
+(On Strawberry Perl you may use dmake instead.)
 
 You have to 'make install' before you can run it successfully.
 You will be prompted for what C++ compiler and library to use.  Accepting
 the default should work in nearly every case (and if it doesn't, let me know).
+
+*** A note about Parse::RecDescent ***
+
+A growing number of smoke testers are reporting that the automated install
+tools such as 'cpan' and CPANPLUS are not properly installing the
+prerequisite Parse::RecDescent.  If you see the Inline::CPP test suite failing
+with a message about Parse::RecDescent, try installing that module first,
+independently of Inline::CPP.  After installing Parse::RecDescent first,
+you should now be able to install Inline::CPP as documented above.
+
 
 -----------------------------------------------------------------------------
 INFORMATION:
