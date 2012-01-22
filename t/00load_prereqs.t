@@ -8,7 +8,10 @@ BEGIN {
 };
 
 BEGIN {
-    use_ok( 'Parse::RecDescent' );
+    use_ok( 'Parse::RecDescent' )
+        or BAIL_OUT(
+            "*** YOU MUST INSTALL Parse::RecDescent BEFORE PROCEEDING ***\n"
+        );
     require_ok( 'Inline::C' );
 }
 

@@ -26,6 +26,4 @@
 ^pm_to_blib
 ^grammar/Makefile$
 \.gz$
-\.yml$
-\.json$
-
+MYMETA\b

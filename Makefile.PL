@@ -164,11 +164,13 @@ open CPP, ">CPP.pm" or die "Can't write to CPP.pm!";
 print CPP @lines;
 close CPP or die "Can't close CPP.pm after output!";
 
+
 WriteMakefile(
     NAME            => 'Inline::CPP',
+    AUTHOR          => 'David Oswald <davido@cpan.org>',
     VERSION_FROM    => 'CPP.pm',
     PREREQ_PM       => \%PREREQ_PM,
     clean           => {
-        FILES               => '_Inline/ grammar/_Inline'
+        FILES           => '_Inline/ grammar/_Inline'
     },
 );
