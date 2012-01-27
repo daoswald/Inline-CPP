@@ -60,14 +60,14 @@ You have to 'make install' before you can run it successfully.
 You will be prompted for what C++ compiler and library to use.  Accepting
 the default should work in nearly every case (and if it doesn't, let me know).
 
-*** A note about Parse::RecDescent ***
+*** A note about pre-requisites: Parse::RecDescent ***
 
-A growing number of smoke testers are reporting that the automated install
-tools such as 'cpan' and CPANPLUS are not properly installing the
-prerequisite Parse::RecDescent.  If you see the Inline::CPP test suite failing
-with a message about Parse::RecDescent, try installing that module first,
-independently of Inline::CPP.  After installing Parse::RecDescent first,
-you should now be able to install Inline::CPP as documented above.
+Some smoke testers are reporting that the automated install tools such as
+'cpan' and CPANPLUS are not properly installing the prerequisite
+Parse::RecDescent.  If you see the Inline::CPP test suite failing with a
+message about Parse::RecDescent, try installing that module first,
+independently of Inline::CPP.  Then Inline::CPP should install cleanly as
+documented above.
 
 
 -----------------------------------------------------------------------------

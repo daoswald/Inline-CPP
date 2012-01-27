@@ -357,12 +357,21 @@ Modern "ANSI Standard C++" compilers would require code like this:
        return 0;
    }
 
+... or even ...
+
+   #include <iostream>
+   int main() {
+       using std::cout;
+       cout << "Hello world.\n";
+       return 0;
+   }
+
 Obviously the first snippet is going to be completely incompabible with the
-second or third snippet.  This is no problem for a C++ developer who knows his
-target compiler.  But Perl runs just about everywhere.  If similar portability
-is a design goal, Inline::CPP helps by providing two C<#define> constants that
-may be checked to ascertain which style of headers are being used.  The
-constants are:
+second, third or fourth snippets.  This is no problem for a C++ developer who
+knows his target compiler.  But Perl runs just about everywhere.  If similar
+portability is a design goal, Inline::CPP helps by providing two C<#define>
+constants that may be checked to ascertain which style of headers are being
+used.  The constants are:
 
    __INLINE_CPP_STANDARD_HEADERS
    __INLINE_CPP_NAMESPACE_STD

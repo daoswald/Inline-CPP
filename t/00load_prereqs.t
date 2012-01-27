@@ -5,18 +5,19 @@ BEGIN {
     diag( "\$ENV{PERL5LIB}: $ENV{PERL5LIB}\n" );
 };
 
+sub prereq_message {
+    return "*** YOU MUST INSTALL $_[0] BEFORE PROCEEDING ***\n";
+}
+
 # If Parse::RecDescent isn't cleanly installed there's no point continuing
 # the test suite.
 
 BEGIN {
     use_ok( 'Parse::RecDescent' )
-        or BAIL_OUT(
-            "*** YOU MUST INSTALL Parse::RecDescent BEFORE PROCEEDING ***\n" .
-            "*** After confirming a clean install of Parse::RecDescent, " .
-            "you may re-attempt to install Inline::CPP.  If that doesn't " .
-            "help, please file a bug report. ***\n"
-        );
-    require_ok( 'Inline::C' );
+        or BAIL_OUT( prereq_message( 'Parse::RecDescent' ) );
+    require_ok( 'Inline::C' )
+        or BAIL_OUT( prereq_message( 'Inline::C' ) );
 }
 
 done_testing();
+
