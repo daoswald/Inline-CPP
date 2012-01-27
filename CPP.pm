@@ -213,9 +213,10 @@ sub info {
 sub get_parser {
     my $o = shift;
     my $grammar = Inline::CPP::grammar::grammar()
-    or croak "Can't find C++ grammar\n";
+        or croak "Can't find C++ grammar\n";
     $::RD_HINT++;
-    require Parse::RecDescent;
+    #require Parse::RecDescent;
+    use Parse::RecDescent;
     my $parser = Parse::RecDescent->new($grammar);
     $parser->{data}{typeconv} = $o->{ILSM}{typeconv};
     $parser->{ILSM} = $o->{ILSM}; # give parser access to config options

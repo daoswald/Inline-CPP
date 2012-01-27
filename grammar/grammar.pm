@@ -13,8 +13,8 @@ $VERSION = eval $VERSION;  # To accommodate dev version numbers.
 # Hence various hash keys may or may not need trailing '(s?)' depending on
 # the version of Parse::RecDescent we are using.
 
-require Parse::RecDescent;
-
+#require Parse::RecDescent;
+use Parse::RecDescent;
 
 # --------------------------------------------------
 # Patch to deal with Parse::RecDescent's funky version numbers for development
