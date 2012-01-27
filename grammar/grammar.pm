@@ -315,6 +315,7 @@ member_def: anytype <leftop: var ',' var> ';'
             }
 
 var: star(s?) IDENTIFIER '=' expr { [@item[1,2]] }
+   | star(s?) IDENTIFIER '[' expr ']' { [@item[1,2]] }
    | star(s?) IDENTIFIER          { [@item[1,2]] }
 
 arg: type IDENTIFIER '=' expr
