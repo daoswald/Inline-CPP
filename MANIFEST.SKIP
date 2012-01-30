@@ -25,5 +25,6 @@
 ^grammar/pm_to_blib
 ^pm_to_blib
 ^grammar/Makefile$
+^grammar/t/_Inline/
 \.gz$
 MYMETA\b

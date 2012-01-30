@@ -1,9 +1,13 @@
 Revision history for Perl extension Inline::CPP.
+0.33_007  Sun Jan 29 20:35:00 PST 2011
+    [Test suite patches by David Oswald]
+    - If 00load_prereqs.t does successfully load Parse::RecDescent (which it
+      always seems to do), output the location it was found so it can be
+      compared to @INC.
 0.33_006  Sun Jan 22 05:59:00 PST 2011
+    *** NEVER RELEASED ***
     [Patches by David Oswald]
     - Set 00load_prereqs.t to BAIL_OUT if Parse::RecDescent can't be found.
-    - Add an INSTALL file explaining to pre-install Parse::RecDescent if the
-      common issue occurs.
     - Tweaks to the distribution framework.
 0.33_005  Sat Jan 21 00:36:00 PST 2011
     [Added suggestion from sisyphus]
