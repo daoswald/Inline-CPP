@@ -33,9 +33,9 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.33_006 is a dev. release.  It focuses on documenting the
-install issue relating to the Parse::RecDescent dependency.  See INSTALL
-for details if you experience problems installing Inline::CPP.
+Inline::CPP version 0.33_007 is a dev. release.  It adds diagnostic info to
+the test suite to aid in figuring out the "Unable to locate Parse::RecDescent"
+issue.
 
 The most recent stable release is 0.33.  Releases ending in _xxx are
 experimental/developmental.

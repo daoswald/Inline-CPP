@@ -19,5 +19,7 @@ BEGIN {
         or BAIL_OUT( prereq_message( 'Inline::C' ) );
 }
 
+diag( "\$INC{'Parse/RecDescent.pm'} => $INC{'Parse/RecDescent.pm'}\n" );
+
 done_testing();
 
