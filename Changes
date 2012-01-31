@@ -1,4 +1,10 @@
 Revision history for Perl extension Inline::CPP.
+0.33_008  Mon Jan 30 22:05:00 PST 2011
+    [Patches by David Oswald]
+    - Make sure that Parse::RecDescent loads ahead of Inline::C so that the 
+      smoke-testers incompatible @INC modifications won't cause smoke failure.
+    - Add 17memberarray.t to the test suite to validate the new code that 
+      allows Inline::CPP to recognize arrays as class/struct data members.
 0.33_007  Sun Jan 29 20:35:00 PST 2011
     [Test suite patches by David Oswald]
     - If 00load_prereqs.t does successfully load Parse::RecDescent (which it

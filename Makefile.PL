@@ -169,6 +169,7 @@ WriteMakefile(
     NAME            => 'Inline::CPP',
     AUTHOR          => 'David Oswald <davido@cpan.org>',
     VERSION_FROM    => 'CPP.pm',
+    ABSTRACT_FROM	=> 'lib/Inline/CPP.pod',
     PREREQ_PM       => \%PREREQ_PM,
     clean           => {
         FILES           => '_Inline/ grammar/_Inline'

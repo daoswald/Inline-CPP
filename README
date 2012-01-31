@@ -33,9 +33,12 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.33_007 is a dev. release.  It adds diagnostic info to
-the test suite to aid in figuring out the "Unable to locate Parse::RecDescent"
-issue.
+Inline::CPP version 0.33_008 is a dev. release.  It adds tests for the new
+class/struct member array grammar feature, and more importantly, moves all
+'require Parse::RecDescent;' code into carefully placed BEGIN{} blocks so that
+it occurs before Inline::C loads.  Inline::C modifies @INC in a way that
+conflicts with the smoke testers' modifications to @INC.  This should fix
+that issue.
 
 The most recent stable release is 0.33.  Releases ending in _xxx are
 experimental/developmental.

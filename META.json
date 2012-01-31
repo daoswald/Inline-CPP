@@ -1,5 +1,5 @@
 {
-   "abstract" : "unknown",
+   "abstract" : "Write Perl subroutines and classes in C++.",
    "author" : [
       "David Oswald <davido@cpan.org>"
    ],
@@ -39,5 +39,5 @@
       }
    },
    "release_status" : "testing",
-   "version" : "0.33_007"
+   "version" : "0.33_008"
 }
