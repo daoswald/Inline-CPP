@@ -1,4 +1,5 @@
 use Test;
+
 BEGIN { plan tests => 10 }
 
 ok(1);

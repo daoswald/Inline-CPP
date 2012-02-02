@@ -33,12 +33,9 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.33_008 is a dev. release.  It adds tests for the new
-class/struct member array grammar feature, and more importantly, moves all
-'require Parse::RecDescent;' code into carefully placed BEGIN{} blocks so that
-it occurs before Inline::C loads.  Inline::C modifies @INC in a way that
-conflicts with the smoke testers' modifications to @INC.  This should fix
-that issue.
+Inline::CPP version 0.33_009 is a dev. release.  It updates PREREQ_PM in
+Makefile.PL to require Inline v0.49_01 to take advantage of a bugfix that
+targets the Parse::RecDescent load failure bug.
 
 The most recent stable release is 0.33.  Releases ending in _xxx are
 experimental/developmental.

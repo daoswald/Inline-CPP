@@ -1,5 +1,10 @@
 Revision history for Perl extension Inline::CPP.
-0.33_008  Mon Jan 30 22:05:00 PST 2011
+0.33_009  Thu Feb 02 10:32:00 PST 2012
+    [Worked out patch between David Oswald and sisyphus]
+    - Roll back early loading of Parse::RecDescent.
+    - Set PREREQ_PM to Inline 0.49_01 to take advantage of recent bugfix.
+    - Bump version number and push to CPAN for fresh round of smoke testing.
+0.33_008  Mon Jan 30 22:05:00 PST 2012
     [Patches by David Oswald]
     - Make sure that Parse::RecDescent loads ahead of Inline::C so that the 
       smoke-testers incompatible @INC modifications won't cause smoke failure.
