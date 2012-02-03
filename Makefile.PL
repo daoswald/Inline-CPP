@@ -28,8 +28,10 @@ END_TEST_CPP
 #============================================================================
 for (sort keys %PREREQ_PM) {
     eval "require $_";
+    my $version = eval ${"${$_}::VERSION"};
+    my $want    = eval $PREREQ_PM{$_};
     warn "Warning: prerequisite $_ version $PREREQ_PM{$_} not found"
-        if $@ or ${"${_}::VERSION"} < $PREREQ_PM{$_};
+        if $@ or $version < $want;
 }
 
 #============================================================================
@@ -169,7 +171,7 @@ WriteMakefile(
     NAME            => 'Inline::CPP',
     AUTHOR          => 'David Oswald <davido@cpan.org>',
     VERSION_FROM    => 'CPP.pm',
-    ABSTRACT_FROM	=> 'lib/Inline/CPP.pod',
+    ABSTRACT_FROM   => 'lib/Inline/CPP.pod',
     PREREQ_PM       => \%PREREQ_PM,
     clean           => {
         FILES           => '_Inline/ grammar/_Inline'

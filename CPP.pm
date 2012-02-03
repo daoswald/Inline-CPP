@@ -32,8 +32,13 @@ my $TYPEMAP_KIND = $Inline::CPP::grammar::TYPEMAP_KIND;
 sub register {
     use Config;
     return {
-        language => 'CPP',
-        aliases => ['cpp', 'C++', 'c++', 'Cplusplus', 'cplusplus', 'CXX', 'cxx'],
+        language    => 'CPP',
+        aliases     => [
+            qw(
+                cpp     C++     Cplusplus   CXX
+                        c++     cplusplus   cxx
+            )
+        ],
         type => 'compiled',
         suffix => $Config{dlext},
        };
