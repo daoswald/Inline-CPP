@@ -1,14 +1,17 @@
-use Test;
-BEGIN { plan tests => 4 }
+
+use Test::More;
+
 
 ok(1);
 
 use Inline CPP => DATA => PREFIX => 'Foo_';
 
-ok(identity("Neil"), "Neil");
-ok(identity(identity("123")), "123");
+is(identity("Neil"), "Neil", "PREFIX resolved." );
+is(identity(identity("123")), "123", "PREFIX resolved in nested calls." );
 
-ok(Foo->new->dummy, "10");
+is(Foo->new->dummy, "10", "PREFIXed object resolves." );
+
+done_testing();
 
 __END__
 __CPP__
