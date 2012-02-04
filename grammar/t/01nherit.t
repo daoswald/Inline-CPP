@@ -1,12 +1,12 @@
-use Test;
-BEGIN { plan tests => 5 }
+use Test::More;
+
 
 use Inline CPP => <<'END';
 
 class Foo {
  public:
-   Foo() { 
- 	secret=0; 
+   Foo() {
+    secret=0;
    }
 
    ~Foo() { }
@@ -32,14 +32,27 @@ END
 ok(1);
 
 # Test Foo
-my $o = new Foo;
-ok($o->get_secret(), 0);
+# my $o = new Foo;
+# ok($o->get_secret(), 0);
+# $o->set_secret(539);
+# ok($o->get_secret(), 539);
+
+my $o = new_ok( 'Foo' );
+is( $o->get_secret(), 0, "Foo: Object getter." );
 $o->set_secret(539);
-ok($o->get_secret(), 539);
+is( $o->get_secret(), 539, "Foo: Object setter." );
+
 
 # Test Bar
-my $p = new Bar(11);
-ok($p->get_secret(), 11);
-$p->set_secret(21);
-ok($p->get_secret(), 42);
+#my $p = new Bar(11);
 
+my $p = new_ok( 'Bar', [ 11 ] );
+is(
+    $p->get_secret(), 11,
+    "Bar: Overrides constructor, inherits accessor from Foo."
+);
+
+$p->set_secret( 21 );
+is( $p->get_secret(), 42, "Bar: Overrides setter." );
+
+done_testing();

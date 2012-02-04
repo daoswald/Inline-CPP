@@ -1,14 +1,14 @@
-use Test;
-BEGIN { plan tests => 3 }
-use Inline CPP;
-use Data::Dumper;
+use Test::More;
 
-my @list = return_list();
-print Dumper \@list;
-ok($list[0], 1);
-ok($list[1], 'Hello?');
-ok($list[2], 15.75);
-# We used to test ok( $list[2], 15.6 ) with a corresponding value in the 
+use Inline CPP;
+
+
+is_deeply(
+    [ return_list() ], [ 1, 'Hello?', '15.75' ],
+    "Return on the stack a list containing an int, a string, and a double."
+);
+
+# We used to test ok( $list[2], 15.6 ) with a corresponding value in the
 # CPP function.  But because .6 cannot be represented in a finite number of
 # binary digits we were getting some inequality test failures.
 # 15.75 is the same as 126/8, which can be represented accurately in base 2.
@@ -16,7 +16,9 @@ ok($list[2], 15.75);
 # correctly, not to test the way a given C++ compiler handles floating point
 # math.
 
-print Dumper return_void();
+is( return_void(), undef, "Void function returns nothing." );
+
+done_testing();
 
 __END__
 __CPP__
@@ -31,5 +33,5 @@ void return_list() {
 }
 
 void return_void() {
-    printf("Hello!\n");
+    printf("# Hello! from return_void()\n");
 }

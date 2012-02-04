@@ -1,12 +1,20 @@
-use Test;
-BEGIN { plan tests => 1 }
+use Test::More;
+
+
 use Inline CPP => <<'END';
 class Foo {
-  public: 
+  public:
     Foo() { }
     ~Foo() { }
 
     virtual const char *get_data_ro() { return "Hello Sally!\n"; }
 };
 END
-ok(Foo->new->get_data_ro, "Hello Sally!\n");
+
+
+is(
+    Foo->new->get_data_ro, "Hello Sally!\n",
+    "Define and invoke virtual function."
+);
+
+done_testing();

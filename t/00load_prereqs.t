@@ -27,4 +27,7 @@ if( exists $INC{'Parse/RecDescent.pm'} ) { # This should never fail.
     diag( "\$INC{'Parse/RecDescent.pm'} => $INC{'Parse/RecDescent.pm'}\n" );
 }
 
+use_ok( 'Config' );
+
+
 done_testing();

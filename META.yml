@@ -3,7 +3,7 @@ abstract: Write Perl subroutines and classes in C++.
 author:
   - 'David Oswald <davido@cpan.org>'
 build_requires:
-  ExtUtils::MakeMaker: 0
+  Test::More: 0.98
 configure_requires:
   ExtUtils::MakeMaker: 0
 dynamic_config: 1

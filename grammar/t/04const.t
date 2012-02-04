@@ -1,5 +1,5 @@
-use Test;
-BEGIN { plan tests => 1 }
+use Test::More;
+
 use Inline CPP => <<'END';
 class Foo {
   public:
@@ -9,4 +9,11 @@ class Foo {
 };
 
 END
-ok(Foo->new->data, "Hello dolly!\n");
+
+
+is(
+    Foo->new->data, "Hello dolly!\n",
+    "Instantiate object and invoke member function returning a const char*"
+);
+
+done_testing();

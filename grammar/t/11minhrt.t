@@ -1,10 +1,38 @@
-use Test;
-BEGIN { plan tests => 3 }
+use Test::More;
+
+
 use Inline CPP;
 
-ok(Parent1->new->do_something, 51);
-ok(Parent2->new->do_another, 17);
-ok(Child->new->yet_another, 3);
+is(
+    Parent1->new->do_something, 51,
+    "Multiple inheritance: First parent instantiated."
+);
+
+is(
+    Parent2->new->do_another, 17,
+    "Multiple inheritance: Second parent instantiated."
+);
+
+is(
+    Child->new->yet_another, 3,
+    "Child inheriting from Parent1, Parent2: instantiate and call own member."
+);
+
+is(
+    Child->new->do_something, 51,
+    "Child inherited member function from Parent1"
+);
+
+TODO: {
+
+    local $TODO = "Inherited method call resolution finding wrong method.";
+    is(
+        Child->new->do_another(), 17,
+        "Child inherited member function from Parent2"
+    );
+}
+
+done_testing();
 
 __END__
 __CPP__

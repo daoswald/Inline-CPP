@@ -1,13 +1,13 @@
-use Test;
-BEGIN { plan tests => 2 }
+use Test::More;
+
 use Inline CPP => <<'END';
 
 class Abstract {
   public:
     virtual char *text() = 0;
-    virtual int greet(char *name) { 
-	printf("Hello, %s\n", name); 
-	return 17; 
+    virtual int greet(char *name) {
+        printf("# Hello, %s.\n", name);
+        return 17;
     }
 };
 
@@ -20,6 +20,15 @@ class Impl : public Abstract {
 
 END
 
-my $o = new Impl;
-ok($o->text, 'Hello from Impl!');
-ok($o->greet('Neil'), 17);
+my $o = new_ok( 'Impl' );
+is(
+    $o->text, 'Hello from Impl!',
+    "Pure virtual from self."
+);
+
+is(
+    $o->greet('Neil'), 17,
+    "Inherited from parent."
+);
+
+done_testing();
