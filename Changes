@@ -1,4 +1,8 @@
 Revision history for Perl extension Inline::CPP.
+0.33_010  Fri Feb 03 23:45:00 PST 2012
+    [Patch applied by David Oswald]
+    - Update Makefile.PL to set v0.49_02 as the minimum Inline and Inline::C
+      dependency versions to further evalute smoke-tests.
 0.33_009  Thu Feb 02 10:32:00 PST 2012
     [Worked out patch between David Oswald and sisyphus]
     - Roll back early loading of Parse::RecDescent.
@@ -6,25 +10,25 @@ Revision history for Perl extension Inline::CPP.
     - Bump version number and push to CPAN for fresh round of smoke testing.
 0.33_008  Mon Jan 30 22:05:00 PST 2012
     [Patches by David Oswald]
-    - Make sure that Parse::RecDescent loads ahead of Inline::C so that the 
+    - Make sure that Parse::RecDescent loads ahead of Inline::C so that the
       smoke-testers incompatible @INC modifications won't cause smoke failure.
-    - Add 17memberarray.t to the test suite to validate the new code that 
+    - Add 17memberarray.t to the test suite to validate the new code that
       allows Inline::CPP to recognize arrays as class/struct data members.
-0.33_007  Sun Jan 29 20:35:00 PST 2011
+0.33_007  Sun Jan 29 20:35:00 PST 2012
     [Test suite patches by David Oswald]
     - If 00load_prereqs.t does successfully load Parse::RecDescent (which it
       always seems to do), output the location it was found so it can be
       compared to @INC.
-0.33_006  Sun Jan 22 05:59:00 PST 2011
+0.33_006  Sun Jan 22 05:59:00 PST 2012
     *** NEVER RELEASED ***
     [Patches by David Oswald]
     - Set 00load_prereqs.t to BAIL_OUT if Parse::RecDescent can't be found.
     - Tweaks to the distribution framework.
-0.33_005  Sat Jan 21 00:36:00 PST 2011
+0.33_005  Sat Jan 21 00:36:00 PST 2012
     [Added suggestion from sisyphus]
     - Created a 00load_prereqs.t test to provide better diagnostics when
       confronted with the "Unable to find Parse::RecDescent" error.
-0.33_004  Wed Jan 11 18:16:00 GMT+8 2011 (Manila)
+0.33_004  Wed Jan 11 18:16:00 GMT+8 2012 (Manila)
     [Patches pushed out by David Oswald]
     - Developer release
     - Tweaked compiler flags for Microsoft compilers (per sisyphus)
