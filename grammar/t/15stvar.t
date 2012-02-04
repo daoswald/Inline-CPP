@@ -1,6 +1,6 @@
-use Test;
+use Test::More;
 # Test static variables
-BEGIN { plan tests => 1 }
+
 use Inline CPP => <<'END';
 class Foo {
   public:
@@ -14,4 +14,10 @@ class Foo {
 int Foo::s_thing = 10;
 
 END
-ok(Foo->new->get_thing, 10);
+
+is(
+    Foo->new->get_thing, 10,
+    "Static variables within a class."
+);
+
+done_testing();

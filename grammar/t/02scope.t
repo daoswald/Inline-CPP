@@ -1,18 +1,24 @@
-use Test;
-BEGIN { plan tests => 2; }
+use Test::More;
+
 use Inline CPP => <<'END';
 
 class Foo {
    void priv(int a) { q = a; }
    int q;
 public:
-   Foo() {} 
+   Foo() {}
    ~Foo() {}
    void zippo(int quack) { printf("Hello, world!\n"); }
 };
 
 END
 
-ok(1);
-Foo->new->zippo(10);
-ok(2);
+my $obj = new_ok( 'Foo' );
+
+can_ok( $obj, 'zippo' );
+
+is( $obj->zippo( 10 ), undef, "Execute void public member function." );
+
+ok( ! $obj->can( 'priv' ), "Can't access private member function." );
+
+done_testing();

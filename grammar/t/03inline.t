@@ -1,16 +1,20 @@
-use Test;
-BEGIN { plan tests => 2 }
+use Test::More;
 
-use Inline CPP; 
+
+use Inline CPP;
 use strict;
 
-my $obj = new Color;
-ok(ref $obj, 'main::Color');
+my $obj = new_ok( 'Color' );
+
 
 $obj->set_color(15);
-print $obj->get_color, "\n";
 
-ok($obj->get_color, 15);
+is(
+    $obj->get_color, 15,
+    "Member function defined inline within class."
+);
+
+done_testing();
 
 __END__
 __CPP__
@@ -20,7 +24,7 @@ void prn() {
 
 class Color {
  public:
-  Color() 
+  Color()
   {
     printf("new Color object created...\n");
   }
@@ -30,7 +34,7 @@ class Color {
     printf("Color object being destroyed...\n");
   }
 
-  int get_color() 
+  int get_color()
   {
     printf("Color::get_color called. Returning %i\n", color);
     return color;
@@ -45,5 +49,3 @@ class Color {
  private:
   int color;
 };
-
-
