@@ -31,20 +31,15 @@ END
 # If it works, it will print this. Otherwise it won't.
 ok(1);
 
-# Test Foo
-# my $o = new Foo;
-# ok($o->get_secret(), 0);
-# $o->set_secret(539);
-# ok($o->get_secret(), 539);
-
+# Test Foo.
 my $o = new_ok( 'Foo' );
 is( $o->get_secret(), 0, "Foo: Object getter." );
 $o->set_secret(539);
 is( $o->get_secret(), 539, "Foo: Object setter." );
 
 
-# Test Bar
-#my $p = new Bar(11);
+# Test Bar.
+
 
 my $p = new_ok( 'Bar', [ 11 ] );
 is(
