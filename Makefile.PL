@@ -173,6 +173,9 @@ WriteMakefile(
     VERSION_FROM    => 'CPP.pm',
     ABSTRACT_FROM   => 'lib/Inline/CPP.pod',
     PREREQ_PM       => \%PREREQ_PM,
+    BUILD_REQUIRES  => {
+        'Test::More'    => '0.98',
+    },
     clean           => {
         FILES           => '_Inline/ grammar/_Inline'
     },
