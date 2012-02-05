@@ -2,8 +2,8 @@ use ExtUtils::MakeMaker;
 use Config;
 
 my %PREREQ_PM = (
-    'Inline'            => '0.49_01',
-    'Inline::C'         => '0.49_01',
+    'Inline'            => '0.49_02',
+    'Inline::C'         => '0.49_02',
     'Parse::RecDescent' => '0',
 );
 
@@ -28,10 +28,10 @@ END_TEST_CPP
 #============================================================================
 for (sort keys %PREREQ_PM) {
     eval "require $_";
-    my $version = eval ${"${$_}::VERSION"};
-    my $want    = eval $PREREQ_PM{$_};
+    my $have = eval ${"${$_}::VERSION"};
+    my $want = eval $PREREQ_PM{$_};
     warn "Warning: prerequisite $_ version $PREREQ_PM{$_} not found"
-        if $@ or $version < $want;
+        if $@ or $have < $want;
 }
 
 #============================================================================
