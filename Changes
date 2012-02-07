@@ -1,6 +1,14 @@
 Revision history for Perl extension Inline::CPP.
+0.34 Mon Feb 06 22:32:00 PST 2012
+    - Carry all updates current in 0.33_010(Dev) to 0.34(Stable) for release
+      to CPAN.
+    - Set minimum version for Inline and Inline::C dependency to 0.50 to 
+      take advantage of Inline patch that resolves the issue where smoke
+      testers were unable to locate Parse::RecDescent dependency.
+    - POD revisions.
 0.33_010  Fri Feb 03 23:45:00 PST 2012
     [Patch applied by David Oswald]
+    *** NEVER RELEASED ***
     - Update Makefile.PL to set v0.49_02 as the minimum Inline and Inline::C
       dependency versions to further evalute smoke-tests.
 0.33_009  Thu Feb 02 10:32:00 PST 2012

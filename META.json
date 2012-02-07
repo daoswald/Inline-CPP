@@ -32,12 +32,12 @@
       },
       "runtime" : {
          "requires" : {
-            "Inline" : "0.49_02",
-            "Inline::C" : "0.49_02",
+            "Inline" : "0.50",
+            "Inline::C" : "0.50",
             "Parse::RecDescent" : 0
          }
       }
    },
-   "release_status" : "testing",
-   "version" : "0.33_010"
+   "release_status" : "stable",
+   "version" : "0.34"
 }

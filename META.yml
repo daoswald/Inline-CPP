@@ -1,5 +1,5 @@
 ---
-abstract: Write Perl subroutines and classes in C++.
+abstract: 'Write Perl subroutines and classes in C++.'
 author:
   - 'David Oswald <davido@cpan.org>'
 build_requires:
@@ -18,7 +18,7 @@ no_index:
     - t
     - inc
 requires:
-  Inline: 0.49_02
-  Inline::C: 0.49_02
+  Inline: 0.50
+  Inline::C: 0.50
   Parse::RecDescent: 0
-version: 0.33_010
+version: 0.34

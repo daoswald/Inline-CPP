@@ -2,8 +2,8 @@ use ExtUtils::MakeMaker;
 use Config;
 
 my %PREREQ_PM = (
-    'Inline'            => '0.49_02',
-    'Inline::C'         => '0.49_02',
+    'Inline'            => '0.50',
+    'Inline::C'         => '0.50',
     'Parse::RecDescent' => '0',
 );
 
