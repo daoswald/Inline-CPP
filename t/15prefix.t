@@ -6,8 +6,8 @@ ok(1);
 
 use Inline CPP => DATA => PREFIX => 'Foo_';
 
-is(identity("Neil"), "Neil", "PREFIX resolved." );
-is(identity(identity("123")), "123", "PREFIX resolved in nested calls." );
+is(identity( 100 ), 100, "PREFIX resolved." );
+is(identity(identity( 200 )), 200, "PREFIX resolved in nested calls." );
 
 is(Foo->new->dummy, "10", "PREFIXed object resolves." );
 
@@ -20,5 +20,5 @@ struct Foo {
   int dummy() { return 10; }
 };
 
-char *Foo_identity(char *in) { return in; }
+int Foo_identity( int in ) { return in; }
 

@@ -5,26 +5,9 @@ use warnings;
 
 use Test::More;
 
-use Inline 'C++' => <<END;
+use Inline CPP => 'DATA';
 
-class CStrTest {
-    public:
-        CStrTest( char* a );
-        char* get_name();
-    private:
-        char* x;
-};
-
-CStrTest::CStrTest( char* a ) {
-   x = a;
-}
-
-char* CStrTest::get_name() {
-    return x;
-}
-
-END
-
+# Test verifying classes that store member c-string.
 
 note( 'Subtest: Testing object instantiated by Class->new() syntax.' );
 
@@ -40,25 +23,63 @@ subtest 'Object instantiated with Class->new() syntax.' => sub {
 
 };
 
+note(
+    'Subtest: Testing object instantiated by ' .
+    'Test::More::new_ok() syntax.'
+);
 
-TODO: {
+subtest 'Object instantiated with new_ok().' => sub {
+    plan tests => 4;
 
-    local $TODO = 'Tests on new_ok() objects fail. Still investigating why.';
-
-    note(
-        'Subtest: Testing object instantiated by ' .
-        'Test::More::new_ok() syntax.'
-    );
-
-    subtest 'Object instantiated with new_ok().' => sub {
-        plan tests => 4;
-
-        my $obj1 = new_ok( 'CStrTest', [ 'Mickey' ], '$obj1' );
-        my $obj2 = new_ok( 'CStrTest', [ 'Donald' ], '$obj2' );
-        is( $obj1->get_name, 'Mickey', "get_name on \$obj1 (Mickey)" );
-        is( $obj2->get_name, 'Donald', "get_name on \$obj2 (Donald)" );
-    };
-
-}
+    my $obj1 = new_ok( 'CStrTest', [ 'Mickey' ], '$obj1' );
+    my $obj2 = new_ok( 'CStrTest', [ 'Donald' ], '$obj2' );
+    is( $obj1->get_name, 'Mickey', "get_name on \$obj1 (Mickey)" );
+    is( $obj2->get_name, 'Donald', "get_name on \$obj2 (Donald)" );
+};
 
 done_testing();
+
+
+__DATA__
+__CPP__
+
+class CStrTest {
+    public:
+        CStrTest( char* a );
+        ~CStrTest() { delete[] x; }
+        char* get_name();
+    private:
+        size_t cslen( char *cs );
+        char* cscopy( char *cs );
+        char* x;
+};
+
+CStrTest::CStrTest( char* a ) {
+    char* copy = cscopy( a );
+    x = copy;
+}
+
+char* CStrTest::get_name() {
+    return x;
+}
+
+size_t CStrTest::cslen( char *cs )
+{
+    size_t len = 0;
+    while( *cs++ )
+        len++;
+    len += 1;
+    return len;
+}
+
+char* CStrTest::cscopy ( char *cs )
+{
+    char *copy = 0;
+    char *head = 0;
+    size_t len = cslen( cs );
+    copy = head = new char[ len ];
+    while( *cs )
+        *head++ = *cs++;
+    *head = 0;
+    return copy;
+}

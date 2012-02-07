@@ -1,5 +1,5 @@
 use Test::More;
-# Test declarations of multiple variables in a list
+# Test declarations of multiple variables in a member data list.
 
 use Inline CPP => <<'END';
 

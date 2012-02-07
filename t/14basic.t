@@ -1,21 +1,8 @@
 use Test::More;
 
-ok(1);
-
-my $obj1 = Soldier->new( 'Benjamin', 'Private', 11111 );
-isa_ok( $obj1, 'Soldier' );
-
-my $obj2 = Soldier->new( 'Sanders', 'Colonel', 22222 );
-isa_ok( $obj2, 'Soldier' );
-
-my $obj3 = Soldier->new( 'Matt', 'Sergeant', 33333 );
-isa_ok( $obj3, 'Soldier' );
-
-for my $obj ($obj1, $obj2, $obj3) {
-   note  $obj->get_serial, ") ",
-         $obj->get_name, " is a ",
-         $obj->get_rank, "\n";
-}
+my $obj1 = new_ok( 'Soldier', [ 'Benjamin', 'Private', 11111 ] );
+my $obj2 = new_ok( 'Soldier', [ 'Sanders', 'Colonel', 22222 ] );
+my $obj3 = new_ok( 'Soldier', [ 'Matt', 'Sergeant', 33333 ] );
 
 is( $obj1->get_serial, 11111,      "get_serial() on Priave Benjamin." );
 is( $obj1->get_name,   'Benjamin', "get_name() on Private Benjamin."  );
@@ -34,22 +21,25 @@ is( $obj3->get_rank,   'Sergeant', "get_rank() on Sergeant Matt."    );
 use Inline 'C++' => <<END;
 
 class Soldier {
- public:
-  Soldier(char *name, char *rank, int serial);
+  public:
+    Soldier( char *name, char *rank, int serial );
+    ~Soldier() { delete[] name; delete[] rank; }
 
-  char *get_name();
-  char *get_rank();
-  int get_serial();
+    char *get_name();
+    char *get_rank();
+    int get_serial();
 
  private:
-  char *name;
-  char *rank;
-  int serial;
+    size_t cslen( char *cs );
+    char* cscopy( char *cs );
+    char *name;
+    char *rank;
+    int serial;
 };
 
 Soldier::Soldier(char *name, char *rank, int serial) {
-   this->name = name;
-   this->rank = rank;
+   this->name = cscopy( name );
+   this->rank = cscopy( rank );
    this->serial = serial;
 }
 
@@ -63,6 +53,27 @@ char *Soldier::get_rank() {
 
 int Soldier::get_serial() {
     return serial;
+}
+
+size_t Soldier::cslen( char *cs )
+{
+    size_t len = 0;
+    while( *cs++ )
+        len++;
+    len += 1;
+    return len;
+}
+
+char* Soldier::cscopy ( char *cs )
+{
+    char *copy = 0;
+    char *head = 0;
+    size_t len = cslen( cs );
+    copy = head = new char[ len ];
+    while( *cs )
+        *head++ = *cs++;
+    *head = 0;
+    return copy;
 }
 
 END
