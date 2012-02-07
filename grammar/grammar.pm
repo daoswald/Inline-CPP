@@ -4,7 +4,7 @@ use strict;
 use vars qw($TYPEMAP_KIND $VERSION $class_part $class_decl $star);
 
 # Dev versions will have a _0xx suffix.
-$VERSION = '0.33_010';
+$VERSION = '0.34';
 $VERSION = eval $VERSION;  # To accommodate dev version numbers.
 
 # Parse::RecDescent 1.90 and later have an incompatible change

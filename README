@@ -33,17 +33,15 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.33_010 is a dev. release.  It updates PREREQ_PM in
-Makefile.PL to require Inline v0.49_02 to take advantage of a bugfix that
-targets the Parse::RecDescent load failure bug.
-
-The most recent stable release is 0.33.  Releases ending in _xxx are
-experimental/developmental.
+Inline::CPP version 0.34 is a stable release.  There have been numerous bug
+fixes since 0.33, mostly targeting installation and smoke test success.
+Please refer to the Changes file in this distribution for a description of the
+revisions since the previous stable release.
 
 -----------------------------------------------------------------------------
 INSTALLATION:
 
-This module requires Inline::C.pm version 0.49 or higher to be installed.
+This module requires Inline::C.pm version 0.50 or higher to be installed.
 It also uses Parse::RecDescent.
 
 To install Inline::CPP do this:
@@ -56,19 +54,9 @@ make install
 (On ActivePerl for MSWin32, use nmake instead of make.)
 (On Strawberry Perl you may use dmake instead.)
 
-You have to 'make install' before you can run it successfully.
-You will be prompted for what C++ compiler and library to use.  Accepting
-the default should work in nearly every case (and if it doesn't, let me know).
-
-*** A note about pre-requisites: Parse::RecDescent ***
-
-Some smoke testers are reporting that the automated install tools such as
-'cpan' and CPANPLUS are not properly installing the prerequisite
-Parse::RecDescent.  If you see the Inline::CPP test suite failing with a
-message about Parse::RecDescent, try installing that module first,
-independently of Inline::CPP.  Then Inline::CPP should install cleanly as
-documented above.
-
+As Makefile.PL runs you will be prompted for what C++ compiler and library to 
+use.  Accepting the default should work in nearly every case (and if it 
+doesn't, let me know).
 
 -----------------------------------------------------------------------------
 INFORMATION:
@@ -84,4 +72,4 @@ inline-subscribe@perl.org to subscribe.
 
 Please send questions and comments to "David Oswald" <DAVIDO@cpan.org>
 
-Copyright (c) 2003, Neil Watkiss. All Rights Reserved.
+Copyright (c) 2003 - 2012, Neil Watkiss, David Oswald. All Rights Reserved.
