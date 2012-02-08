@@ -1,4 +1,5 @@
-# Break object instantiation such that accessors fetch bad data.
+# By copying cstring input param we become impervious to string pointers
+# passed as params becoming invalidated if input string falls out of scope.
 
 use strict;
 use warnings;
@@ -29,6 +30,10 @@ note(
 );
 
 subtest 'Object instantiated with new_ok().' => sub {
+    # The anonymous array ref falls out of scope after the call; pointer
+    # to input param becomes invalidated.  This is why we must make a copy
+    # of char * input (if we want it to live on after the constructor
+    # exits.
     plan tests => 4;
 
     my $obj1 = new_ok( 'CStrTest', [ 'Mickey' ], '$obj1' );

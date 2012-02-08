@@ -84,21 +84,21 @@ sub grammar {
       {
     sub handle_class_def {
          my ($thisparser, $def) = @_;
-#         print "Found a class: $def->[0]\n";
+         print "Found a class: $def->[0]\n";   #####
          my $class = $def->[0];
          my @parts;
          for my $part (@{$def->[1]}) { push @parts, @$_ for @$part }
          push @{$thisparser->{data}{classes}}, $class
            unless defined $thisparser->{data}{class}{$class};
          $thisparser->{data}{class}{$class} = \@parts;
-#    print "Class $class:\n", Dumper \@parts;
+    print "Class $class:\n", Dumper \@parts;    #####
      Inline::CPP::grammar::typemap($thisparser, $class);
          [$class, \@parts];
     }
     sub handle_typedef {
          my ($thisparser, $t) = @_;
          my ($name, $type) = @{$t}{qw(name type)};
-#         print "found a typedef: $name => $type\n";
+         print "found a typedef: $name => $type\n"; #####
 
          # XXX: this doesn't handle non-class typedefs that we could handle,
          # e.g. "typedef int my_int_t"
@@ -138,7 +138,7 @@ part: comment
       }
     | function_def
       {
-#         print "found a function: $item[1]->{name}\n";
+         print "found a function: $item[1]->{name}\n"; #####
          my $name = $item[1]->{name};
      my $i=0;
      for my $arg (@{$item[1]->{args}}) {
@@ -149,7 +149,7 @@ part: comment
      push @{$thisparser->{data}{functions}}, $name
            unless defined $thisparser->{data}{function}{$name};
      $thisparser->{data}{function}{$name} = $item[1];
-#    print Dumper $item[1];
+    print Dumper $item[1];  #####
      1;
       }
     | all
@@ -222,7 +222,7 @@ class_decl: comment { [{thing => 'comment'}] }
           | method_def
         {
               $item[1]->{thing} = 'method';
-#         print "class_decl found a method: $item[1]->{name}\n";
+         print "class_decl found a method: $item[1]->{name}\n";  #####
           my $i=0;
           for my $arg (@{$item[1]->{args}}) {
         $arg->{name} = 'dummy' . ++$i unless defined $arg->{name};
@@ -233,7 +233,7 @@ class_decl: comment { [{thing => 'comment'}] }
         }
           | member_def
         {
-#         print "class_decl found one or more members:\n", Dumper(\@item);
+         print "class_decl found one or more members:\n", Dumper(\@item); #####
               $_->{thing} = 'member' for @{$item[1]};
           $item[1];
         }
@@ -261,18 +261,18 @@ function_def: operator <commit> ';'
 
 method_def: operator <commit> method_imp
             {
-#               print "method operator:\n", Dumper $item[1];
+               print "method operator:\n", Dumper $item[1]; #####
                $item[1];
             }
 
           | IDENTIFIER '(' <commit> <leftop: arg ',' arg>(s?) ')' method_imp
             {
-#         print "con-/de-structor found: $item[1]\n";
+         print "con-/de-structor found: $item[1]\n";    #####
               {name => $item[1], args => $item{__DIRECTIVE2__}, abstract => ${$item{method_imp}} };
             }
           | rtype IDENTIFIER '(' <leftop: arg ',' arg>(s?) ')' method_imp
             {
-#         print "method found: $item[2]\n";
+         print "method found: $item[2]\n";  #####
           $return =
                 {name => $item[2], rtype => $item[1], args => $item[4],
              abstract => ${$item[6]},
@@ -283,7 +283,7 @@ method_def: operator <commit> method_imp
 
 operator: rtype(?) 'operator' /\(\)|[^()]+/ '(' <leftop: arg ',' arg>(s?) ')'
           {
-#            print "Found operator: $item[1][0] operator $item[3]\n";
+            print "Found operator: $item[1][0] operator $item[3]\n";    #####
             {name=> "operator $item[3]", args => $item[5], ret => $item[1][0]}
           }
 
@@ -307,7 +307,7 @@ member_def: anytype <leftop: var ',' var> ';'
           for my $def (@{$item[2]}) {
               my $type = join '', $item[1], @{$def->[0]};
           my $name = $def->[1];
-#             print "member found: type=$type, name=$name\n";
+             print "member found: type=$type, name=$name\n";    #####
           push @retval, { name => $name, type => $type };
           }
           \@retval;
@@ -319,14 +319,14 @@ var: star(s?) IDENTIFIER '=' expr { [@item[1,2]] }
 
 arg: type IDENTIFIER '=' expr
      {
-#       print "argument $item{IDENTIFIER} found\n";
-#       print "expression: $item{expr}\n";
+       print "argument $item{IDENTIFIER} found\n";  #####
+       print "expression: $item{expr}\n";           #####
     {type => $item[1], name => $item{IDENTIFIER}, optional => 1,
      offset => $thisoffset}
      }
    | type IDENTIFIER
      {
-#       print "argument $item{IDENTIFIER} found\n";
+       print "argument $item{IDENTIFIER} found\n";  #####
        {type => $item[1], name => $item{IDENTIFIER}, offset => $thisoffset}
      }
    | type { {type => $item[1]} }
@@ -346,7 +346,7 @@ ident_part: /[~_a-z]\w*/i '<' <commit> <leftop: IDENTIFIER ',' IDENTIFIER>(s?) '
 IDENTIFIER: <leftop: ident_part '::' ident_part>
         {
               my $x = join '::', @{$item[1]};
-#              print "IDENTIFIER: $x\n";
+              print "IDENTIFIER: $x\n";     #####
               $x
         }
 
@@ -434,7 +434,7 @@ code_block: /$Inline::CPP::grammar::code_block/
 # Consume expressions
 expr: <leftop: subexpr OP subexpr> {
     my $o = join '', @{$item[1]};
-#   print "expr: $o\n";
+   print "expr: $o\n";  #####
     $o;
 }
 subexpr: /$Inline::CPP::grammar::funccall/ # Matches a macro, too
