@@ -3,7 +3,7 @@ use Test::More;
 use strict;
 use warnings;
 
-use Inline CPP;
+use Inline CPP => 'DATA';
 
 # Test 1.
 is(
