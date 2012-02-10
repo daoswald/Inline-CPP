@@ -1,6 +1,8 @@
 use ExtUtils::MakeMaker;
 use Config;
 
+use strict;
+
 my %PREREQ_PM = (
     'Inline'            => '0.50',
     'Inline::C'         => '0.50',
@@ -28,13 +30,9 @@ END_TEST_CPP
 #============================================================================
 for (sort keys %PREREQ_PM) {
     eval "require $_";
-    print "before eval: \$have = ", ${"${$_}::VERSION"}, "\n";
-    print "before eval: \$want = ", $PREREQ_PM{$_}, "\n";
-    my $have = eval ${"${$_}::VERSION"};
+    my $have = eval 'no strict q/refs/; ${"${_}::VERSION"}';
+    use strict q/refs/;
     my $want = eval $PREREQ_PM{$_};
-    print "after eval: \$have = ", ${"${$_}::VERSION"}, "\n";
-    print "after eval: \$want = ", $PREREQ_PM{$_}, "\n";
-
     warn "Warning: prerequisite $_ version $PREREQ_PM{$_} not found."
         if $@ or $have < $want;
 }
