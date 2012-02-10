@@ -28,9 +28,14 @@ END_TEST_CPP
 #============================================================================
 for (sort keys %PREREQ_PM) {
     eval "require $_";
+    print "before eval: \$have = ", ${"${$_}::VERSION"}, "\n";
+    print "before eval: \$want = ", $PREREQ_PM{$_}, "\n";
     my $have = eval ${"${$_}::VERSION"};
     my $want = eval $PREREQ_PM{$_};
-    warn "Warning: prerequisite $_ version $PREREQ_PM{$_} not found"
+    print "after eval: \$have = ", ${"${$_}::VERSION"}, "\n";
+    print "after eval: \$want = ", $PREREQ_PM{$_}, "\n";
+
+    warn "Warning: prerequisite $_ version $PREREQ_PM{$_} not found."
         if $@ or $have < $want;
 }
 
@@ -66,7 +71,10 @@ elsif ($Config{osname} eq 'darwin'){
         "-L$stdcpp -lstdc++";
 }
 elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
-    if ($Config{cc} eq 'gcc') {
+    if (
+        $Config{cc} eq 'gcc' ||
+        ( exists( $Config{gccversion} ) && defined( $Config{gccversion} ) )
+    ) {
         $cc_guess = 'g++';
         $libs_guess = '-lstdc++';
     }
@@ -171,7 +179,7 @@ WriteMakefile(
     NAME            => 'Inline::CPP',
     AUTHOR          => 'David Oswald <davido@cpan.org>',
     VERSION_FROM    => 'CPP.pm',
-    ABSTRACT_FROM	=> 'lib/Inline/CPP.pod',
+    ABSTRACT_FROM   => 'lib/Inline/CPP.pod',
     PREREQ_PM       => \%PREREQ_PM,
     clean           => {
         FILES           => '_Inline/ grammar/_Inline'
