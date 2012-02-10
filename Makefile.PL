@@ -71,12 +71,15 @@ elsif ($Config{osname} eq 'darwin'){
 elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
     if (
         $Config{cc} eq 'gcc' ||
-        ( exists( $Config{gccversion} ) && defined( $Config{gccversion} ) )
+        ( exists( $Config{gccversion} ) && $Config{gccversion} > 0 )
     ) {
         $cc_guess = 'g++';
         $libs_guess = '-lstdc++';
     }
-    else {
+    elsif( $Config{cc} eq 'cc' ) {
+		$cc_guess = 'cc';
+		$libs_guess = '-lCrun';
+	} else {
         $cc_guess = 'CC';
         $libs_guess ='-lCrun';
     }
