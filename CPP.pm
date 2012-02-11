@@ -62,7 +62,8 @@ sub validate {
               '.any' => 0,
               '.all' => 0,
              };
-    $o->{ILSM}{AUTO_INCLUDE} ||= <<END;
+
+    my $auto_include = <<END;
 #ifndef bool
 #include <%iostream%>
 #endif
@@ -83,22 +84,20 @@ END
 
 # Don't edit this here-doc.  These are set by Makefile.PL.  Override
 # by supplying undefs in an AUTO_INCLUDE configuration.
-my $flavor_defs =  <<END_FLAVOR_DEFINITIONS;
+    my $flavor_defs =  <<END_FLAVOR_DEFINITIONS;
 
 #define __INLINE_CPP_STANDARD_HEADERS 1
 #define __INLINE_CPP_NAMESPACE_STD 1
 
 END_FLAVOR_DEFINITIONS
 
-
     # Prepend the compiler flavor (Standard versus Legacy) #define's
     # to the AUTO_INCLUDE boilerplate.  We prepend because that way
     # it's easy for a user to #undef them in a custom-supplied
     # AUTO_INCLUDE.  May be useful for overriding errant defaults,
     # or testing.
-    $o->{ILSM}{AUTO_INCLUDE} =
-        $flavor_defs . $o->{ILSM}{AUTO_INCLUDE};
 
+    $o->{ILSM}{AUTO_INCLUDE} ||= $flavor_defs . $auto_include;
 
     $o->{ILSM}{PRESERVE_ELLIPSIS} = 0
       unless defined $o->{ILSM}{PRESERVE_ELLIPSIS};
