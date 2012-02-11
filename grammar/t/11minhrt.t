@@ -54,7 +54,7 @@ foreach my $obj_desc ( @object_descriptions ) {
 }
 
 
-note( 'Testing \@Class::ISA trees.' );
+note( 'Testing \@Class::ISA arrays.' );
 is_deeply( \@Parent1::ISA, [ ], "\@Parent1::ISA: No inheritance." );
 is_deeply( \@Parent2::ISA, [ ], "\@Parent2::ISA: No inheritance." );
 TODO: {
