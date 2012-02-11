@@ -16,7 +16,7 @@ is_deeply(
 # correctly, not to test the way a given C++ compiler handles floating point
 # math.
 
-is( return_void(), undef, "Void function returns nothing." );
+is( return_void(), undef, "Void function that returns nothing." );
 
 done_testing();
 
