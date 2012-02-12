@@ -14,7 +14,12 @@ TODO: {
 
     my $rv;
     eval { $rv = myfunc(); };
+    my $eval_result = $@;
     ok( ! $@, 'Call to function with void param type succeeded.' );
+    if( $eval_result ) {
+        chomp $eval_result;
+        diag ( "Test failure reason: [$eval_result]" );
+    }
     is( $rv, 100, 'Function with void param yields expected return value.' );
 
 }
