@@ -1,6 +1,8 @@
 use ExtUtils::MakeMaker;
 use Config;
 
+use strict;
+
 my %PREREQ_PM = (
     'Inline'            => '0.50',
     'Inline::C'         => '0.50',
@@ -28,9 +30,10 @@ END_TEST_CPP
 #============================================================================
 for (sort keys %PREREQ_PM) {
     eval "require $_";
-    my $have = eval ${"${$_}::VERSION"};
+    my $have = eval 'no strict q/refs/; ${"${_}::VERSION"}';
+    use strict q/refs/;
     my $want = eval $PREREQ_PM{$_};
-    warn "Warning: prerequisite $_ version $PREREQ_PM{$_} not found"
+    warn "Warning: prerequisite $_ version $PREREQ_PM{$_} not found."
         if $@ or $have < $want;
 }
 
@@ -66,11 +69,13 @@ elsif ($Config{osname} eq 'darwin'){
         "-L$stdcpp -lstdc++";
 }
 elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
-    if ($Config{cc} eq 'gcc') {
+    if (
+        $Config{cc} eq 'gcc' ||
+        ( exists( $Config{gccversion} ) && $Config{gccversion} > 0 )
+    ) {
         $cc_guess = 'g++';
         $libs_guess = '-lstdc++';
-    }
-    else {
+    } else {
         $cc_guess = 'CC';
         $libs_guess ='-lCrun';
     }
