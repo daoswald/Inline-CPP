@@ -64,35 +64,35 @@ TODO: {
 
 my @method_tests = (
     [
-        $parent1_obj,
-        'Parent1',
+        $parent1_obj,           # Object ref.
+        'Parent1',              # Class name.
         {
-            do_something => 51
+            do_something => 51  # Method call and expected result.
         }
     ],
     [
-        $parent2_obj,
-        'Parent2',
+        $parent2_obj,           # Object ref.
+        'Parent2',              # Class name.
         {
-            do_another   => 17
+            do_another   => 17  # Method call and expected result.
         }
     ],
     [
-        $child_obj,
-        'Child',
+        $child_obj,             # Object ref.
+        'Child',                # Class name.
         {
-            yet_another  => 3,
-            do_something => 51,
-            do_another   => 17,
+            yet_another  => 3,  # Method call and expected result.
+            do_something => 51, # Inherited from Parent1: Call and expected.
+            do_another   => 17, # Inherited from Parent2: Call and expected.
         },
     ],
     [
-        $child2_obj,
-        'Child2',
+        $child2_obj,            # Object ref.
+        'Child2',               # Class name.
         {
-            some_other   => 4,
-            do_something => 51,
-            do_another   => 17
+            some_other   => 4,  # Method call and expected result.
+            do_something => 51, # Inherited from Parent1: Call and expected.
+            do_another   => 17  # Inherited from Parent2: Call and expected.
         }
     ],
 );
@@ -112,6 +112,10 @@ TODO: {
         }
     }
 }
+
+
+# These tests are essentially repeats from code above, but with code that is
+# more transparent to illustrate the issue as clearly as possible.
 
 note( "\n\nPainfully simple so we don\'t miss it this time.\n\n" );
 TODO: {
