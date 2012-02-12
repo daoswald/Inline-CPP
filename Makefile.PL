@@ -79,6 +79,16 @@ elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
         $cc_guess = 'CC';
         $libs_guess ='-lCrun';
     }
+} 
+elsif ($Config{osname} eq 'mirbsd') {
+    my $stdlib_query =
+        'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p ) | head -1';
+    my $stdcpp =
+        `$stdlib_query`; + $stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
+    $cc_guess =
+        'g++';
+    $libs_guess =
+        "-L$stdcpp -lstdc++ -lc -lgcc_s";
 }
 # Sane defaults for other (probably unix-like) operating systems
 else {
