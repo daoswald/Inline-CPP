@@ -84,14 +84,14 @@ sub grammar {
       {
     sub handle_class_def {
          my ($thisparser, $def) = @_;
-         print "Found a class: $def->[0]\n";   #####
+#         print "Found a class: $def->[0]\n";
          my $class = $def->[0];
          my @parts;
          for my $part (@{$def->[1]}) { push @parts, @$_ for @$part }
          push @{$thisparser->{data}{classes}}, $class
            unless defined $thisparser->{data}{class}{$class};
          $thisparser->{data}{class}{$class} = \@parts;
-    print "Class $class:\n", Dumper \@parts;    #####
+#    print "Class $class:\n", Dumper \@parts;
      Inline::CPP::grammar::typemap($thisparser, $class);
          [$class, \@parts];
     }
