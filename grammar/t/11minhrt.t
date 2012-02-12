@@ -3,14 +3,7 @@ use Test::More;
 use strict;
 use warnings;
 
-
-#use Inline CPP               => 'DATA',
-#           FORCE_BUILD       => 1,
-#           BUILD_NOISY       => 1,
-#           CLEAN_AFTER_BUILD => 0;
-
 use Inline CPP => 'DATA';
-
 
 note( 'Instantiating objects.' );
 my @object_descriptions = (
@@ -120,6 +113,45 @@ TODO: {
     }
 }
 
+note( "\n\nPainfully simple so we don\'t miss it this time.\n\n" );
+TODO: {
+    is(
+        $child_obj->yet_another, 3,
+        'Child $obj->yet_another() should return 3.'
+    );
+    is(
+        $child_obj->do_something, 51,
+        'Child $obj->do_something() ' .
+        'inherits from Parent1 and should return 51.'
+    );
+    {
+        local $TODO = 'Inheritance foulup: Calling do_another() but getting' .
+                      ' return value from do_something().';
+        is(
+            $child_obj->do_another, 17,
+            'Child $obj->do_another() ' .
+            'inherits from Parent2, and should return 17.'
+        );
+    }
+    is(
+        $child2_obj->some_other, 4,
+        'Child2 $obj->some_other() should return 4.'
+    );
+    {
+        local $TODO = 'Inheritance foulup: Calling do_something but getting' .
+                      ' return value from do_another().';
+        is(
+            $child2_obj->do_something, 51,
+            'Child2 $obj->do_something() ' .
+            'inherited from Parent1 and should return 51.'
+        );
+    }
+    is(
+        $child2_obj->do_another, 17,
+        'Child2 $obj->do_another() ' .
+        'inherited from Parent2 and should return 17.'
+    );
+}
 done_testing();
 
 __END__
