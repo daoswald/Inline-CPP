@@ -3,7 +3,8 @@ use Test::More;
 use strict;
 use warnings;
 
-use Inline CPP => 'DATA';
+#use Inline CPP => 'DATA';
+use Inline CPP => 'DATA' => CLEAN_AFTER_BUILD => 0;
 
 note( 'Instantiating objects.' );
 my @object_descriptions = (
@@ -157,6 +158,111 @@ TODO: {
     );
 }
 done_testing();
+
+=cut
+
+-------------------- email from Patrick --------------- 
+David,
+
+I'm really no C++ expert, but I think the implementation is not viable
+the way it is. If you create a
+small C++ program that simulates Inline::CPP like this:
+
+#include <stdio.h>
+
+/* Your Child/Parent classes here "as is" */
+
+int main(int argv, char **argc){
+       Child *c = new Child() ;
+       printf("%d\n", c->do_something()) ;
+       printf("%d\n", c->do_another()) ;
+
+       void *x = c ;
+       printf("%d\n", ((Parent1 *)x)->do_something()) ;
+       printf("%d\n", ((Parent2 *)x)->do_another()) ;
+}
+
+I gives the same error:
+51
+17
+51
+51
+
+I think the problem is that you can't cast your pointer to either
+Parent1 or Parent2 depending on
+your needs because the bytes are not overlapped in memory. In the
+definition of the Child object,
+the Parent1 stuff is before the Parent2 stuff. To access the Parent2
+stuff you probably need to
+use an offset on the Child Pointer.
+
+What's happening (I think) is that your are calling do_something()
+both times because both methods
+are at the same byte offset in there respective parent object. If you
+add some member variables in
+one of the Parent object before the method definitions you will
+probably get crashes because the method
+offset will no longer line up. I'm not sure if any of this is clear....
+
+I think the correct way to do this is something like:
+
+       printf("%d\n", ((Child *)x)->Parent1::do_something()) ;
+       printf("%d\n", ((Child *)x)->Parent2::do_another()) ;
+
+but that implies that your Parent functions know about Child, which is
+not good...
+
+Anyways, just some stuff to think about, unfortunately I don't have
+any suggestions for you...
+
+
+Patrick
+
+--------------------------------
+
+Email response from davido/daoswald:
+
+Your explanation was excellent.
+
+What needs to be happening is that, as Child inherits from Parent1 and
+Parent2, the pointer should be cast as a Child type, like in this
+modification of your test:
+
+int main(int argv, char **argc){
+      Child *c = new Child() ;
+      printf("%d\n", c->do_something()) ;
+      printf("%d\n", c->do_another()) ;
+
+      void *x = c ;
+      printf("%d\n", ((Child *)x)->do_something()) ;
+      printf("%d\n", ((Child *)x)->do_another()) ;
+}
+
+...or in more idiomatic C++:
+
+int main() {
+   using std::cout;
+   using std::endl;
+
+   Child *c = new Child() ;
+   cout << c->do_something() << endl;
+   cout << c->do_another()   << endl;
+
+   void *x = c ;
+   cout <<  static_cast< Child* >(x)->do_something() << endl;
+   cout <<  static_cast< Child* >(x)->do_another()   << endl;
+
+   return 0;
+}
+
+Though I'm not much closer to a solution, at least your message
+reminded me that we're dealing with void pointers to objects.  Maybe I
+need to start looking at how and where the casting is being
+accomplished.
+
+------------------------------------
+
+=cut
 
 __END__
 __CPP__
