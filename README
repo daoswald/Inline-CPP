@@ -33,9 +33,9 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.34_001 is a developers release.  This release seeks to
-overcome the smoke test issue for Solaris 2.11 wherein Makefile.PL seems to
-be selecting the wrong default compiler.
+Inline::CPP version 0.34_002 is a developers release.  This release seeks to
+overcome smoke test issues for MirBSD and Darwin systems by more accurately
+detecting and guessing proper compiler and default libraries.
 
 -----------------------------------------------------------------------------
 INSTALLATION:
