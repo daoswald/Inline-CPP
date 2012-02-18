@@ -1,5 +1,6 @@
 use Test::More;
 
+# Testing proper handling of inherited object methods.
 
 use Inline CPP => <<'END';
 

@@ -24,22 +24,12 @@ grammar/t/14const.t
 grammar/t/15stvar.t
 grammar/t/16varlst.t
 grammar/t/17memberarray.t
+grammar/t/18voidparam.t
 lib/Inline/CPP.pod
 t/00load_prereqs.t
-t/01fn_register.t
-t/02fn_validate.t
-t/03fn_info.t
-t/04fn_get_parser.t
-t/05fn_xs_generate.t
-t/06fn_xs_bindings.t
-t/07fn_wrap.t
-t/08fn_call_or_instantiate.t
-t/09fn_const_cast.t
-t/10fn_write_typemap.t
-t/11fn_typeconv.t
-t/12fn_check_type.t
-t/13fn_make_enum.t
-t/14basic.t
-t/15prefix.t
+t/01fn_cans.t
+t/02basic.t
+t/03prefix.t
+t/04charptr.t
 META.yml                                 Module YAML meta-data (added by MakeMaker)
 META.json                                Module JSON meta-data (added by MakeMaker)

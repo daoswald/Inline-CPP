@@ -1,5 +1,7 @@
 use Test::More;
 
+# Testing proper handling of class scopes.
+
 use Inline CPP => <<'END';
 
 class Foo {

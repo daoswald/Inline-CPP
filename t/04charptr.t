@@ -1,3 +1,6 @@
+# Testing proper handling of char* c-strings as params and rv's given C++ 
+# code that correctly copies the values.
+
 # By copying cstring input param we become impervious to string pointers
 # passed as params becoming invalidated if input string falls out of scope.
 

@@ -3,6 +3,14 @@ use Test::More;
 # Test modified from original: Constructor must make copies of the strings
 # passed in as params, otherwise pointers may become invalid.
 
+# Original test passed in strings as char* stored them, and returned them
+# later.  But no copy was made.  That meant that it was possible for the 
+# char* pointer that was being stored as member data could become 
+# invalid, causing wonky behavior (at best).
+
+# The behavior detected was getting improper return values; expecting
+# one name, getting another, for example.  
+
 my $obj1 = new_ok( 'Soldier', [ 'Benjamin', 'Private', 11111 ] );
 my $obj2 = new_ok( 'Soldier', [ 'Sanders', 'Colonel', 22222 ] );
 my $obj3 = new_ok( 'Soldier', [ 'Matt', 'Sergeant', 33333 ] );

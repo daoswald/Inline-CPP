@@ -1,6 +1,8 @@
 
 use Test::More;
 
+# Originally one of these tests was passing char* strings, there's no need
+# to test strings, and doing so adds unnecessary complexity to the test.
 
 ok(1);
 
