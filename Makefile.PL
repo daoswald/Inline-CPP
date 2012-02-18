@@ -42,7 +42,22 @@ for (sort keys %PREREQ_PM) {
 #============================================================================
 my $cc_guess;
 my $libs_guess;
-if ($Config{gccversion} and $Config{cc} =~ m#\bgcc\b[^/]*$# ) {
+
+if ($Config{osname} eq 'darwin'){
+    my $stdlib_query =
+        'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p )';
+    my $stdcpp =
+        `$stdlib_query`; + $stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
+    $cc_guess =
+        'g++';
+    $libs_guess =
+        "-L$stdcpp -lstdc++";
+}
+elsif ( 
+    $Config{osname} ne 'darwin' and 
+    $Config{gccversion} and 
+    $Config{cc} =~ m#\bgcc\b[^/]*$# 
+) {
     ($cc_guess = $Config{cc}) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
     $libs_guess = '-lstdc++';
 }
@@ -58,16 +73,6 @@ elsif ($Config{osname} eq 'cygwin') {
     $cc_guess = 'g++';
     $libs_guess = '-lstdc++';
 }
-elsif ($Config{osname} eq 'darwin'){
-    my $stdlib_query =
-        'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p )';
-    my $stdcpp =
-        `$stdlib_query`; + $stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
-    $cc_guess =
-        'g++';
-    $libs_guess =
-        "-L$stdcpp -lstdc++";
-}
 elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
     if (
         $Config{cc} eq 'gcc' ||
@@ -79,6 +84,16 @@ elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
         $cc_guess = 'CC';
         $libs_guess ='-lCrun';
     }
+} 
+elsif ($Config{osname} eq 'mirbsd') {
+    my $stdlib_query =
+        'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p ) | head -1';
+    my $stdcpp =
+        `$stdlib_query`; + $stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
+    $cc_guess =
+        'g++';
+    $libs_guess =
+        "-L$stdcpp -lstdc++ -lc -lgcc_s";
 }
 # Sane defaults for other (probably unix-like) operating systems
 else {

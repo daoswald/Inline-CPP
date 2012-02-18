@@ -1,4 +1,9 @@
 Revision history for Perl extension Inline::CPP.
+0.34_002 -----------------------------
+    - Patch to Makefile.PL provided by smoke tester Steven Schubiger which
+      allows module to successfully install on MirBSD systems.
+    - Patch to Makefile.PL by Dave Oswald to improve detection of Darwin
+      OS to more accurately guess proper default libraries.
 0.34_001 Thur Feb 09 23:22:00 PST 2012
     - Patched Makefile.PL (as suggested by sisyphus) to better detect proper
       Solaris compiler (targeting Solaris 2.11 bug).
