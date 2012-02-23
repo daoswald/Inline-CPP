@@ -1,0 +1,17 @@
+------------------------------------------------------------------------------
+*....................  TO-DO LIST FOR Inline::CPP  ..........................*
+------------------------------------------------------------------------------
+
+***** In no particular order *****
+
+Test Suite Expansion / Rewrite
+
+Convert extern "C" typename function( ... ) {} to
+        extern "C" {  all functions here. }
+    ( This should improve compatibility with newer compilers. )
+    ( "Linux" issue )
+
+Multi-dimensional arrays as member functions.
+    ( Currently only single dimensional. )
+
+The NetBSD install issue.

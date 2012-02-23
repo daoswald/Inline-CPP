@@ -1,5 +1,10 @@
 Revision history for Perl extension Inline::CPP.
-0.34_002 Fri Feb 17 02:15:00 PST 2012
+0.34_003 -----------------------------
+    - Add check to CPP.pm to avoid a noisy warning about undefined value
+      when user code includes a subroutine with 'void' as param list.
+      (Note: This does NOT add 'void' as a valid param list type.)
+    - POD refinements.
+0.34_002 Thur Feb 16 12:00:00 PST 2012
     - Patch to Makefile.PL provided by smoke tester Steven Schubiger which
       allows module to successfully install on MirBSD systems. Thanks!
     - Patch to Makefile.PL by Dave Oswald to allow successful install for

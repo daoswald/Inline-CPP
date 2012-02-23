@@ -523,8 +523,14 @@ sub typeconv {
     my $ret;
     {
         no strict;
-        $ret =
-            eval qq{qq{$o->{ILSM}{typeconv}{$dir}{$tkind}}};
+        # The conditional avoids uninitialized warnings if user passes
+        # a C++ function with 'void' as param.
+        if( defined( $tkind ) ) {
+            # Even without the conditional this line must remain.
+            $ret = eval qq{qq{$o->{ILSM}{typeconv}{$dir}{$tkind}}};
+        } else {
+            $ret = '';
+        }
     }
     chomp $ret;
     $ret =~ s/\n/\\\n/g if $preproc;
