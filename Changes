@@ -1,5 +1,7 @@
 Revision history for Perl extension Inline::CPP.
-0.34_003 -----------------------------
+0.34_003 Fri Feb 24 08:28:00 PST 2012
+    - Add (untested) code to Makefile.PL to deal with NetBSD so that
+      we can get a clean NetBSD install. EXPERIMENTAL in this version.
     - Add check to CPP.pm to avoid a noisy warning about undefined value
       when user code includes a subroutine with 'void' as param list.
       (Note: This does NOT add 'void' as a valid param list type.)

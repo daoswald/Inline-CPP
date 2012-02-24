@@ -33,9 +33,13 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.34_002 is a developers release.  This release seeks to
-overcome smoke test issues for MirBSD and Darwin systems by more accurately
-detecting and guessing proper compiler and default libraries.
+Inline::CPP version 0.34_003 is an experimental developers release.
+This release seeks to overcome smoke test issues for NetBSD systems
+by more accurately detecting and guessing proper default libraries.
+This NetBSD patch is UNTESTED on NetBSD systems, and therefore considered
+EXPERIMENTAL.  Users interested in a relatively safer "Developers' Release"
+should stick with 0.34_002 for now.  I'm hoping to see smoke tests against
+this version.
 
 -----------------------------------------------------------------------------
 INSTALLATION:
