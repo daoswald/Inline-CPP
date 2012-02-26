@@ -29,12 +29,12 @@ require Parse::RecDescent;
     if( not defined( $stable_version ) ) {
         $stable_version = $Parse::RecDescent::VERSION
     }
-    ($class_part, $class_decl, $star) =
+    ( $class_part, $class_decl, $star ) =
         map {
-            ($stable_version > 1.89)
+            ( $stable_version > 1.89 )
             ? "$_(s?)"
             : $_
-        } qw (class_part class_decl star);
+        } qw ( class_part class_decl star );
 # End our lexical scope.
 }
 
@@ -54,7 +54,7 @@ require Parse::RecDescent;
 # These are all adapted from the output of Damian Conway's excellent
 # Regexp::Common module. In future, Inline::CPP may depend directly on it,
 # but for now I'll just duplicate the code.
-use vars qw($code_block $string $number $parens $funccall);
+use vars qw( $code_block $string $number $parens $funccall );
 #============================================================================
 eval <<'END'; # $RE{balanced}{-parens=>q|{}()[]"'|}
 $code_block = qr'(?-xism:(?-xism:(?:[{](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[}]))|(?-xism:(?-xism:(?:[(](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[)]))|(?-xism:(?-xism:(?:[[](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[]]))|(?-xism:(?!)))))';
@@ -496,16 +496,16 @@ sub strip_ellipsis {
     my $args = shift;
     return if $parser->{ILSM}{PRESERVE_ELLIPSIS};
     for (my $i=0; $i<@$args; $i++) {
-    next unless $args->[$i]{name} eq '...';
-    # if it's the first one, just strip it
-    if ($i==0) {
-        substr($parser->{ILSM}{code}, $args->[$i]{offset} - 3, 3) = "   ";
-    }
-    else {
-        my $prev = $i - 1;
-        my $prev_offset = $args->[$prev]{offset};
-        my $length = $args->[$i]{offset} - $prev_offset;
-        substr($parser->{ILSM}{code}, $prev_offset, $length) =~ s/\S/ /g;
-    }
+        next unless $args->[$i]{name} eq '...';
+        # if it's the first one, just strip it
+        if ($i==0) {
+            substr($parser->{ILSM}{code}, $args->[$i]{offset} - 3, 3) = "   ";
+        }
+        else {
+            my $prev = $i - 1;
+            my $prev_offset = $args->[$prev]{offset};
+            my $length = $args->[$i]{offset} - $prev_offset;
+            substr($parser->{ILSM}{code}, $prev_offset, $length) =~ s/\S/ /g;
+        }
     }
 }
