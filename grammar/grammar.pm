@@ -1,11 +1,13 @@
-package Inline::CPP::grammar;
+package Inline::CPP::grammar; ## no critic (Package)
 
 use strict;
 use vars qw($TYPEMAP_KIND $VERSION $class_part $class_decl $star);
 
 # Dev versions will have a _0xx suffix.
+# We eval the $VERSION to accommodate dev version numbering as described in
+# perldoc perlmodstyle
 $VERSION = '0.34_003';
-$VERSION = eval $VERSION;  # To accommodate dev version numbers.
+$VERSION = eval $VERSION;  ## no critic (eval)
 
 # Parse::RecDescent 1.90 and later have an incompatible change
 # 'The key of an %item entry for a repeated subrule now includes
@@ -56,12 +58,15 @@ require Parse::RecDescent;
 # but for now I'll just duplicate the code.
 use vars qw( $code_block $string $number $parens $funccall );
 #============================================================================
-eval <<'END'; # $RE{balanced}{-parens=>q|{}()[]"'|}
+
+# $RE{balanced}{-parens=>q|{}()[]"'|}
+eval <<'END'; ## no critic (eval)
 $code_block = qr'(?-xism:(?-xism:(?:[{](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[}]))|(?-xism:(?-xism:(?:[(](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[)]))|(?-xism:(?-xism:(?:[[](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[]]))|(?-xism:(?!)))))';
 END
 $code_block = qr'{[^}]*}' if $@; # For the stragglers: here's a lame regexp.
 
-eval <<'END'; # $RE{balanced}{-parens=>q|()"'|}
+# $RE{balanced}{-parens=>q|()"'|}
+eval <<'END'; ## no critic (eval)
 $parens = qr'(?-xism:(?-xism:(?:[(](?:(?>[^)(]+)|(??{$Inline::CPP::grammar::parens}))*[)]))|(?-xism:(?!)))';
 END
 $parens = qr'\([^)]*\)' if $@; # For the stragglers: here's another
@@ -509,3 +514,5 @@ sub strip_ellipsis {
         }
     }
 }
+
+1;

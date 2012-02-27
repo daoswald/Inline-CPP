@@ -19,8 +19,10 @@ use vars qw(@ISA $VERSION);
 @ISA = qw(Inline::C);
 
 # Development releases will have a _0xx version suffix.
+# We eval the version number to accommodate dev. version numbering, as
+# described in perldoc perlmodstyle.
 $VERSION = '0.34_003';
-$VERSION = eval $VERSION; # To accommodate dev. version numbers.
+$VERSION = eval $VERSION; ## no critic (eval)
 
 
 my $TYPEMAP_KIND = $Inline::CPP::grammar::TYPEMAP_KIND;
@@ -188,7 +190,7 @@ sub info {
                 push @class,
                     join ', ',
                         (
-                            map "$_->{type} $_->{name}", @args
+                            map { "$_->{type} $_->{name}" } @args
                         ),
                         $ellipsis ? "..." : ();
                 push @class, ");\n";
@@ -208,7 +210,7 @@ sub info {
             push @func,
                 join ', ',
                     (
-                        map "$_->{type} $_->{name}", @args
+                        map { "$_->{type} $_->{name}" } @args
                     ),
                     $ellipsis ? "..." : ();
             push @func, ");\n";
@@ -518,9 +520,11 @@ sub write_typemap {
     $typemap .= $_ . "\t"x2 . $TYPEMAP_KIND . "\n"
         for grep { $type_kind->{$_} eq $TYPEMAP_KIND } keys %$type_kind;
     return unless length $typemap;
-    open TYPEMAP, "> $filename"
+    open my $TYPEMAP_FH, '>', $filename
+#    open TYPEMAP, "> $filename"
         or croak "Error: Can't write to $filename: $!";
-    print TYPEMAP <<END;
+#    print TYPEMAP <<END;
+    print $TYPEMAP_FH <<END;
 TYPEMAP
 $typemap
 OUTPUT
@@ -530,7 +534,7 @@ INPUT
 $TYPEMAP_KIND
 $o->{ILSM}{typeconv}{input_expr}{$TYPEMAP_KIND}
 END
-    close TYPEMAP;
+    close $TYPEMAP_FH;
     $o->validate( TYPEMAPS => $filename );
 }
 
@@ -545,12 +549,13 @@ sub typeconv {
     my $tkind = $o->{ILSM}{typeconv}{type_kind}{$type};
     my $ret;
     {
-        no strict;
+#        no strict;
         # The conditional avoids uninitialized warnings if user passes
         # a C++ function with 'void' as param.
         if( defined( $tkind ) ) {
             # Even without the conditional this line must remain.
-            $ret = eval qq{qq{$o->{ILSM}{typeconv}{$dir}{$tkind}}};
+            $ret = eval                                    ## no critic (eval)
+                qq{qq{$o->{ILSM}{typeconv}{$dir}{$tkind}}};
         } else {
             $ret = '';
         }
@@ -577,7 +582,7 @@ sub check_type {
         }
     }
     foreach ( map { $_->{type} } @{ $thing->{args} } ) {
-        s/^(const|\s)+//go;
+        s/^(?:const|\s)+//go;
         if ( $_ ne '...' && !$o->typeconv( '', '', $_, 'input_expr' ) ) {
             $badtype = $_;
             last BADTYPE;
