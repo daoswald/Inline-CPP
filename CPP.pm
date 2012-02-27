@@ -56,9 +56,9 @@ sub validate {
     # properly set from Inline::C's validate().
     $o->{STRUCT} ||= {
               '.macros' => '',
-              '.xs' => '',
-              '.any' => 0,
-              '.all' => 0,
+              '.xs'     => '',
+              '.any'    => 0,
+              '.all'    => 0,
              };
     $o->{ILSM}{AUTO_INCLUDE} ||= <<END;
 #ifndef bool
@@ -106,7 +106,7 @@ END_FLAVOR_DEFINITIONS
 
     # Filter out the parameters we treat differently than Inline::C
     my @propagate;
-    while( @_ ) {
+    while (@_) {
         my ( $key, $value ) = ( shift, shift );
         if ( $key eq 'LIBS' ) {
             $value = [$value] unless ref $value eq 'ARRAY';
@@ -123,10 +123,12 @@ END_FLAVOR_DEFINITIONS
                 for ( @$value );
             next;
         }
-        if ($key eq 'PRESERVE_ELLIPSIS' or
-            $key eq 'STD_IOSTREAM') {
+        if (     $key eq 'PRESERVE_ELLIPSIS'
+             or  $key eq 'STD_IOSTREAM' )
+        {
             croak "Argument to $key must be 0 or 1"
-                unless $value == 0 or $value == 1;
+                unless $value == 0
+                    or $value == 1;
             $o->{ILSM}{$key} = $value;
             next;
         }
@@ -149,8 +151,8 @@ END_FLAVOR_DEFINITIONS
 # Print a small report if PRINT_INFO option is set
 #============================================================================
 sub info {
-    my $o = shift;
-    my $info = "";
+    my $o    = shift;
+    my $info = '';
 
     $o->parse unless $o->{ILSM}{parser};
     my $data = $o->{ILSM}{parser}{data};
@@ -158,16 +160,14 @@ sub info {
     my ( @class, @func );
     if ( defined $data->{classes} ) {
         for my $class ( sort @{ $data->{classes} } ) {
-            my @parents = grep { $_->{thing} eq 'inherits' }
-                @{ $data->{class}{$class} };
+            my @parents =
+                grep { $_->{thing} eq 'inherits' } @{$data->{class}{$class}};
             push @class, "\tclass $class";
             push @class,
-                (
-                    " : " .
-                    join (', ',
-                    map { $_->{scope} . " " . $_->{name} } @parents
-                )
-            ) if @parents;
+                ( ' : '
+                    . join (', ',
+                      map { $_->{scope} . " " . $_->{name} } @parents ) )
+                if @parents;
             push @class, " {\n";
             for my $thing (
                 sort { $a->{name} cmp $b->{name} }
@@ -181,8 +181,8 @@ sub info {
                     $name eq $class,
                     $name eq "~$class",
                 );
-                my $rtype = $thing->{rtype} || "";
-                push @class, "\t\t$rtype" . ( $rtype ? " " : "" );
+                my $rtype = $thing->{rtype} || '';
+                push @class, "\t\t$rtype" . ( $rtype ? ' ' : '' );
                 push @class, $class . "::$name(";
                 my @args = grep { $_->{name} ne '...' } @{$thing->{args}};
                 my $ellipsis =
@@ -192,7 +192,7 @@ sub info {
                         (
                             map { "$_->{type} $_->{name}" } @args
                         ),
-                        $ellipsis ? "..." : ();
+                        $ellipsis ? '...' : ();
                 push @class, ");\n";
             }
             push @class, "\t};\n"
@@ -201,18 +201,16 @@ sub info {
     if ( defined $data->{functions} ) {
         for my $function ( sort @{ $data->{functions} } ) {
             my $func = $data->{function}{$function};
-            next if $function =~ /::/;
+            next if $function =~ m/::/;
             next unless $o->check_type( $func, 0, 0 );
-            push @func, "\t" . $func->{rtype} . " ";
-            push @func, $func->{name} . "(";
+            push @func, "\t" . $func->{rtype} . ' ';
+            push @func, $func->{name} . '(';
             my @args = grep { $_->{name} ne '...' } @{ $func->{args} };
             my $ellipsis = ( scalar @{ $func->{args} } - scalar @args ) != 0;
             push @func,
                 join ', ',
-                    (
-                        map { "$_->{type} $_->{name}" } @args
-                    ),
-                    $ellipsis ? "..." : ();
+                    ( map { "$_->{type} $_->{name}" } @args ),
+                    $ellipsis ? '...' : ();
             push @func, ");\n";
         }
     }
@@ -233,7 +231,7 @@ sub info {
 # Generate a C++ parser
 #============================================================================
 sub get_parser {
-    my $o = shift;
+    my $o       = shift;
     my $grammar = Inline::CPP::grammar::grammar()
         or croak "Can't find C++ grammar\n";
     $::RD_HINT++;
@@ -314,7 +312,7 @@ END
                     $thing->{body}
                 );
             } elsif ( $type eq 'method' ) {
-                next if $name =~ /operator/;
+                next if $name =~ m/operator/;
                 # generate an XS wrapper
                 $ctor ||= ( $name eq $class    );
                 $dtor ||= ( $name eq "~$class" );
@@ -351,8 +349,8 @@ END
         # lose constructor defs outside class decls (and "implicit int")
         next if $data->{function}{$function}{rtype} eq '';
         next if $data->{function}{$function}{rtype} =~ 'static'; # spec'l case
-        next if $function =~ /::/; # XXX: skip member functions?
-        next if $function =~ /operator/; # and operators.
+        next if $function =~ m/::/;       # XXX: skip member functions?
+        next if $function =~ m/operator/; # and operators.
         push @XS, $o->wrap( $data->{function}{$function}, $function );
     }
 
@@ -369,21 +367,21 @@ END
 # Generate an XS wrapper around anything: a C++ method or function
 #============================================================================
 sub wrap {
-    my $o = shift;
+    my $o     = shift;
     my $thing = shift;
-    my $name = shift;
-    my $class = shift || "";
-    my $t = ' ' x 4; # indents in 4-space increments.
+    my $name  = shift;
+    my $class = shift || '';
+    my $t     = ' ' x 4; # indents in 4-space increments.
 
     my ( @XS, @PREINIT, @CODE );
     my ( $ctor, $dtor ) = ( 0, 0 );
 
     if ( $name eq $class ) {  # ctor
-        push @XS, $class . " *\n" . $class . "::new";
+        push @XS, $class . " *\n" . $class . '::new';
         $ctor = 1;
     }
     elsif ( $name eq "~$class" ) { # dtor
-        push @XS, "void\n$class" . "::DESTROY";
+        push @XS, "void\n$class" . '::DESTROY';
         $dtor = 1;
     }
     elsif ( $class ) {        # method
@@ -397,15 +395,16 @@ sub wrap {
 
     # Filter out optional subroutine arguments
     my ( @args, @opts, $ellipsis, $void );
-    $_->{optional} ? push @opts, $_ : push @args, $_ for @{ $thing->{args} };
-    $ellipsis = pop @args if ( @args and $args[-1]{name} eq '...' );
+    $_->{optional} ? push @opts, $_ : push @args, $_
+        for @{ $thing->{args} };
+    $ellipsis = pop @args
+        if ( @args and $args[-1]{name} eq '...' );
     $void = ( $thing->{rtype} and $thing->{rtype} eq 'void' );
     push @XS, join '', (
-        "(",
-        join(
-            ", ",
-            ( map {$_->{name}} @args ),
-            ( scalar @opts or $ellipsis ) ? '...' : ()
+        '(',
+        join( ', ',
+              ( map {$_->{name}} @args ),
+              ( scalar @opts or $ellipsis ) ? '...' : ()
         ),
         ")\n",
     );
@@ -416,30 +415,34 @@ sub wrap {
     # Wrap "complicated" subs in stack-checking code
     if ( $void or $ellipsis ) {
         push @PREINIT, "\tI32 *\t__temp_markstack_ptr;\n";
-        push @CODE, "\t__temp_markstack_ptr = PL_markstack_ptr++;\n";
+        push @CODE,    "\t__temp_markstack_ptr = PL_markstack_ptr++;\n";
     }
 
     if ( @opts ) {
         push @PREINIT, "\t$_->{type}\t$_->{name};\n" for @opts;
-        push @CODE, "switch(items" . ( $class ? '-1' : '' ) . ") {\n";
+        push @CODE,    'switch(items'
+                       . ( $class ? '-1' : '' )
+                       . ") {\n";
 
         my $offset = scalar @args; # which is the first optional?
         my $total = $offset + scalar @opts;
-        for ( my $i=$offset; $i<$total; $i++ ) {
+        for (  my $i = $offset; $i < $total; $i++  ) {
             push @CODE, "case " . ( $i + 1 ) . ":\n";
             my @tmp;
-            for ( my $j=$offset; $j<=$i; $j++ ) {
-                my $targ = $opts[$j-$offset]{name};
-                my $type = $opts[$j-$offset]{type};
+            for (  my $j = $offset; $j <= $i; $j++  ) {
+                my $targ = $opts[ $j - $offset ]{name};
+                my $type = $opts[ $j - $offset ]{type};
                 my $src  = "ST($j)";
                 my $conv = $o->typeconv( $targ,$src,$type,'input_expr' );
                 push @CODE, $conv . ";\n";
-                push @tmp, $targ;
+                push @tmp,  $targ;
             }
             push @CODE, "\tRETVAL = " unless $void;
             push @CODE, call_or_instantiate(
-                $name, $ctor, $dtor, $class, $thing->{rconst},
-                $thing->{rtype}, ( map { $_->{name} } @args ), @tmp
+                $name,                          $ctor,
+                $dtor,                          $class,
+                $thing->{rconst},               $thing->{rtype},
+                ( map { $_->{name} } @args ),   @tmp
             );
             push @CODE, "\tbreak; /* case " . ($i+1) . " */\n";
         }
@@ -454,14 +457,19 @@ sub wrap {
     elsif ( $void ) {
         push @CODE, "\t";
         push @CODE, call_or_instantiate(
-            $name, $ctor, $dtor, $class, 0, '', map { $_->{name} } @args
+            $name,              $ctor,
+            $dtor,              $class,
+            0,                  '',
+            map { $_->{name} } @args
         );
     }
     elsif ( $ellipsis or $thing->{rconst} ) {
         push @CODE, "\t";
-        push @CODE, "RETVAL = ";
+        push @CODE, 'RETVAL = ';
         push @CODE, call_or_instantiate(
-            $name, $ctor, $dtor, $class, $thing->{rconst}, $thing->{rtype},
+            $name,              $ctor,
+            $dtor,              $class,
+            $thing->{rconst},   $thing->{rtype},
             map { $_->{name} } @args
         );
     }
@@ -484,7 +492,7 @@ END
     local $" = '';
     push @XS, "${t}PREINIT:\n@PREINIT" if @PREINIT;
     push @XS, $t;
-    push @XS, "PP" if $void and @CODE;
+    push @XS, 'PP' if $void and @CODE;
     push @XS, "CODE:\n@CODE" if @CODE;
     push @XS, "${t}OUTPUT:\nRETVAL\n" if @CODE and not $void;
     push @XS, "\n";
@@ -492,14 +500,14 @@ END
 }
 
 sub call_or_instantiate {
-    my ( $name, $ctor, $dtor, $class, $const, $type, @args ) = @_;
+    my (  $name,   $ctor,  $dtor,  $class, $const,  $type,  @args  ) = @_;
 
     # Create an rvalue (which might be const-casted later).
     my $rval = '';
-    $rval .= "new "    if $ctor;
-    $rval .= "delete " if $dtor;
-    $rval .= "THIS->"  if ( $class and not ( $ctor or $dtor ) );
-    $rval .= "$name(" . join ( ',', @args ) . ")";
+    $rval .= 'new '    if $ctor;
+    $rval .= 'delete ' if $dtor;
+    $rval .= 'THIS->'  if ( $class and not ( $ctor or $dtor ) );
+    $rval .= "$name(" . join ( ',', @args ) . ')';
 
     return const_cast( $rval, $const, $type ) . ";\n";
 }
@@ -508,16 +516,16 @@ sub const_cast {
     my $value = shift;
     my $const = shift;
     my $type  = shift;
-    return $value unless $const and $type =~ /\*|\&/;
+    return $value unless $const and $type =~ m/\*|\&/;
     return "const_cast<$type>($value)";
 }
 
 sub write_typemap {
-    my $o = shift;
-    my $filename = "$o->{API}{build_dir}/CPP.map";
+    my $o         = shift;
+    my $filename  = "$o->{API}{build_dir}/CPP.map";
     my $type_kind = $o->{ILSM}{typeconv}{type_kind};
-    my $typemap = "";
-    $typemap .= $_ . "\t"x2 . $TYPEMAP_KIND . "\n"
+    my $typemap   = '';
+    $typemap  .=  $_  .  "\t" x 2  .  $TYPEMAP_KIND  .  "\n"
         for grep { $type_kind->{$_} eq $TYPEMAP_KIND } keys %$type_kind;
     return unless length $typemap;
     open my $TYPEMAP_FH, '>', $filename
@@ -540,12 +548,13 @@ END
 
 # Generate type conversion code: perl2c or c2perl.
 sub typeconv {
-    my $o = shift;
-    my $var = shift;
-    my $arg = shift;
-    my $type = shift;
-    my $dir = shift;
-    my $preproc = shift;
+    my( $o, $var, $arg, $type, $dir, $preproc ) = @_;
+#    my $o       = shift;
+#    my $var     = shift;
+#    my $arg     = shift;
+#    my $type    = shift;
+#    my $dir     = shift;
+#    my $preproc = shift;
     my $tkind = $o->{ILSM}{typeconv}{type_kind}{$type};
     my $ret;
     {
@@ -567,8 +576,7 @@ sub typeconv {
 
 # Verify that the return type and all arguments can be bound to Perl.
 sub check_type {
-    my $o = shift;
-    my ( $thing, $ctor, $dtor ) = @_;
+    my ( $o, $thing, $ctor, $dtor ) = @_;
     my $badtype;
 
     # strip "useless" modifiers so the type is found in typemap:
