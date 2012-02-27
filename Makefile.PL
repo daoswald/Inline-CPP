@@ -53,10 +53,10 @@ if ($Config{osname} eq 'darwin'){
     $libs_guess =
         "-L$stdcpp -lstdc++";
 }
-elsif ( 
-    $Config{osname} ne 'darwin' and 
-    $Config{gccversion} and 
-    $Config{cc} =~ m#\bgcc\b[^/]*$# 
+elsif (
+    $Config{osname} ne 'darwin' and
+    $Config{gccversion} and
+    $Config{cc} =~ m#\bgcc\b[^/]*$#
 ) {
     ($cc_guess = $Config{cc}) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
     $libs_guess = '-lstdc++';
@@ -72,7 +72,7 @@ elsif ($Config{osname} eq 'linux') {
 # NetBSD patch...
 elsif( $Config{osname} eq 'netbsd' ) {
     $cc_guess = 'g++';
-    $libs_guess = '-lg++';
+    $libs_guess = '-lstdc++';
 }
 elsif ($Config{osname} eq 'cygwin') {
     $cc_guess = 'g++';
@@ -89,7 +89,7 @@ elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
         $cc_guess = 'CC';
         $libs_guess ='-lCrun';
     }
-} 
+}
 elsif ($Config{osname} eq 'mirbsd') {
     my $stdlib_query =
         'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p ) | head -1';
