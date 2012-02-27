@@ -1,4 +1,4 @@
-
+use strict;
 use Test::More;
 
 # Originally one of these tests was passing char* strings, there's no need

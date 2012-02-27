@@ -1,6 +1,7 @@
+use strict;
 use Test::More;
 
-use Inline CPP;
+use Inline 'CPP';
 
 
 is_deeply(

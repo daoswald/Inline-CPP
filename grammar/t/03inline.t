@@ -1,9 +1,9 @@
+use strict;
 use Test::More;
 
 # Testing proper handling of functions defined inline within a class.
 
-use Inline CPP;
-use strict;
+use Inline 'CPP';
 
 my $obj = new_ok( 'Color' );
 

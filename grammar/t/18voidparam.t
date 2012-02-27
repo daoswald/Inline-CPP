@@ -1,8 +1,8 @@
-
+use strict;
 use Test::More;
 
 BEGIN {
-    eval "use Test::Exception";
+    eval "use Test::Exception"; ## no critic (eval)
     plan(
         skip_all =>
         "Test::Exception not installed: Skipping void param tests."

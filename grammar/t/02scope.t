@@ -1,3 +1,4 @@
+use strict;
 use Test::More;
 
 # Testing proper handling of class scopes.

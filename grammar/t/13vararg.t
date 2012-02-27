@@ -1,6 +1,7 @@
+use strict;
 use Test::More;
 
-use Inline CPP;
+use Inline 'CPP';
 
 is(sum(), 0, "Var-args: 0" );
 is(sum(1), 1, "Var-args: 1" );
