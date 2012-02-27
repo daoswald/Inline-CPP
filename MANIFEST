@@ -5,6 +5,7 @@ MANIFEST.SKIP
 Makefile.PL
 README
 TESTED
+TODO                            Developer's TODO list.
 grammar/grammar.pm
 grammar/Makefile.PL
 grammar/t/01nherit.t
@@ -29,6 +30,7 @@ lib/Inline/CPP.pod
 t/00load_prereqs.t
 t/01fn_cans.t
 t/02basic.t
+t/05pod.t
 t/03prefix.t
 t/04charptr.t
 META.yml                                 Module YAML meta-data (added by MakeMaker)

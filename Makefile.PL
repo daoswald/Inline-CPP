@@ -3,6 +3,14 @@ use Config;
 
 use strict;
 
+# We're using bareword file handles and two arg open for backward
+# compatibility in Makefile.PL.  Here we disable those tests in Perl::Critic.
+
+## no critic (bareword file handle)
+## no critic (two-argument open)
+
+
+
 my %PREREQ_PM = (
     'Inline'            => '0.50',
     'Inline::C'         => '0.50',
@@ -29,7 +37,9 @@ END_TEST_CPP
 # in a way that always fails: 'use Inline::C 0.33' will never work.
 #============================================================================
 for (sort keys %PREREQ_PM) {
+    ## no critic (eval)
     eval "require $_";
+    # We eval version numbers to normalize _xxx dev numbering.
     my $have = eval 'no strict q/refs/; ${"${_}::VERSION"}';
     use strict q/refs/;
     my $want = eval $PREREQ_PM{$_};
@@ -53,10 +63,10 @@ if ($Config{osname} eq 'darwin'){
     $libs_guess =
         "-L$stdcpp -lstdc++";
 }
-elsif ( 
-    $Config{osname} ne 'darwin' and 
-    $Config{gccversion} and 
-    $Config{cc} =~ m#\bgcc\b[^/]*$# 
+elsif (
+    $Config{osname} ne 'darwin' and
+    $Config{gccversion} and
+    $Config{cc} =~ m#\bgcc\b[^/]*$#
 ) {
     ($cc_guess = $Config{cc}) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
     $libs_guess = '-lstdc++';
@@ -66,6 +76,11 @@ elsif ($Config{osname} =~ /^MSWin/) {
     $libs_guess = 'MSVCIRT.LIB';
 }
 elsif ($Config{osname} eq 'linux') {
+    $cc_guess = 'g++';
+    $libs_guess = '-lstdc++';
+}
+# NetBSD patch...
+elsif( $Config{osname} eq 'netbsd' ) {
     $cc_guess = 'g++';
     $libs_guess = '-lstdc++';
 }
@@ -84,7 +99,7 @@ elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
         $cc_guess = 'CC';
         $libs_guess ='-lCrun';
     }
-} 
+}
 elsif ($Config{osname} eq 'mirbsd') {
     my $stdlib_query =
         'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p ) | head -1';
@@ -156,7 +171,7 @@ unlink "$test_cpp_filename.cpp" or warn $!;  # Unlink the test source.
 
 
 # Apply the defaults:
-open CPP, "CPP.pm";
+open CPP, "CPP.pm" or die "Can't read from CPP.pm for configuration!\n$!";
 my @lines = <CPP>;
 close CPP;
 
@@ -182,9 +197,9 @@ for (@lines) {
 
 }
 
-open CPP, ">CPP.pm" or die "Can't write to CPP.pm!";
+open CPP, ">CPP.pm" or die "Can't write to CPP.pm for configuration!\n$!";
 print CPP @lines;
-close CPP or die "Can't close CPP.pm after output!";
+close CPP or die "Can't close CPP.pm after configuration output!\n$!";
 
 
 WriteMakefile(

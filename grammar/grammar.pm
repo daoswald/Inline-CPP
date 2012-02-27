@@ -1,11 +1,13 @@
-package Inline::CPP::grammar;
+package Inline::CPP::grammar; ## no critic (Package)
 
 use strict;
 use vars qw($TYPEMAP_KIND $VERSION $class_part $class_decl $star);
 
 # Dev versions will have a _0xx suffix.
-$VERSION = '0.34_002';
-$VERSION = eval $VERSION;  # To accommodate dev version numbers.
+# We eval the $VERSION to accommodate dev version numbering as described in
+# perldoc perlmodstyle
+$VERSION = '0.34_003';
+$VERSION = eval $VERSION;  ## no critic (eval)
 
 # Parse::RecDescent 1.90 and later have an incompatible change
 # 'The key of an %item entry for a repeated subrule now includes
@@ -29,12 +31,12 @@ require Parse::RecDescent;
     if( not defined( $stable_version ) ) {
         $stable_version = $Parse::RecDescent::VERSION
     }
-    ($class_part, $class_decl, $star) =
+    ( $class_part, $class_decl, $star ) =
         map {
-            ($stable_version > 1.89)
+            ( $stable_version > 1.89 )
             ? "$_(s?)"
             : $_
-        } qw (class_part class_decl star);
+        } qw ( class_part class_decl star );
 # End our lexical scope.
 }
 
@@ -54,14 +56,17 @@ require Parse::RecDescent;
 # These are all adapted from the output of Damian Conway's excellent
 # Regexp::Common module. In future, Inline::CPP may depend directly on it,
 # but for now I'll just duplicate the code.
-use vars qw($code_block $string $number $parens $funccall);
+use vars qw( $code_block $string $number $parens $funccall );
 #============================================================================
-eval <<'END'; # $RE{balanced}{-parens=>q|{}()[]"'|}
+
+# $RE{balanced}{-parens=>q|{}()[]"'|}
+eval <<'END'; ## no critic (eval)
 $code_block = qr'(?-xism:(?-xism:(?:[{](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[}]))|(?-xism:(?-xism:(?:[(](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[)]))|(?-xism:(?-xism:(?:[[](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[]]))|(?-xism:(?!)))))';
 END
 $code_block = qr'{[^}]*}' if $@; # For the stragglers: here's a lame regexp.
 
-eval <<'END'; # $RE{balanced}{-parens=>q|()"'|}
+# $RE{balanced}{-parens=>q|()"'|}
+eval <<'END'; ## no critic (eval)
 $parens = qr'(?-xism:(?-xism:(?:[(](?:(?>[^)(]+)|(??{$Inline::CPP::grammar::parens}))*[)]))|(?-xism:(?!)))';
 END
 $parens = qr'\([^)]*\)' if $@; # For the stragglers: here's another
@@ -70,7 +75,7 @@ $parens = qr'\([^)]*\)' if $@; # For the stragglers: here's another
 $string = qr'(?:(?:\")(?:[^\\\"]*(?:\\.[^\\\"]*)*)(?:\")|(?:\')(?:[^\\\']*(?:\\.[^\\\']*)*)(?:\')|(?:\`)(?:[^\\\`]*(?:\\.[^\\\`]*)*)(?:\`))';
 
 # $RE{num}{real}|$RE{num}{real}{-base=>16}|$RE{num}{int}
-$number = qr'(?:(?i)(?:[+-]?)(?:(?=[0123456789]|[.])(?:[0123456789]*)(?:(?:[.])(?:[0123456789]{0,}))?)(?:(?:[E])(?:(?:[+-]?)(?:[0123456789]+))|))|(?:(?i)(?:[+-]?)(?:(?=[0123456789ABCDEF]|[.])(?:[0123456789ABCDEF]*)(?:(?:[.])(?:[0123456789ABCDEF]{0,}))?)(?:(?:[G])(?:(?:[+-]?)(?:[0123456789ABCDEF]+))|))|(?:(?:[+-]?)(?:\d+))';
+$number   = qr'(?:(?i)(?:[+-]?)(?:(?=[0123456789]|[.])(?:[0123456789]*)(?:(?:[.])(?:[0123456789]{0,}))?)(?:(?:[E])(?:(?:[+-]?)(?:[0123456789]+))|))|(?:(?i)(?:[+-]?)(?:(?=[0123456789ABCDEF]|[.])(?:[0123456789ABCDEF]*)(?:(?:[.])(?:[0123456789ABCDEF]{0,}))?)(?:(?:[G])(?:(?:[+-]?)(?:[0123456789ABCDEF]+))|))|(?:(?:[+-]?)(?:\d+))';
 $funccall = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*(?:$Inline::CPP::grammar::parens)?/;
 
 #============================================================================
@@ -459,8 +464,7 @@ END
 #============================================================================
 $TYPEMAP_KIND = 'O_Inline_CPP_Class';
 sub typemap {
-    my $parser = shift;
-    my $typename = shift;
+    my ( $parser, $typename ) = @_;
 
 #    print "Inline::CPP::grammar::typemap(): typename=$typename\n";
 
@@ -479,10 +483,10 @@ END
     sv_setref_pv( \$arg, CLASS, (void*)\$var );
 END
 
-    my $ctypename = $typename . " *";
-    $parser->{data}{typeconv}{input_expr}{$TYPEMAP_KIND} ||= $INPUT;
+    my $ctypename = $typename . ' *';
+    $parser->{data}{typeconv}{input_expr}{$TYPEMAP_KIND}  ||= $INPUT;
     $parser->{data}{typeconv}{output_expr}{$TYPEMAP_KIND} ||= $OUTPUT;
-    $parser->{data}{typeconv}{type_kind}{$ctypename} = $TYPEMAP_KIND;
+    $parser->{data}{typeconv}{type_kind}{$ctypename}      =   $TYPEMAP_KIND;
     $parser->{data}{typeconv}{valid_types}{$ctypename}++;
     $parser->{data}{typeconv}{valid_rtypes}{$ctypename}++;
 }
@@ -492,20 +496,25 @@ END
 # _only_ a '...' in the code, just like XS. It is the default.
 #============================================================================
 sub strip_ellipsis {
-    my $parser = shift;
-    my $args = shift;
+    my( $parser, $args ) = @_;
     return if $parser->{ILSM}{PRESERVE_ELLIPSIS};
-    for (my $i=0; $i<@$args; $i++) {
-    next unless $args->[$i]{name} eq '...';
-    # if it's the first one, just strip it
-    if ($i==0) {
-        substr($parser->{ILSM}{code}, $args->[$i]{offset} - 3, 3) = "   ";
-    }
-    else {
-        my $prev = $i - 1;
-        my $prev_offset = $args->[$prev]{offset};
-        my $length = $args->[$i]{offset} - $prev_offset;
-        substr($parser->{ILSM}{code}, $prev_offset, $length) =~ s/\S/ /g;
-    }
+    for (  my $i = 0; $i < @$args; $i++  ) {
+        next unless $args->[$i]{name} eq '...';
+        # if it's the first one, just strip it
+        if ($i==0) {
+            substr(
+                $parser->{ILSM}{code},
+                $args->[$i]{offset} - 3,
+                3
+            ) = '   ';
+        }
+        else {
+            my $prev        = $i - 1;
+            my $prev_offset = $args->[$prev]{offset};
+            my $length      = $args->[$i]{offset} - $prev_offset;
+            substr($parser->{ILSM}{code}, $prev_offset, $length) =~ s/\S/ /g;
+        }
     }
 }
+
+1;
