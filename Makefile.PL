@@ -67,7 +67,7 @@ elsif (
     ($cc_guess  = $Config{cc}) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
     $libs_guess = '-lstdc++';
 }
-elsif ($Config{osname} =~ /^MSWin/) {
+elsif ($Config{osname} =~ m/^MSWin/) {
     $cc_guess   = 'cl -TP -EHsc';
     $libs_guess = 'MSVCIRT.LIB';
 }
@@ -91,7 +91,8 @@ elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
     ) {
         $cc_guess   = 'g++';
         $libs_guess = '-lstdc++';
-    } else {
+    }
+    else {
         $cc_guess   = 'CC';
         $libs_guess ='-lCrun';
     }
@@ -113,13 +114,13 @@ else {
 print "This will configure and build Inline::C++.\n";
 
 my $cpp_compiler = prompt(
-        "What default C++ compiler would you like to use?",
-        $cc_guess
+    "What default C++ compiler would you like to use?",
+    $cc_guess
 );
 
 my $libs         = prompt(
-        "What default libraries would you like to include?",
-        $libs_guess
+    "What default libraries would you like to include?",
+    $libs_guess
 );
 
 #============================================================================
@@ -133,13 +134,14 @@ close TESTCPP
 
 # Compile our test C++ program that includes the <iostream> header.
 my $result;
-if( $cpp_compiler =~ /^cl/ ) {
+if( $cpp_compiler =~ m/^cl/ ) {
     # MS compilers don't support -o (or -o is deprecated for them).
     $result = system(
         qq{$cpp_compiler -Fe:$test_cpp_filename.exe } .
         qq{$test_cpp_filename.cpp}
     );
-} else {
+}
+else {
     $result = system(
         qq{$cpp_compiler -o $test_cpp_filename.exe } .
         qq{$test_cpp_filename.cpp}
@@ -155,7 +157,8 @@ if( $result != 0 ) {
     $iostream_fname_style = 'iostream.h';
     $namespace_std        = "// $namespace_std";
     $standard_headers     = "// $standard_headers";
-} else {
+}
+else {
     # Compiling with <iostream> passed, so we'll assume Standard headers.
     print "Detected <iostream> style headers. ('.h' not needed.)\n";
     unlink "$test_cpp_filename.exe" or warn $!; # Unlink the executable.
