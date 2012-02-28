@@ -190,7 +190,7 @@ sub info {
                 my $rtype = $thing->{rtype} || '';
                 push @class, "\t\t$rtype" . ( $rtype ? ' ' : '' );
                 push @class, $class . "::$name(";
-                my @args = grep { $_->{name} ne '...' } @{$thing->{args}};
+                my @args = grep { $_->{name} ne '...' and $_->{name} ne 'void' } @{$thing->{args}};
                 my $ellipsis =
                     ( scalar @{ $thing->{args} } - scalar @args ) != 0;
                 push @class,
