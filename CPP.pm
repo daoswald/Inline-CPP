@@ -9,6 +9,7 @@ package Inline::CPP;
 #============================================================================
 
 use strict;
+use warnings;
 
 require Inline::C;
 require Inline::CPP::grammar;
@@ -25,7 +26,11 @@ $VERSION = '0.34_003';
 $VERSION = eval $VERSION; ## no critic (eval)
 
 
-my $TYPEMAP_KIND = $Inline::CPP::grammar::TYPEMAP_KIND;
+my $TYPEMAP_KIND;
+{
+    no warnings qw/ once /; ## no critic (warnings)
+    $TYPEMAP_KIND = $Inline::CPP::grammar::TYPEMAP_KIND;
+}
 
 #============================================================================
 # Register Inline::CPP as an Inline language module
@@ -34,20 +39,19 @@ sub register {
     use Config;
     return {
         language => 'CPP',
-        aliases => [
-            'cpp','C++', 'c++', 'Cplusplus', 'cplusplus', 'CXX', 'cxx'
-        ],
-        type => 'compiled',
-        suffix => $Config{dlext},
-       };
+        aliases  =>
+            [ 'cpp','C++', 'c++', 'Cplusplus', 'cplusplus', 'CXX', 'cxx' ],
+        type     => 'compiled',
+        suffix   => $Config{dlext},
+    };
 }
 
 #============================================================================
 # Validate the C++ config options: Now mostly done in Inline::C
 #============================================================================
 sub validate {
-    my $o = shift;
-    # Do not alter the following two lines: Makefile.PL locates them by
+    my ( $o, @config_options ) = @_;
+    # DO NOT ALTER THE FOLLOWING TWO LINES: Makefile.PL locates them by
     # their comment text and alters them based on install inputs.
  $o->{ILSM}{MAKEFILE}{CC} ||= 'g++'; # default compiler
  $o->{ILSM}{MAKEFILE}{LIBS} ||= ['-lstdc++']; # default libs
@@ -60,7 +64,7 @@ sub validate {
               '.any'    => 0,
               '.all'    => 0,
              };
-    $o->{ILSM}{AUTO_INCLUDE} ||= <<END;
+    $o->{ILSM}{AUTO_INCLUDE} ||= <<'END';
 #ifndef bool
 #include <%iostream%>
 #endif
@@ -82,9 +86,9 @@ END
 # Preprocessor definitions that will be defined if we're operating under
 # "Standard C++", and *not* if we're operating under pre-Standard.
 
-# Don't edit this here-doc.  These are set by Makefile.PL.  Override
+# DON'T EDIT THIS HERE-DOC.  These are set by Makefile.PL.  Override
 # by supplying undefs in an AUTO_INCLUDE configuration.
-my $flavor_defs =  <<END_FLAVOR_DEFINITIONS;
+my $flavor_defs =  <<'END_FLAVOR_DEFINITIONS';
 
 #define __INLINE_CPP_STANDARD_HEADERS 1
 #define __INLINE_CPP_NAMESPACE_STD 1
@@ -106,8 +110,9 @@ END_FLAVOR_DEFINITIONS
 
     # Filter out the parameters we treat differently than Inline::C
     my @propagate;
-    while (@_) {
-        my ( $key, $value ) = ( shift, shift );
+    while ( @config_options ) {
+        my ( $key, $value )
+            = (  shift( @config_options ),  shift( @config_options )  );
         if ( $key eq 'LIBS' ) {
             $value = [$value] unless ref $value eq 'ARRAY';
             my $num = scalar @{ $o->{ILSM}{MAKEFILE}{LIBS} } - 1;
@@ -137,22 +142,23 @@ END_FLAVOR_DEFINITIONS
 
     # Replace %iostream% with the correct iostream library
 
-    # It is critical that the following line not have its "comment"
-    # altered: Makefile.PL finds the line and alters the iostream name.
+    # IT IS CRITICAL THAT THE FOLLOWING LINE NOT HAVE ITS "COMMENT"
+    # ALTERED: Makefile.PL finds the line and alters the iostream name.
  my $iostream = 'iostream'; # default iostream filename
 
     $o->{ILSM}{AUTO_INCLUDE} =~ s|%iostream%|$iostream|g;
 
     # Forward all unknown requests up to Inline::C
-    $o->SUPER::validate(@propagate) if @propagate;
+    return $o->SUPER::validate(@propagate) if @propagate;
+    return;
 }
 
 #============================================================================
 # Print a small report if PRINT_INFO option is set
 #============================================================================
 sub info {
-    my $o    = shift;
-    my $info = '';
+    my $o     = shift;
+    my $info  = '';
 
     $o->parse unless $o->{ILSM}{parser};
     my $data = $o->{ILSM}{parser}{data};
@@ -166,7 +172,7 @@ sub info {
             push @class,
                 ( ' : '
                     . join (', ',
-                      map { $_->{scope} . " " . $_->{name} } @parents ) )
+                      map { $_->{scope} . ' ' . $_->{name} } @parents ) )
                 if @parents;
             push @class, " {\n";
             for my $thing (
@@ -234,7 +240,8 @@ sub get_parser {
     my $o       = shift;
     my $grammar = Inline::CPP::grammar::grammar()
         or croak "Can't find C++ grammar\n";
-    $::RD_HINT++;
+    no warnings qw/ once /; ## no critic (warnings)
+    $::RD_HINT = 1; # Turns on Parse::RecDescent's warnings/diagnostics.
     require Parse::RecDescent;
     my $parser = Parse::RecDescent->new( $grammar );
     $parser->{data}{typeconv} = $o->{ILSM}{typeconv};
@@ -248,7 +255,7 @@ sub get_parser {
 sub xs_generate {
     my $o = shift;
     $o->write_typemap;
-    $o->SUPER::xs_generate;
+    return $o->SUPER::xs_generate;
 }
 
 #============================================================================
@@ -271,7 +278,7 @@ sub xs_bindings {
     for my $class ( @{ $data->{classes} } ) {
         my $proper_pkg = $pkg . "::$class";
         # Set up the proper namespace
-        push @XS, <<END;
+        push @XS, <<"END";
 
 MODULE = $module        PACKAGE = $proper_pkg
 
@@ -288,7 +295,7 @@ END
                 $o->{ILSM}{XS}{BOOT} ||= '';
                 my $ISA_name = "${pkg}::${class}::ISA";
                 my $parent = "${pkg}::${name}";
-                $o->{ILSM}{XS}{BOOT} .= <<END;
+                $o->{ILSM}{XS}{BOOT} .= <<"END";
 {
 #ifndef get_av
     AV *isa = perl_get_av("$ISA_name", 1);
@@ -321,12 +328,12 @@ END
         }
 
     # Provide default constructor and destructor:
-        push @XS, <<END unless ( $ctor or $abstract );
+        push @XS, <<"END" unless ( $ctor or $abstract );
 $class *
 ${class}::new()
 
 END
-        push @XS, <<END unless ( $dtor or $abstract );
+        push @XS, <<"END" unless ( $dtor or $abstract );
 void
 ${class}::DESTROY()
 
@@ -338,7 +345,7 @@ END
             ? "PREFIX = $o->{ILSM}{XS}{PREFIX}"
             : ''
     );
-    push @XS, <<END;
+    push @XS, <<"END";
 MODULE = $module        PACKAGE = $pkg  $prefix
 
 PROTOTYPES: DISABLE
@@ -348,7 +355,7 @@ END
     for my $function ( @{ $data->{functions} } ) {
         # lose constructor defs outside class decls (and "implicit int")
         next if $data->{function}{$function}{rtype} eq '';
-        next if $data->{function}{$function}{rtype} =~ 'static'; # spec'l case
+        next if $data->{function}{$function}{rtype} =~ m/static/;# spec'l case
         next if $function =~ m/::/;       # XXX: skip member functions?
         next if $function =~ m/operator/; # and operators.
         push @XS, $o->wrap( $data->{function}{$function}, $function );
@@ -367,11 +374,9 @@ END
 # Generate an XS wrapper around anything: a C++ method or function
 #============================================================================
 sub wrap {
-    my $o     = shift;
-    my $thing = shift;
-    my $name  = shift;
-    my $class = shift || '';
-    my $t     = ' ' x 4; # indents in 4-space increments.
+    my( $o, $thing, $name, $class ) = @_;
+    $class ||= '';
+    my $t  =   ' ' x 4; # indents in 4-space increments.
 
     my ( @XS, @PREINIT, @CODE );
     my ( $ctor, $dtor ) = ( 0, 0 );
@@ -425,7 +430,7 @@ sub wrap {
                        . ") {\n";
 
         my $offset = scalar @args; # which is the first optional?
-        my $total = $offset + scalar @opts;
+        my $total  = $offset + scalar @opts;
         for (  my $i = $offset; $i < $total; $i++  ) {
             push @CODE, "case " . ( $i + 1 ) . ":\n";
             my @tmp;
@@ -513,9 +518,7 @@ sub call_or_instantiate {
 }
 
 sub const_cast {
-    my $value = shift;
-    my $const = shift;
-    my $type  = shift;
+    my( $value, $const, $type ) = @_;
     return $value unless $const and $type =~ m/\*|\&/;
     return "const_cast<$type>($value)";
 }
@@ -528,11 +531,8 @@ sub write_typemap {
     $typemap  .=  $_  .  "\t" x 2  .  $TYPEMAP_KIND  .  "\n"
         for grep { $type_kind->{$_} eq $TYPEMAP_KIND } keys %$type_kind;
     return unless length $typemap;
-    open my $TYPEMAP_FH, '>', $filename
-#    open TYPEMAP, "> $filename"
-        or croak "Error: Can't write to $filename: $!";
-#    print TYPEMAP <<END;
-    print $TYPEMAP_FH <<END;
+
+    my $tm_output = <<"END";
 TYPEMAP
 $typemap
 OUTPUT
@@ -542,19 +542,19 @@ INPUT
 $TYPEMAP_KIND
 $o->{ILSM}{typeconv}{input_expr}{$TYPEMAP_KIND}
 END
+#    open TYPEMAP, "> $filename"
+#    print TYPEMAP <<END;
+    open my $TYPEMAP_FH, '>', $filename
+        or croak "Error: Can't write to $filename: $!";
+    print $TYPEMAP_FH $tm_output;
     close $TYPEMAP_FH;
     $o->validate( TYPEMAPS => $filename );
+    return;
 }
 
 # Generate type conversion code: perl2c or c2perl.
 sub typeconv {
     my( $o, $var, $arg, $type, $dir, $preproc ) = @_;
-#    my $o       = shift;
-#    my $var     = shift;
-#    my $arg     = shift;
-#    my $type    = shift;
-#    my $dir     = shift;
-#    my $preproc = shift;
     my $tkind = $o->{ILSM}{typeconv}{type_kind}{$type};
     my $ret;
     {
@@ -613,7 +613,7 @@ sub check_type {
 sub make_enum {
     my ( $class, $name, $body ) = @_;
     my @enum;
-    push @enum, <<END;
+    push @enum, <<"END";
 \t{
 \t    HV * pkg = gv_stashpv(\"$class\", 1);
 \t    if (pkg == NULL)
@@ -623,12 +623,12 @@ END
     foreach ( @$body ) {
         my ( $k, $v ) = @$_;
         $val = $v if defined $v;
-        push @enum, <<END;
+        push @enum, <<"END";
 \tnewCONSTSUB(pkg, \"$k\", newSViv($val));
 END
         ++$val;
     }
-    push @enum, <<END;
+    push @enum, <<"END";
 \t}
 END
     return join '', @enum;

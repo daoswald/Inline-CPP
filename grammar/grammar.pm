@@ -1,6 +1,8 @@
 package Inline::CPP::grammar; ## no critic (Package)
 
 use strict;
+use warnings;
+
 use vars qw($TYPEMAP_KIND $VERSION $class_part $class_decl $star);
 
 # Dev versions will have a _0xx suffix.
@@ -82,7 +84,7 @@ $funccall = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*(?:$Inline::CP
 # Inline::CPP's grammar
 #============================================================================
 sub grammar {
-   <<'END';
+    return <<'END';
 
 { use Data::Dumper; }
 
@@ -454,7 +456,6 @@ TYPE: IDENTIFIER
 all: /.*/
 
 END
-
 }
 
 #============================================================================
@@ -470,7 +471,7 @@ sub typemap {
 
     my ($TYPEMAP, $INPUT, $OUTPUT);
     $TYPEMAP = "$typename *\t\t$TYPEMAP_KIND\n";
-    $INPUT = <<END;
+    $INPUT = <<"END";
     if (sv_isobject(\$arg) && (SvTYPE(SvRV(\$arg)) == SVt_PVMG)) {
         \$var = (\$type)SvIV((SV*)SvRV( \$arg ));
     }
@@ -479,7 +480,7 @@ sub typemap {
         XSRETURN_UNDEF;
     }
 END
-    $OUTPUT = <<END;
+    $OUTPUT = <<"END";
     sv_setref_pv( \$arg, CLASS, (void*)\$var );
 END
 
@@ -489,6 +490,7 @@ END
     $parser->{data}{typeconv}{type_kind}{$ctypename}      =   $TYPEMAP_KIND;
     $parser->{data}{typeconv}{valid_types}{$ctypename}++;
     $parser->{data}{typeconv}{valid_rtypes}{$ctypename}++;
+    return;
 }
 
 #============================================================================
@@ -515,6 +517,7 @@ sub strip_ellipsis {
             substr($parser->{ILSM}{code}, $prev_offset, $length) =~ s/\S/ /g;
         }
     }
+    return;
 }
 
 1;
