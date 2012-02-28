@@ -1,4 +1,8 @@
 Revision history for Perl extension Inline::CPP.
+0.34_004 ----------------------------
+    - Code formatting cleanup in CPP.pm and grammar.pm.
+    - All code now passes Perl::Critic level 5, including test suite.
+    - Back out NetBSD ineffective NetBSD patch.
 0.34_003 Fri Feb 24 08:28:00 PST 2012
     - Add (untested) code to Makefile.PL to deal with NetBSD so that
       we can get a clean NetBSD install. EXPERIMENTAL in this version.

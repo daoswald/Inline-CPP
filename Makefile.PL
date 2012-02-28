@@ -10,7 +10,6 @@ use strict;
 ## no critic (two-argument open)
 
 
-
 my %PREREQ_PM = (
     'Inline'            => '0.50',
     'Inline::C'         => '0.50',
@@ -29,7 +28,6 @@ int main(){
     return 0;
 }
 END_TEST_CPP
-
 
 
 #============================================================================
@@ -58,34 +56,32 @@ if ($Config{osname} eq 'darwin'){
         'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p )';
     my $stdcpp =
         `$stdlib_query`; + $stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
-    $cc_guess =
-        'g++';
-    $libs_guess =
-        "-L$stdcpp -lstdc++";
+    $cc_guess   = 'g++';
+    $libs_guess = "-L$stdcpp -lstdc++";
 }
 elsif (
     $Config{osname} ne 'darwin' and
     $Config{gccversion} and
     $Config{cc} =~ m#\bgcc\b[^/]*$#
 ) {
-    ($cc_guess = $Config{cc}) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
+    ($cc_guess  = $Config{cc}) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
     $libs_guess = '-lstdc++';
 }
 elsif ($Config{osname} =~ /^MSWin/) {
-    $cc_guess = 'cl -TP -EHsc';
+    $cc_guess   = 'cl -TP -EHsc';
     $libs_guess = 'MSVCIRT.LIB';
 }
 elsif ($Config{osname} eq 'linux') {
-    $cc_guess = 'g++';
+    $cc_guess   = 'g++';
     $libs_guess = '-lstdc++';
 }
 # NetBSD patch...
 elsif( $Config{osname} eq 'netbsd' ) {
-    $cc_guess = 'g++';
+    $cc_guess   = 'g++';
     $libs_guess = '-lstdc++';
 }
 elsif ($Config{osname} eq 'cygwin') {
-    $cc_guess = 'g++';
+    $cc_guess   = 'g++';
     $libs_guess = '-lstdc++';
 }
 elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
@@ -93,10 +89,10 @@ elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
         $Config{cc} eq 'gcc' ||
         ( exists( $Config{gccversion} ) && $Config{gccversion} > 0 )
     ) {
-        $cc_guess = 'g++';
+        $cc_guess   = 'g++';
         $libs_guess = '-lstdc++';
     } else {
-        $cc_guess = 'CC';
+        $cc_guess   = 'CC';
         $libs_guess ='-lCrun';
     }
 }
@@ -105,14 +101,12 @@ elsif ($Config{osname} eq 'mirbsd') {
         'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p ) | head -1';
     my $stdcpp =
         `$stdlib_query`; + $stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
-    $cc_guess =
-        'g++';
-    $libs_guess =
-        "-L$stdcpp -lstdc++ -lc -lgcc_s";
+    $cc_guess   = 'g++';
+    $libs_guess = "-L$stdcpp -lstdc++ -lc -lgcc_s";
 }
 # Sane defaults for other (probably unix-like) operating systems
 else {
-    $cc_guess = 'g++';
+    $cc_guess   = 'g++';
     $libs_guess = '-lstdc++';
 }
 
@@ -123,7 +117,7 @@ my $cpp_compiler = prompt(
         $cc_guess
 );
 
-my $libs = prompt(
+my $libs         = prompt(
         "What default libraries would you like to include?",
         $libs_guess
 );
@@ -153,14 +147,14 @@ if( $cpp_compiler =~ /^cl/ ) {
 }
 
 my $iostream_fname_style = 'iostream';
-my $namespace_std    = "#define __INLINE_CPP_NAMESPACE_STD 1\n";
-my $standard_headers = "#define __INLINE_CPP_STANDARD_HEADERS 1\n";
+my $namespace_std        = "#define __INLINE_CPP_NAMESPACE_STD 1\n";
+my $standard_headers     = "#define __INLINE_CPP_STANDARD_HEADERS 1\n";
 if( $result != 0 ) {
     # Compiling with <iostream> failed, so we'll assume .h headers.
     print "Detected <iostream.h> style headers. ('.h' needed.)\n";
     $iostream_fname_style = 'iostream.h';
-    $namespace_std    = "// $namespace_std";
-    $standard_headers = "// $standard_headers";
+    $namespace_std        = "// $namespace_std";
+    $standard_headers     = "// $standard_headers";
 } else {
     # Compiling with <iostream> passed, so we'll assume Standard headers.
     print "Detected <iostream> style headers. ('.h' not needed.)\n";
@@ -197,9 +191,9 @@ for (@lines) {
 
 }
 
-open CPP, ">CPP.pm" or die "Can't write to CPP.pm for configuration!\n$!";
-print CPP @lines;
-close CPP or die "Can't close CPP.pm after configuration output!\n$!";
+open  CPP, ">CPP.pm"  or die "Can't write to CPP.pm for configuration!\n$!";
+print CPP  @lines;
+close CPP             or die "Can't close CPP.pm after config output!\n$!";
 
 
 WriteMakefile(
