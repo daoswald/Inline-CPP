@@ -88,35 +88,35 @@ sub grammar {
 
 { use Data::Dumper; }
 
-      {
+{
     sub handle_class_def {
-         my ($thisparser, $def) = @_;
+        my ($thisparser, $def) = @_;
 #         print "Found a class: $def->[0]\n";
-         my $class = $def->[0];
-         my @parts;
-         for my $part (@{$def->[1]}) { push @parts, @$_ for @$part }
-         push @{$thisparser->{data}{classes}}, $class
-           unless defined $thisparser->{data}{class}{$class};
-         $thisparser->{data}{class}{$class} = \@parts;
-#    print "Class $class:\n", Dumper \@parts;
-     Inline::CPP::grammar::typemap($thisparser, $class);
-         [$class, \@parts];
+        my $class = $def->[0];
+        my @parts;
+        for my $part (@{$def->[1]}) { push @parts, @$_ for @$part }
+        push @{$thisparser->{data}{classes}}, $class
+            unless defined $thisparser->{data}{class}{$class};
+        $thisparser->{data}{class}{$class} = \@parts;
+#   print "Class $class:\n", Dumper \@parts;
+        Inline::CPP::grammar::typemap($thisparser, $class);
+        [$class, \@parts];
     }
     sub handle_typedef {
-         my ($thisparser, $t) = @_;
-         my ($name, $type) = @{$t}{qw(name type)};
-#         print "found a typedef: $name => $type\n";
+        my ($thisparser, $t) = @_;
+        my ($name, $type) = @{$t}{qw(name type)};
+#   print "found a typedef: $name => $type\n";
 
-         # XXX: this doesn't handle non-class typedefs that we could handle,
-         # e.g. "typedef int my_int_t"
+        # XXX: this doesn't handle non-class typedefs that we could handle,
+        # e.g. "typedef int my_int_t"
 
-         if ($thisparser->{data}{class}{$type}
-             && !exists($thisparser->{data}{class}{$name})) {
-             push @{$thisparser->{data}{classes}}, $name;
-             $thisparser->{data}{class}{$name} = $thisparser->{data}{class}{$type};
-             Inline::CPP::grammar::typemap($thisparser, $name);
-         }
-         $t;
+        if ($thisparser->{data}{class}{$type}
+            && !exists($thisparser->{data}{class}{$name})) {
+            push @{$thisparser->{data}{classes}}, $name;
+            $thisparser->{data}{class}{$name} = $thisparser->{data}{class}{$type};
+            Inline::CPP::grammar::typemap($thisparser, $name);
+        }
+        $t;
     }
     sub handle_enum {
         my ($thisparser, $t) = @_;
