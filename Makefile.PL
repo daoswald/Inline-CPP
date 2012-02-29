@@ -78,7 +78,7 @@ elsif ($Config{osname} eq 'linux') {
 # NetBSD patch...
 elsif( $Config{osname} eq 'netbsd' ) {
     $cc_guess   = 'g++';
-    $libs_guess = '-lstdc++';
+    $libs_guess = '-lstdc++ -lgcc_s';
 }
 elsif ($Config{osname} eq 'cygwin') {
     $cc_guess   = 'g++';

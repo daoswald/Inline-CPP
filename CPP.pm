@@ -22,7 +22,7 @@ use vars qw(@ISA $VERSION);
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-$VERSION = '0.34_003';
+$VERSION = '0.34_004';
 $VERSION = eval $VERSION; ## no critic (eval)
 
 

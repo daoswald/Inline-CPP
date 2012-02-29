@@ -33,13 +33,11 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.34_003 is an experimental developers release.
-This release seeks to overcome smoke test issues for NetBSD systems
-by more accurately detecting and guessing proper default libraries.
-This NetBSD patch is UNTESTED on NetBSD systems, and therefore considered
-EXPERIMENTAL.  Users interested in a relatively safer "Developers' Release"
-should stick with 0.34_002 for now.  I'm hoping to see smoke tests against
-this version.
+Inline::CPP version 0.34_004 adds a patch based on research from Chris Smith
+that should improve install success for NetBSD.  Additionally, all code is now
+Perl::Critic level 5 compliant.  CPP.pm and grammar.pm are *mostly* level 4
+compliant as well.  This includes the test suite and Makefile.PL.  There has
+also been a lot of code cleanup.
 
 -----------------------------------------------------------------------------
 INSTALLATION:
