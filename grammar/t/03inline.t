@@ -1,8 +1,9 @@
+use strict;
 use Test;
 BEGIN { plan tests => 2 }
 
-use Inline CPP; 
-use strict;
+use Inline 'CPP'; 
+
 
 my $obj = new Color;
 ok(ref $obj, 'main::Color');
