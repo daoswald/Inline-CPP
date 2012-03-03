@@ -1,3 +1,4 @@
+use strict;
 use Test;
 # Test declarations of multiple variables in a list
 BEGIN { plan tests => 2 }

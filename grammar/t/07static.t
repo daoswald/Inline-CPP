@@ -1,3 +1,4 @@
+use strict;
 use Test;
 BEGIN { plan test => 1 }
 use Inline CPP => <<'END';

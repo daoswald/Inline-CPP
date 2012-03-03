@@ -1,11 +1,39 @@
 Revision history for Perl extension Inline::CPP.
+0.35 Sat Mar 03 08:15:00 PST 2012
+    - Additional code cleanup and improvements in Perl::Critic compliance.
+    - All patches present in 0.34_004, including code formatting, cleanup
+      Perl::Critic compliance and escaping (where necessary), and Makefile.PL
+      fixes to allow NetBSD, Solaris, and Darwin platform install success.
+    - Explicitly require minimum Perl version of 5.6.0.
+0.34_004 Tue Feb 28 08:00:00 MST 2012
+    - Code formatting cleanup in CPP.pm and grammar.pm.
+    - All code now passes Perl::Critic level 5, including test suite.
+    - CPP.pm and grammar.pm are Perl::Critic level 4 compliant.
+    - New NetBSD patch from Chris Smith targeting better install success on
+      that platform.
+0.34_003 Fri Feb 24 08:28:00 PST 2012
+    - Add (untested) code to Makefile.PL to deal with NetBSD so that
+      we can get a clean NetBSD install. EXPERIMENTAL in this version.
+    - Add check to CPP.pm to avoid a noisy warning about undefined value
+      when user code includes a subroutine with 'void' as param list.
+      (Note: This does NOT add 'void' as a valid param list type.)
+    - POD refinements.
+0.34_002 Thur Feb 16 12:00:00 PST 2012
+    - Patch to Makefile.PL provided by smoke tester Steven Schubiger which
+      allows module to successfully install on MirBSD systems. Thanks!
+    - Patch to Makefile.PL by Dave Oswald to allow successful install for
+      Darwin OS by setting proper default libraries.
+0.34_001 Thur Feb 09 23:22:00 PST 2012
+    - Patched Makefile.PL (as suggested by sisyphus) to better detect proper
+      Solaris compiler (targeting Solaris 2.11 bug).
 0.34 Mon Feb 06 22:32:00 PST 2012
     - Carry all updates current in 0.33_010(Dev) to 0.34(Stable) for release
       to CPAN.
-    - Set minimum version for Inline and Inline::C dependency to 0.50 to 
+    - Set minimum version for Inline and Inline::C dependency to 0.50 to
       take advantage of Inline patch that resolves the issue where smoke
       testers were unable to locate Parse::RecDescent dependency.
     - POD revisions.
+    - Inline::CPP now needs minimum Perl version of 5.6.x
 0.33_010  Fri Feb 03 23:45:00 PST 2012
     [Patch applied by David Oswald]
     *** NEVER RELEASED ***

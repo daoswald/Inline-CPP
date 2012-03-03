@@ -1,6 +1,7 @@
+use strict;
 use Test;
 BEGIN { plan tests => 6 }
-use Inline CPP;
+use Inline 'CPP';
 
 ok(sum(), 0);
 ok(sum(1), 1);

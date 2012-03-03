@@ -1,0 +1,12 @@
+------------------------------------------------------------------------------
+*....................  TO-DO LIST FOR Inline::CPP  ..........................*
+------------------------------------------------------------------------------
+
+***** In no particular order *****
+
+Test Suite Expansion / Rewrite
+
+Multi-dimensional arrays as member functions.
+    ( Currently only single dimensional. )
+
+The NetBSD install issue.

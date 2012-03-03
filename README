@@ -33,10 +33,14 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.34 is a stable release.  There have been numerous bug
-fixes since 0.33, mostly targeting installation and smoke test success.
-Please refer to the Changes file in this distribution for a description of the
-revisions since the previous stable release.
+Inline::CPP version 0.35 adds patches to allow successful on Solaris, Darwin,
+and many (but not all) NetBSD platforms.  Additionally, all code is now
+Perl::Critic compliant (Level 4 for CPP.pm and grammar.pm, level 5 for
+Makefile.PL and the test suite).  There has been a lot of code cleanup for
+readability and maintainability as well.
+
+Perl version 5.6.0 is now explicitly set as the minimum version under which
+Inline::CPP will build and work.
 
 -----------------------------------------------------------------------------
 INSTALLATION:
@@ -54,8 +58,8 @@ make install
 (On ActivePerl for MSWin32, use nmake instead of make.)
 (On Strawberry Perl you may use dmake instead.)
 
-As Makefile.PL runs you will be prompted for what C++ compiler and library to 
-use.  Accepting the default should work in nearly every case (and if it 
+As Makefile.PL runs you will be prompted for what C++ compiler and library to
+use.  Accepting the default should work in nearly every case (and if it
 doesn't, let me know).
 
 -----------------------------------------------------------------------------
@@ -69,6 +73,9 @@ INFORMATION:
 
 The Inline mailing list is inline@perl.org. Send mail to
 inline-subscribe@perl.org to subscribe.
+
+This module's development is under version control with Git, hosted on Github
+at https://github.com/daoswald/Inline-CPP
 
 Please send questions and comments to "David Oswald" <DAVIDO@cpan.org>
 

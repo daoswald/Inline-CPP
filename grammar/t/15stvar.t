@@ -1,3 +1,4 @@
+use strict;
 use Test;
 # Test static variables
 BEGIN { plan tests => 1 }
