@@ -1,11 +1,13 @@
 use strict;
 use Test::More;
+use Config;
 
-# diag() the PERL5LIB %ENV value so it shows up in smoke test reports.
-# This is to help identify the cause of the Parse::RecDescent issue.
-BEGIN {
-    diag( "\$ENV{PERL5LIB}: $ENV{PERL5LIB}\n" );
-};
+#BEGIN {
+# Some diagnostic information for sorting out the Solaris Makefile.PL bug.
+#    diag( "\$Config{osname}:     $Config{osname}\n"     ); # Unnecessary now.
+#    diag( "\$Config{cc}:         $Config{cc}\n"         ); # Unnecessary now.
+#    diag( "\$Config{gccversion}: $Config{gccversion}\n" ); # Unnecessary now.
+#};
 
 sub prereq_message {
     return "*** YOU MUST INSTALL $_[0] BEFORE PROCEEDING ***\n";
@@ -19,12 +21,6 @@ BEGIN {
         or BAIL_OUT( prereq_message( 'Parse::RecDescent' ) );
     require_ok( 'Inline::C' )
         or BAIL_OUT( prereq_message( 'Inline::C' ) );
-}
-
-# If we've made it this far, we found Parse::RecDescent.
-# diag() its location so it shows up in smoke test reports.
-if( exists $INC{'Parse/RecDescent.pm'} ) { # This should never fail.
-    diag( "\$INC{'Parse/RecDescent.pm'} => $INC{'Parse/RecDescent.pm'}\n" );
 }
 
 done_testing();

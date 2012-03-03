@@ -1,6 +1,7 @@
+use strict;
 use Test;
 BEGIN { plan tests => 3 }
-use Inline CPP;
+use Inline 'CPP';
 use Data::Dumper;
 
 my @list = return_list();

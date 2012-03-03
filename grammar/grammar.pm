@@ -1,11 +1,15 @@
-package Inline::CPP::grammar;
+package Inline::CPP::grammar; ## no critic (Package)
 
 use strict;
-use vars qw($TYPEMAP_KIND $VERSION $class_part $class_decl $star);
+use warnings;
+
+use vars qw($TYPEMAP_KIND $class_part $class_decl $star);
 
 # Dev versions will have a _0xx suffix.
-$VERSION = '0.34';
-$VERSION = eval $VERSION;  # To accommodate dev version numbers.
+# We eval the $VERSION to accommodate dev version numbering as described in
+# perldoc perlmodstyle
+our $VERSION = '0.34_004';
+$VERSION = eval $VERSION;  ## no critic (eval)
 
 # Parse::RecDescent 1.90 and later have an incompatible change
 # 'The key of an %item entry for a repeated subrule now includes
@@ -15,36 +19,23 @@ $VERSION = eval $VERSION;  # To accommodate dev version numbers.
 
 require Parse::RecDescent;
 
-# --------------------------------------------------
-# Patch to deal with Parse::RecDescent's funky version numbers for development
+# Deal with Parse::RecDescent's version numbers for development
 # releases (eg, '1.96_000') resulting in a warning about non-numeric in >
-# comparison.  -----------------
-{
-    # Create a lexical scope so that $stable_version vanishes after we're
-    # done with it.  Capture only the portion of the version number that
-    # comes before an underscore.  "1.96_000" => "1.96".
+# comparison.
+{   # Lexical scope.
+    # Eval away the underscore.  "1.96_000" => "1.96000".
     # Use that "stable release" version number as the basis for our numeric
     # comparison.
-    my ( $stable_version ) = $Parse::RecDescent::VERSION =~ m/([\d.]+)/;
-    if( not defined( $stable_version ) ) {
-        $stable_version = $Parse::RecDescent::VERSION
-    }
-    ($class_part, $class_decl, $star) =
+    my $stable_version = eval $Parse::RecDescent::VERSION; ## no critic (eval)
+    ( $class_part, $class_decl, $star ) =
         map {
-            ($stable_version > 1.89)
+            ( $stable_version > 1.89 )
             ? "$_(s?)"
             : $_
-        } qw (class_part class_decl star);
-# End our lexical scope.
-}
+        } qw ( class_part class_decl star );
+} # End lexical scope.
 
-# ---------- End patch.  May roll-back if Parse::RecDescent gets fixed.
 
-# Orginal code before the version number patch.
-#    ($class_part, $class_decl, $star) =
-#        map {($Parse::RecDescent::VERSION > 1.89) ? "$_(s?)" : $_}
-#            qw (class_part class_decl star);
-# -------------------------------------------------------
 
 #============================================================================
 # Regular expressions to match code blocks, numbers, strings, parenthesized
@@ -54,14 +45,17 @@ require Parse::RecDescent;
 # These are all adapted from the output of Damian Conway's excellent
 # Regexp::Common module. In future, Inline::CPP may depend directly on it,
 # but for now I'll just duplicate the code.
-use vars qw($code_block $string $number $parens $funccall);
+use vars qw( $code_block $string $number $parens $funccall );
 #============================================================================
-eval <<'END'; # $RE{balanced}{-parens=>q|{}()[]"'|}
+
+# $RE{balanced}{-parens=>q|{}()[]"'|}
+eval <<'END'; ## no critic (eval)
 $code_block = qr'(?-xism:(?-xism:(?:[{](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[}]))|(?-xism:(?-xism:(?:[(](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[)]))|(?-xism:(?-xism:(?:[[](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[]]))|(?-xism:(?!)))))';
 END
 $code_block = qr'{[^}]*}' if $@; # For the stragglers: here's a lame regexp.
 
-eval <<'END'; # $RE{balanced}{-parens=>q|()"'|}
+# $RE{balanced}{-parens=>q|()"'|}
+eval <<'END'; ## no critic (eval)
 $parens = qr'(?-xism:(?-xism:(?:[(](?:(?>[^)(]+)|(??{$Inline::CPP::grammar::parens}))*[)]))|(?-xism:(?!)))';
 END
 $parens = qr'\([^)]*\)' if $@; # For the stragglers: here's another
@@ -70,46 +64,46 @@ $parens = qr'\([^)]*\)' if $@; # For the stragglers: here's another
 $string = qr'(?:(?:\")(?:[^\\\"]*(?:\\.[^\\\"]*)*)(?:\")|(?:\')(?:[^\\\']*(?:\\.[^\\\']*)*)(?:\')|(?:\`)(?:[^\\\`]*(?:\\.[^\\\`]*)*)(?:\`))';
 
 # $RE{num}{real}|$RE{num}{real}{-base=>16}|$RE{num}{int}
-$number = qr'(?:(?i)(?:[+-]?)(?:(?=[0123456789]|[.])(?:[0123456789]*)(?:(?:[.])(?:[0123456789]{0,}))?)(?:(?:[E])(?:(?:[+-]?)(?:[0123456789]+))|))|(?:(?i)(?:[+-]?)(?:(?=[0123456789ABCDEF]|[.])(?:[0123456789ABCDEF]*)(?:(?:[.])(?:[0123456789ABCDEF]{0,}))?)(?:(?:[G])(?:(?:[+-]?)(?:[0123456789ABCDEF]+))|))|(?:(?:[+-]?)(?:\d+))';
+$number   = qr'(?:(?i)(?:[+-]?)(?:(?=[0123456789]|[.])(?:[0123456789]*)(?:(?:[.])(?:[0123456789]{0,}))?)(?:(?:[E])(?:(?:[+-]?)(?:[0123456789]+))|))|(?:(?i)(?:[+-]?)(?:(?=[0123456789ABCDEF]|[.])(?:[0123456789ABCDEF]*)(?:(?:[.])(?:[0123456789ABCDEF]{0,}))?)(?:(?:[G])(?:(?:[+-]?)(?:[0123456789ABCDEF]+))|))|(?:(?:[+-]?)(?:\d+))';
 $funccall = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*(?:$Inline::CPP::grammar::parens)?/;
 
 #============================================================================
 # Inline::CPP's grammar
 #============================================================================
 sub grammar {
-   <<'END';
+    return <<'END';
 
 { use Data::Dumper; }
 
-      {
+{
     sub handle_class_def {
-         my ($thisparser, $def) = @_;
+        my ($thisparser, $def) = @_;
 #         print "Found a class: $def->[0]\n";
-         my $class = $def->[0];
-         my @parts;
-         for my $part (@{$def->[1]}) { push @parts, @$_ for @$part }
-         push @{$thisparser->{data}{classes}}, $class
-           unless defined $thisparser->{data}{class}{$class};
-         $thisparser->{data}{class}{$class} = \@parts;
-#    print "Class $class:\n", Dumper \@parts;
-     Inline::CPP::grammar::typemap($thisparser, $class);
-         [$class, \@parts];
+        my $class = $def->[0];
+        my @parts;
+        for my $part (@{$def->[1]}) { push @parts, @$_ for @$part }
+        push @{$thisparser->{data}{classes}}, $class
+            unless defined $thisparser->{data}{class}{$class};
+        $thisparser->{data}{class}{$class} = \@parts;
+#   print "Class $class:\n", Dumper \@parts;
+        Inline::CPP::grammar::typemap($thisparser, $class);
+        [$class, \@parts];
     }
     sub handle_typedef {
-         my ($thisparser, $t) = @_;
-         my ($name, $type) = @{$t}{qw(name type)};
-#         print "found a typedef: $name => $type\n";
+        my ($thisparser, $t) = @_;
+        my ($name, $type) = @{$t}{qw(name type)};
+#   print "found a typedef: $name => $type\n";
 
-         # XXX: this doesn't handle non-class typedefs that we could handle,
-         # e.g. "typedef int my_int_t"
+        # XXX: this doesn't handle non-class typedefs that we could handle,
+        # e.g. "typedef int my_int_t"
 
-         if ($thisparser->{data}{class}{$type}
-             && !exists($thisparser->{data}{class}{$name})) {
-             push @{$thisparser->{data}{classes}}, $name;
-             $thisparser->{data}{class}{$name} = $thisparser->{data}{class}{$type};
-             Inline::CPP::grammar::typemap($thisparser, $name);
-         }
-         $t;
+        if ($thisparser->{data}{class}{$type}
+            && !exists($thisparser->{data}{class}{$name})) {
+            push @{$thisparser->{data}{classes}}, $name;
+            $thisparser->{data}{class}{$name} = $thisparser->{data}{class}{$type};
+            Inline::CPP::grammar::typemap($thisparser, $name);
+        }
+        $t;
     }
     sub handle_enum {
         my ($thisparser, $t) = @_;
@@ -449,7 +443,6 @@ TYPE: IDENTIFIER
 all: /.*/
 
 END
-
 }
 
 #============================================================================
@@ -459,14 +452,13 @@ END
 #============================================================================
 $TYPEMAP_KIND = 'O_Inline_CPP_Class';
 sub typemap {
-    my $parser = shift;
-    my $typename = shift;
+    my ( $parser, $typename ) = @_;
 
 #    print "Inline::CPP::grammar::typemap(): typename=$typename\n";
 
     my ($TYPEMAP, $INPUT, $OUTPUT);
     $TYPEMAP = "$typename *\t\t$TYPEMAP_KIND\n";
-    $INPUT = <<END;
+    $INPUT = <<"END";
     if (sv_isobject(\$arg) && (SvTYPE(SvRV(\$arg)) == SVt_PVMG)) {
         \$var = (\$type)SvIV((SV*)SvRV( \$arg ));
     }
@@ -475,16 +467,17 @@ sub typemap {
         XSRETURN_UNDEF;
     }
 END
-    $OUTPUT = <<END;
+    $OUTPUT = <<"END";
     sv_setref_pv( \$arg, CLASS, (void*)\$var );
 END
 
-    my $ctypename = $typename . " *";
-    $parser->{data}{typeconv}{input_expr}{$TYPEMAP_KIND} ||= $INPUT;
+    my $ctypename = $typename . ' *';
+    $parser->{data}{typeconv}{input_expr}{$TYPEMAP_KIND}  ||= $INPUT;
     $parser->{data}{typeconv}{output_expr}{$TYPEMAP_KIND} ||= $OUTPUT;
-    $parser->{data}{typeconv}{type_kind}{$ctypename} = $TYPEMAP_KIND;
+    $parser->{data}{typeconv}{type_kind}{$ctypename}      =   $TYPEMAP_KIND;
     $parser->{data}{typeconv}{valid_types}{$ctypename}++;
     $parser->{data}{typeconv}{valid_rtypes}{$ctypename}++;
+    return;
 }
 
 #============================================================================
@@ -492,20 +485,27 @@ END
 # _only_ a '...' in the code, just like XS. It is the default.
 #============================================================================
 sub strip_ellipsis {
-    my $parser = shift;
-    my $args = shift;
+    my( $parser, $args ) = @_;
     return if $parser->{ILSM}{PRESERVE_ELLIPSIS};
-    for (my $i=0; $i<@$args; $i++) {
-    next unless $args->[$i]{name} eq '...';
-    # if it's the first one, just strip it
-    if ($i==0) {
-        substr($parser->{ILSM}{code}, $args->[$i]{offset} - 3, 3) = "   ";
+    for (  my $i = 0; $i < @$args; $i++  ) {
+        next unless $args->[$i]{name} eq '...';
+        # if it's the first one, just strip it
+        if ($i==0) {
+            substr(
+                $parser->{ILSM}{code},
+                $args->[$i]{offset} - 3,
+                3,
+                '   '
+            );
+        }
+        else {
+            my $prev        = $i - 1;
+            my $prev_offset = $args->[$prev]{offset};
+            my $length      = $args->[$i]{offset} - $prev_offset;
+            substr($parser->{ILSM}{code}, $prev_offset, $length) =~ s/\S/ /g;
+        }
     }
-    else {
-        my $prev = $i - 1;
-        my $prev_offset = $args->[$prev]{offset};
-        my $length = $args->[$i]{offset} - $prev_offset;
-        substr($parser->{ILSM}{code}, $prev_offset, $length) =~ s/\S/ /g;
-    }
-    }
+    return;
 }
+
+1;
