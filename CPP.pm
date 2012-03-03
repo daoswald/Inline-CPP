@@ -5,6 +5,7 @@ package Inline::CPP;
 #     Unix line endings.
 #     Four spaces for indentation (no tabs).
 #     Conditional modifiers go on the following line, indented four spaces.
+#     Maintain Perl::Critic level 4 or better.
 #     Others as issues reveal themselves.
 #============================================================================
 
@@ -15,14 +16,12 @@ require Inline::C;
 require Inline::CPP::grammar;
 use Carp;
 
-use vars qw(@ISA $VERSION);
-
-@ISA = qw(Inline::C);
+use base 'Inline::C';
 
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-$VERSION = '0.34_004';
+our $VERSION = '0.34_004';
 $VERSION = eval $VERSION; ## no critic (eval)
 
 
@@ -59,8 +58,8 @@ sub validate {
     # I haven't traced it out yet, but $o->{STRUCT} gets set before getting
     # properly set from Inline::C's validate().
     $o->{STRUCT} ||= {
-              '.macros' => '',
-              '.xs'     => '',
+              '.macros' => q{},
+              '.xs'     => q{},
               '.any'    => 0,
               '.all'    => 0,
              };
@@ -112,20 +111,20 @@ END_FLAVOR_DEFINITIONS
     my @propagate;
     while ( @config_options ) {
         my ( $key, $value )
-            = (  shift( @config_options ),  shift( @config_options )  );
+            = (  shift @config_options,  shift @config_options  );
         if ( $key eq 'LIBS' ) {
             $value = [$value] unless ref $value eq 'ARRAY';
             my $num = scalar @{ $o->{ILSM}{MAKEFILE}{LIBS} } - 1;
-            $o->{ILSM}{MAKEFILE}{LIBS}[$num] .= ' ' . $_
-                for ( @$value );
+            $o->{ILSM}{MAKEFILE}{LIBS}[$num] .= q{ } . $_
+                for ( @{$value} );
             next;
         }
         if ( $key eq 'ALTLIBS' ) {
             $value = [$value] unless ref $value eq 'ARRAY';
-            push @{ $o->{ILSM}{MAKEFILE}{LIBS} }, '';
+            push @{ $o->{ILSM}{MAKEFILE}{LIBS} }, q{};
             my $num = scalar @{ $o->{ILSM}{MAKEFILE}{LIBS} } - 1;
-            $o->{ILSM}{MAKEFILE}{LIBS}[$num] .= ' ' . $_
-                for ( @$value );
+            $o->{ILSM}{MAKEFILE}{LIBS}[$num] .= q{ } . $_
+                for ( @{$value} );
             next;
         }
         if (     $key eq 'PRESERVE_ELLIPSIS'
@@ -146,7 +145,7 @@ END_FLAVOR_DEFINITIONS
     # ALTERED: Makefile.PL finds the line and alters the iostream name.
  my $iostream = 'iostream'; # default iostream filename
 
-    $o->{ILSM}{AUTO_INCLUDE} =~ s|%iostream%|$iostream|g;
+    $o->{ILSM}{AUTO_INCLUDE} =~ s{%iostream%}{$iostream}smxg;
 
     # Forward all unknown requests up to Inline::C
     $o->SUPER::validate(@propagate) if @propagate;
@@ -158,7 +157,7 @@ END_FLAVOR_DEFINITIONS
 #============================================================================
 sub info {
     my $o     = shift;
-    my $info  = '';
+    my $info  = q{};
 
     $o->parse unless $o->{ILSM}{parser};
     my $data = $o->{ILSM}{parser}{data};
@@ -171,8 +170,8 @@ sub info {
             push @class, "\tclass $class";
             push @class,
                 ( ' : '
-                    . join (', ',
-                      map { $_->{scope} . ' ' . $_->{name} } @parents ) )
+                  . join ( ', ',
+                        map { $_->{scope} . q{ } . $_->{name} } @parents ) )
                 if @parents;
             push @class, " {\n";
             for my $thing (
@@ -187,8 +186,8 @@ sub info {
                     $name eq $class,
                     $name eq "~$class",
                 );
-                my $rtype = $thing->{rtype} || '';
-                push @class, "\t\t$rtype" . ( $rtype ? ' ' : '' );
+                my $rtype = $thing->{rtype} || q{};
+                push @class, "\t\t$rtype" . ( $rtype ? q{ } : q{} );
                 push @class, $class . "::$name(";
                 my @args = grep { $_->{name} ne '...' } @{$thing->{args}};
                 my $ellipsis =
@@ -207,9 +206,9 @@ sub info {
     if ( defined $data->{functions} ) {
         for my $function ( sort @{ $data->{functions} } ) {
             my $func = $data->{function}{$function};
-            next if $function =~ m/::/;
+            next if $function =~ m/::/smx;
             next unless $o->check_type( $func, 0, 0 );
-            push @func, "\t" . $func->{rtype} . ' ';
+            push @func, "\t" . $func->{rtype} . q{ };
             push @func, $func->{name} . '(';
             my @args = grep { $_->{name} ne '...' } @{ $func->{args} };
             my $ellipsis = ( scalar @{ $func->{args} } - scalar @args ) != 0;
@@ -223,7 +222,7 @@ sub info {
 
     # Report:
     {
-        local $" = '';
+        local $" = q{};
         $info .= "The following classes have been bound to Perl:\n@class\n"
             if @class;
         $info .= "The following functions have been bound to Perl:\n@func\n"
@@ -267,8 +266,8 @@ sub xs_bindings {
     my $data = $o->{ILSM}{parser}{data};
     my @XS;
 
-    warn("Warning: No Inline C++ functions or classes bound to Perl\n" .
-     "Check your C++ for Inline compatibility.\n\n")
+    warn "Warning: No Inline C++ functions or classes bound to Perl\n"
+         . "Check your C++ for Inline compatibility.\n\n"
         if (
                 ( not defined $data->{classes}   )
             and ( not defined $data->{functions} )
@@ -286,13 +285,13 @@ PROTOTYPES: DISABLE
 
 END
 
-        my ( $ctor, $dtor, $abstract ) = ( 0, 0, 0 );
+        my ( $ctor, $dtor, $abstract ) = ( 0, 0, 0 ); ## no critic (ambiguous)
         for my $thing ( @{ $data->{class}{$class} } ) {
             my ( $name, $scope, $type ) = @{$thing}{ qw| name scope thing | };
 
             # Let Perl handle inheritance
             if ( $type eq 'inherits' and $scope eq 'public' ) {
-                $o->{ILSM}{XS}{BOOT} ||= '';
+                $o->{ILSM}{XS}{BOOT} ||= q{};
                 my $ISA_name = "${pkg}::${class}::ISA";
                 my $parent = "${pkg}::${name}";
                 $o->{ILSM}{XS}{BOOT} .= <<"END";
@@ -319,7 +318,7 @@ END
                     $thing->{body}
                 );
             } elsif ( $type eq 'method' ) {
-                next if $name =~ m/operator/;
+                next if $name =~ m/operator/sm;
                 # generate an XS wrapper
                 $ctor ||= ( $name eq $class    );
                 $dtor ||= ( $name eq "~$class" );
@@ -343,7 +342,7 @@ END
     my $prefix = (
         $o->{ILSM}{XS}{PREFIX}
             ? "PREFIX = $o->{ILSM}{XS}{PREFIX}"
-            : ''
+            : q{}
     );
     push @XS, <<"END";
 MODULE = $module        PACKAGE = $pkg  $prefix
@@ -354,20 +353,20 @@ END
 
     for my $function ( @{ $data->{functions} } ) {
         # lose constructor defs outside class decls (and "implicit int")
-        next if $data->{function}{$function}{rtype} eq '';
-        next if $data->{function}{$function}{rtype} =~ m/static/;# spec'l case
-        next if $function =~ m/::/;       # XXX: skip member functions?
-        next if $function =~ m/operator/; # and operators.
+        next if $data->{function}{$function}{rtype} eq q{};
+        next if $data->{function}{$function}{rtype} =~ m/static/sm;#specl case
+        next if $function =~ m/::/smx;       # XXX: skip member functions?
+        next if $function =~ m/operator/sm;  # and operators.
         push @XS, $o->wrap( $data->{function}{$function}, $function );
     }
 
     for ( @{ $data->{enums} } ) {
         # Global enums.
-        $o->{ILSM}{XS}{BOOT} .= make_enum(  $pkg, @$_{ qw( name body ) }  );
+        $o->{ILSM}{XS}{BOOT} .= make_enum(  $pkg, @{ $_{ qw( name body ) } }  );
     }
 #     print "BOOT = \n", $o->{ILSM}{XS}{BOOT};
 
-    return join '', @XS;
+    return join q{}, @XS;
 }
 
 #============================================================================
@@ -375,8 +374,8 @@ END
 #============================================================================
 sub wrap {
     my( $o, $thing, $name, $class ) = @_;
-    $class ||= '';
-    my $t  =   ' ' x 4; # indents in 4-space increments.
+    $class ||= q{};
+    my $t  =   q{ } x 4; # indents in 4-space increments.
 
     my ( @XS, @PREINIT, @CODE );
     my ( $ctor, $dtor ) = ( 0, 0 );
@@ -396,7 +395,7 @@ sub wrap {
         push @XS, "$thing->{rtype}\n$thing->{name}";
     }
 
-    return '' unless $o->check_type( $thing, $ctor, $dtor );
+    return q{} unless $o->check_type( $thing, $ctor, $dtor );
 
     # Filter out optional subroutine arguments
     my ( @args, @opts, $ellipsis, $void );
@@ -405,7 +404,7 @@ sub wrap {
     $ellipsis = pop @args
         if ( @args and $args[-1]{name} eq '...' );
     $void = ( $thing->{rtype} and $thing->{rtype} eq 'void' );
-    push @XS, join '', (
+    push @XS, join q{}, (
         '(',
         join( ', ',
               ( map {$_->{name}} @args ),
@@ -426,15 +425,15 @@ sub wrap {
     if ( @opts ) {
         push @PREINIT, "\t$_->{type}\t$_->{name};\n" for @opts;
         push @CODE,    'switch(items'
-                       . ( $class ? '-1' : '' )
+                       . ( $class ? '-1' : q{} )
                        . ") {\n";
 
         my $offset = scalar @args; # which is the first optional?
         my $total  = $offset + scalar @opts;
-        for (  my $i = $offset; $i < $total; $i++  ) {
-            push @CODE, "case " . ( $i + 1 ) . ":\n";
+        for my $i (  $offset .. $total - 1  ) {
+            push @CODE, 'case ' . ( $i + 1 ) . ":\n";
             my @tmp;
-            for (  my $j = $offset; $j <= $i; $j++  ) {
+            for my $j (  $offset .. $i  ) {
                 my $targ = $opts[ $j - $offset ]{name};
                 my $type = $opts[ $j - $offset ]{type};
                 my $src  = "ST($j)";
@@ -464,7 +463,7 @@ sub wrap {
         push @CODE, call_or_instantiate(
             $name,              $ctor,
             $dtor,              $class,
-            0,                  '',
+            0,                  q{},
             map { $_->{name} } @args
         );
     }
@@ -494,7 +493,7 @@ END
     }
 
     # The actual function:
-    local $" = '';
+    local $" = q{};
     push @XS, "${t}PREINIT:\n@PREINIT" if @PREINIT;
     push @XS, $t;
     push @XS, 'PP' if $void and @CODE;
@@ -508,18 +507,18 @@ sub call_or_instantiate {
     my (  $name,   $ctor,  $dtor,  $class, $const,  $type,  @args  ) = @_;
 
     # Create an rvalue (which might be const-casted later).
-    my $rval = '';
+    my $rval = q{};
     $rval .= 'new '    if $ctor;
     $rval .= 'delete ' if $dtor;
     $rval .= 'THIS->'  if ( $class and not ( $ctor or $dtor ) );
-    $rval .= "$name(" . join ( ',', @args ) . ')';
+    $rval .= $name . '(' . join ( q{,}, @args ) . ')';
 
     return const_cast( $rval, $const, $type ) . ";\n";
 }
 
 sub const_cast {
     my( $value, $const, $type ) = @_;
-    return $value unless $const and $type =~ m/\*|\&/;
+    return $value unless $const and $type =~ m/[*&]/smx;
     return "const_cast<$type>($value)";
 }
 
@@ -527,9 +526,9 @@ sub write_typemap {
     my $o         = shift;
     my $filename  = "$o->{API}{build_dir}/CPP.map";
     my $type_kind = $o->{ILSM}{typeconv}{type_kind};
-    my $typemap   = '';
+    my $typemap   = q{};
     $typemap  .=  $_  .  "\t" x 2  .  $TYPEMAP_KIND  .  "\n"
-        for grep { $type_kind->{$_} eq $TYPEMAP_KIND } keys %$type_kind;
+        for grep { $type_kind->{$_} eq $TYPEMAP_KIND } keys %{$type_kind};
     return unless length $typemap;
 
     my $tm_output = <<"END";
@@ -546,8 +545,9 @@ END
 #    print TYPEMAP <<END;
     open my $TYPEMAP_FH, '>', $filename
         or croak "Error: Can't write to $filename: $!";
-    print $TYPEMAP_FH $tm_output;
-    close $TYPEMAP_FH;
+    print {$TYPEMAP_FH} $tm_output;
+    close $TYPEMAP_FH
+        or croak "Error: Can't close $filename after write: $!";
     $o->validate( TYPEMAPS => $filename );
     return;
 }
@@ -561,16 +561,16 @@ sub typeconv {
 #        no strict;
         # The conditional avoids uninitialized warnings if user passes
         # a C++ function with 'void' as param.
-        if( defined( $tkind ) ) {
+        if( defined $tkind ) {
             # Even without the conditional this line must remain.
             $ret = eval                                    ## no critic (eval)
                 qq{qq{$o->{ILSM}{typeconv}{$dir}{$tkind}}};
         } else {
-            $ret = '';
+            $ret = q{};
         }
     }
     chomp $ret;
-    $ret =~ s/\n/\\\n/g if $preproc;
+    $ret =~ s/\n/\\\n/smxg if $preproc;
     return $ret;
 }
 
@@ -583,15 +583,15 @@ sub check_type {
     BADTYPE: while ( 1 ) {
     if ( !( $ctor || $dtor ) ) {
         my $t = $thing->{rtype};
-        $t =~ s/^(\s|const|virtual|static)+//g;
-        if ( $t ne 'void' && !$o->typeconv( '', '', $t, 'output_expr' ) ) {
+        $t =~ s/^(\s|const|virtual|static)+//xg;
+        if ( $t ne 'void' && !$o->typeconv( q{}, q{}, $t, 'output_expr' ) ) {
             $badtype = $t;
             last BADTYPE;
         }
     }
     foreach ( map { $_->{type} } @{ $thing->{args} } ) {
-        s/^(?:const|\s)+//go;
-        if ( $_ ne '...' && !$o->typeconv( '', '', $_, 'input_expr' ) ) {
+        s/^(?:const|\s)+//xgo;
+        if ( $_ ne '...' && !$o->typeconv( q{}, q{}, $_, 'input_expr' ) ) {
             $badtype = $_;
             last BADTYPE;
         }
@@ -600,12 +600,11 @@ sub check_type {
     }
     # I don't really like this verbosity. This is what 'info' is for. Maybe we
     # should ask Brian for an Inline=DEBUG option.
-    warn (
-        "No typemap for type $badtype. " .
-        "Skipping $thing->{rtype} $thing->{name}(" .
-        join( ', ', map { $_->{type} } @{ $thing->{args} } )
-        . ")\n"
-    ) if 0;
+    warn    "No typemap for type $badtype. "
+            . "Skipping $thing->{rtype} $thing->{name}("
+            . join( ', ', map { $_->{type} } @{ $thing->{args} } )
+            . ")\n"
+        if 0;
     return 0;
 }
 
@@ -620,8 +619,8 @@ sub make_enum {
 \t        croak("Can't find package '$class'\\n");
 END
     my $val = 0;
-    foreach ( @$body ) {
-        my ( $k, $v ) = @$_;
+    foreach ( @{$body} ) {
+        my ( $k, $v ) = @{$_};
         $val = $v if defined $v;
         push @enum, <<"END";
 \tnewCONSTSUB(pkg, \"$k\", newSViv($val));
@@ -631,7 +630,7 @@ END
     push @enum, <<"END";
 \t}
 END
-    return join '', @enum;
+    return join q{}, @enum;
 }
 
 1;

@@ -3,12 +3,12 @@ package Inline::CPP::grammar; ## no critic (Package)
 use strict;
 use warnings;
 
-use vars qw($TYPEMAP_KIND $VERSION $class_part $class_decl $star);
+use vars qw($TYPEMAP_KIND $class_part $class_decl $star);
 
 # Dev versions will have a _0xx suffix.
 # We eval the $VERSION to accommodate dev version numbering as described in
 # perldoc perlmodstyle
-$VERSION = '0.34_004';
+our $VERSION = '0.34_004';
 $VERSION = eval $VERSION;  ## no critic (eval)
 
 # Parse::RecDescent 1.90 and later have an incompatible change
@@ -19,36 +19,23 @@ $VERSION = eval $VERSION;  ## no critic (eval)
 
 require Parse::RecDescent;
 
-# --------------------------------------------------
-# Patch to deal with Parse::RecDescent's funky version numbers for development
+# Deal with Parse::RecDescent's version numbers for development
 # releases (eg, '1.96_000') resulting in a warning about non-numeric in >
-# comparison.  -----------------
-{
-    # Create a lexical scope so that $stable_version vanishes after we're
-    # done with it.  Capture only the portion of the version number that
-    # comes before an underscore.  "1.96_000" => "1.96".
+# comparison.
+{   # Lexical scope.
+    # Eval away the underscore.  "1.96_000" => "1.96000".
     # Use that "stable release" version number as the basis for our numeric
     # comparison.
-    my ( $stable_version ) = $Parse::RecDescent::VERSION =~ m/([\d.]+)/;
-    if( not defined( $stable_version ) ) {
-        $stable_version = $Parse::RecDescent::VERSION
-    }
+    my $stable_version = eval $Parse::RecDescent::VERSION; ## no critic (eval)
     ( $class_part, $class_decl, $star ) =
         map {
             ( $stable_version > 1.89 )
             ? "$_(s?)"
             : $_
         } qw ( class_part class_decl star );
-# End our lexical scope.
-}
+} # End lexical scope.
 
-# ---------- End patch.  May roll-back if Parse::RecDescent gets fixed.
 
-# Orginal code before the version number patch.
-#    ($class_part, $class_decl, $star) =
-#        map {($Parse::RecDescent::VERSION > 1.89) ? "$_(s?)" : $_}
-#            qw (class_part class_decl star);
-# -------------------------------------------------------
 
 #============================================================================
 # Regular expressions to match code blocks, numbers, strings, parenthesized
@@ -507,8 +494,9 @@ sub strip_ellipsis {
             substr(
                 $parser->{ILSM}{code},
                 $args->[$i]{offset} - 3,
-                3
-            ) = '   ';
+                3,
+                '   '
+            );
         }
         else {
             my $prev        = $i - 1;
