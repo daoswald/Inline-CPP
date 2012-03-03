@@ -149,7 +149,7 @@ END_FLAVOR_DEFINITIONS
     $o->{ILSM}{AUTO_INCLUDE} =~ s|%iostream%|$iostream|g;
 
     # Forward all unknown requests up to Inline::C
-    return $o->SUPER::validate(@propagate) if @propagate;
+    $o->SUPER::validate(@propagate) if @propagate;
     return;
 }
 
