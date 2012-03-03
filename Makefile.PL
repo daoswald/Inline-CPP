@@ -2,6 +2,7 @@ use ExtUtils::MakeMaker;
 use Config;
 
 use strict;
+use 5.006000;
 
 # We're using bareword file handles and two arg open for backward
 # compatibility in Makefile.PL.  Here we disable those tests in Perl::Critic.

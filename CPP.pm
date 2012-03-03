@@ -11,6 +11,7 @@ package Inline::CPP;
 
 use strict;
 use warnings;
+use 5.006000;
 
 require Inline::C;
 require Inline::CPP::grammar;
@@ -21,7 +22,7 @@ use base 'Inline::C';
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.34_004';
+our $VERSION = '0.35';
 $VERSION = eval $VERSION; ## no critic (eval)
 
 

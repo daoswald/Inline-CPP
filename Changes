@@ -1,10 +1,16 @@
 Revision history for Perl extension Inline::CPP.
-0.34_004 ----------------------------
+0.35 Sat Mar 03 08:15:00 PST 2012
+    - Additional code cleanup and improvements in Perl::Critic compliance.
+    - All patches present in 0.34_004, including code formatting, cleanup
+      Perl::Critic compliance and escaping (where necessary), and Makefile.PL
+      fixes to allow NetBSD, Solaris, and Darwin platform install success.
+    - Explicitly require minimum Perl version of 5.6.0.
+0.34_004 Tue Feb 28 08:00:00 MST 2012
     - Code formatting cleanup in CPP.pm and grammar.pm.
     - All code now passes Perl::Critic level 5, including test suite.
+    - CPP.pm and grammar.pm are Perl::Critic level 4 compliant.
     - New NetBSD patch from Chris Smith targeting better install success on
       that platform.
-    - CPP.pm and grammar.pm are *mostly* Perl::Critic level 4 compliant.
 0.34_003 Fri Feb 24 08:28:00 PST 2012
     - Add (untested) code to Makefile.PL to deal with NetBSD so that
       we can get a clean NetBSD install. EXPERIMENTAL in this version.
@@ -27,6 +33,7 @@ Revision history for Perl extension Inline::CPP.
       take advantage of Inline patch that resolves the issue where smoke
       testers were unable to locate Parse::RecDescent dependency.
     - POD revisions.
+    - Inline::CPP now needs minimum Perl version of 5.6.x
 0.33_010  Fri Feb 03 23:45:00 PST 2012
     [Patch applied by David Oswald]
     *** NEVER RELEASED ***
