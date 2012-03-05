@@ -1,13 +1,13 @@
 use strict;
 use Test;
-BEGIN { plan tests => 5 }
+BEGIN { plan( tests => 5 ); }
 
 use Inline CPP => <<'END';
 
 class Foo {
  public:
-   Foo() { 
- 	secret=0; 
+   Foo() {
+    secret=0;
    }
 
    ~Foo() { }

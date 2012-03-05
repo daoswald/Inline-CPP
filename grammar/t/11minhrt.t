@@ -1,6 +1,6 @@
 use strict;
 use Test;
-BEGIN { plan tests => 3 }
+BEGIN { plan( tests => 3 ); }
 use Inline 'CPP';
 
 ok(Parent1->new->do_something, 51);

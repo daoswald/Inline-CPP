@@ -1,6 +1,6 @@
 use strict;
 use Test;
-BEGIN { plan tests => 2 }
+BEGIN { plan( tests => 2 ); }
 use Inline CPP => <<'END';
 
 int foo(int a=10) { return a; }

@@ -2,12 +2,12 @@ use strict;
 use Test::More;
 use Config;
 
-#BEGIN {
-# Some diagnostic information for sorting out the Solaris Makefile.PL bug.
-#    diag( "\$Config{osname}:     $Config{osname}\n"     ); # Unnecessary now.
-#    diag( "\$Config{cc}:         $Config{cc}\n"         ); # Unnecessary now.
-#    diag( "\$Config{gccversion}: $Config{gccversion}\n" ); # Unnecessary now.
-#};
+BEGIN {
+# Some diagnostic information that may be helpful if install fails.
+    diag( "\$Config{osname}:     $Config{osname}\n"     );
+    diag( "\$Config{cc}:         $Config{cc}\n"         );
+    diag( "\$Config{gccversion}: $Config{gccversion}\n" );
+};
 
 sub prereq_message {
     return "*** YOU MUST INSTALL $_[0] BEFORE PROCEEDING ***\n";

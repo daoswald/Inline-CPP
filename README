@@ -33,11 +33,9 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.35 adds patches to allow successful on Solaris, Darwin,
-and many (but not all) NetBSD platforms.  Additionally, all code is now
-Perl::Critic compliant (Level 4 for CPP.pm and grammar.pm, level 5 for
-Makefile.PL and the test suite).  There has been a lot of code cleanup for
-readability and maintainability as well.
+Inline::CPP version 0.36 irons out some issues in the test suite.  Primary
+module code is unchanged from 0.35, but install success should be more
+reliable.
 
 Perl version 5.6.0 is now explicitly set as the minimum version under which
 Inline::CPP will build and work.

@@ -1,13 +1,13 @@
 use strict;
 use Test;
-BEGIN { plan tests => 2; }
+BEGIN { plan( tests => 2 ); }
 use Inline CPP => <<'END';
 
 class Foo {
    void priv(int a) { q = a; }
    int q;
 public:
-   Foo() {} 
+   Foo() {}
    ~Foo() {}
    void zippo(int quack) { printf("Hello, world!\n"); }
 };

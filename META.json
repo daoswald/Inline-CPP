@@ -22,7 +22,7 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : 0
+            "Test::More" : 0
          }
       },
       "configure" : {
@@ -39,5 +39,5 @@
       }
    },
    "release_status" : "stable",
-   "version" : "0.35"
+   "version" : "0.36"
 }

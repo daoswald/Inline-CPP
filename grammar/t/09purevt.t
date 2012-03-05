@@ -1,14 +1,14 @@
 use strict;
 use Test;
-BEGIN { plan tests => 2 }
+BEGIN { plan( tests => 2 ); }
 use Inline CPP => <<'END';
 
 class Abstract {
   public:
     virtual char *text() = 0;
-    virtual int greet(char *name) { 
-	printf("Hello, %s\n", name); 
-	return 17; 
+    virtual int greet(char *name) {
+    printf("Hello, %s\n", name);
+    return 17;
     }
 };
 

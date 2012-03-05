@@ -1,6 +1,6 @@
 use strict;
 use Test;
-BEGIN { plan test => 1 }
+BEGIN { plan( test => 1 ); }
 use Inline CPP => <<'END';
 class Foo {
   public:

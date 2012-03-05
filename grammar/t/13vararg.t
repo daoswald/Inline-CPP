@@ -1,6 +1,6 @@
 use strict;
 use Test;
-BEGIN { plan tests => 6 }
+BEGIN { plan( tests => 6 ); }
 use Inline 'CPP';
 
 ok(sum(), 0);

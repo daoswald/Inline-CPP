@@ -1,6 +1,6 @@
 use strict;
 use Test;
-BEGIN { plan tests => 3 }
+BEGIN { plan( tests => 3 ); }
 use Inline 'CPP';
 use Data::Dumper;
 
@@ -9,7 +9,7 @@ print Dumper \@list;
 ok($list[0], 1);
 ok($list[1], 'Hello?');
 ok($list[2], 15.75);
-# We used to test ok( $list[2], 15.6 ) with a corresponding value in the 
+# We used to test ok( $list[2], 15.6 ) with a corresponding value in the
 # CPP function.  But because .6 cannot be represented in a finite number of
 # binary digits we were getting some inequality test failures.
 # 15.75 is the same as 126/8, which can be represented accurately in base 2.

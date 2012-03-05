@@ -76,7 +76,6 @@ elsif ($Config{osname} eq 'linux') {
     $cc_guess   = 'g++';
     $libs_guess = '-lstdc++';
 }
-# NetBSD patch...
 elsif( $Config{osname} eq 'netbsd' ) {
     $cc_guess   = 'g++';
     $libs_guess = '-lstdc++ -lgcc_s';
@@ -195,7 +194,7 @@ for (@lines) {
 
 }
 
-open  CPP, ">CPP.pm"  or die "Can't write to CPP.pm for configuration!\n$!";
+open  CPP, '>CPP.pm'  or die "Can't write to CPP.pm for configuration!\n$!";
 print CPP  @lines;
 close CPP             or die "Can't close CPP.pm after config output!\n$!";
 
@@ -206,6 +205,9 @@ WriteMakefile(
     VERSION_FROM    => 'CPP.pm',
     ABSTRACT_FROM   => 'lib/Inline/CPP.pod',
     PREREQ_PM       => \%PREREQ_PM,
+    BUILD_REQUIRES  => {
+        'Test::More'    => '0',
+    },
     clean           => {
         FILES           => '_Inline/ grammar/_Inline'
     },

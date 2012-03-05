@@ -1,4 +1,8 @@
 Revision history for Perl extension Inline::CPP.
+0.36 Sun Mar 04 21:28:00 PST 2012
+    - Some platforms were complaining from strictures in the test suite
+      conflicting with Test.pm's plan() function.  This issue should now be
+      resolved.
 0.35 Sat Mar 03 08:15:00 PST 2012
     - Additional code cleanup and improvements in Perl::Critic compliance.
     - All patches present in 0.34_004, including code formatting, cleanup

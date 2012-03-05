@@ -1,7 +1,8 @@
 use strict;
 
 use Test;
-BEGIN { plan tests => 4 }
+
+BEGIN { plan( tests => 4 ); }
 
 ok(1);
 

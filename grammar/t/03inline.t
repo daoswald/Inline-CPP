@@ -1,8 +1,8 @@
 use strict;
 use Test;
-BEGIN { plan tests => 2 }
+BEGIN { plan( tests => 2 ); }
 
-use Inline 'CPP'; 
+use Inline 'CPP';
 
 
 my $obj = new Color;
@@ -21,7 +21,7 @@ void prn() {
 
 class Color {
  public:
-  Color() 
+  Color()
   {
     printf("new Color object created...\n");
   }
@@ -31,7 +31,7 @@ class Color {
     printf("Color object being destroyed...\n");
   }
 
-  int get_color() 
+  int get_color()
   {
     printf("Color::get_color called. Returning %i\n", color);
     return color;

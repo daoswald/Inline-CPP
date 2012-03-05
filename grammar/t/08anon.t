@@ -1,6 +1,6 @@
 use strict;
 use Test;
-BEGIN { plan tests => 1 }
+BEGIN { plan( tests => 1 ); }
 use Inline CPP => <<'END';
 
 class Foo {
