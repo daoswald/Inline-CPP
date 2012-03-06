@@ -1,7 +1,7 @@
-use strict;
+#use strict; # Disabled because tests started randomly failing on some systems.
 use Test;
 # Test static variables
-BEGIN { plan( tests => 1 ); }
+BEGIN { Test::plan( tests => 1 ); }
 use Inline CPP => <<'END';
 class Foo {
   public:

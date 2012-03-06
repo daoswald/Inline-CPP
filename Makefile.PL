@@ -207,6 +207,7 @@ WriteMakefile(
     PREREQ_PM       => \%PREREQ_PM,
     BUILD_REQUIRES  => {
         'Test::More'    => '0',
+        'Test'          => '0',
     },
     clean           => {
         FILES           => '_Inline/ grammar/_Inline'

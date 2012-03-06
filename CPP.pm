@@ -22,7 +22,7 @@ use base 'Inline::C';
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.36';
+our $VERSION = '0.37';
 $VERSION = eval $VERSION; ## no critic (eval)
 
 

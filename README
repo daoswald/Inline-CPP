@@ -33,9 +33,9 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.36 irons out some issues in the test suite.  Primary
-module code is unchanged from 0.35, but install success should be more
-reliable.
+Inline::CPP version 0.37 backs 'strict' out of the test suite as some
+platforms began inexplicably failing under strictures.  This version is
+functionally equal to 0.35.
 
 Perl version 5.6.0 is now explicitly set as the minimum version under which
 Inline::CPP will build and work.

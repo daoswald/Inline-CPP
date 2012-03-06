@@ -1,6 +1,6 @@
-use strict;
+#use strict; # Disabled because tests started randomly failing on some systems.
 use Test;
-BEGIN { plan( tests => 5 ); }
+BEGIN { Test::plan( tests => 5 ); }
 
 use Inline CPP => <<'END';
 

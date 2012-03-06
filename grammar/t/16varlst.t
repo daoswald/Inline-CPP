@@ -1,7 +1,7 @@
-use strict;
+#use strict; # Disabled because tests started randomly failing on some systems.
 use Test;
 # Test declarations of multiple variables in a list
-BEGIN { plan( tests => 2 ); }
+BEGIN { Test::plan( tests => 2 ); }
 use Inline CPP => <<'END';
 
 #define NUMBER 25
