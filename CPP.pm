@@ -147,7 +147,7 @@ END_FLAVOR_DEFINITIONS
     # ALTERED: Makefile.PL finds the line and alters the iostream name.
  my $iostream = 'iostream'; # default iostream filename
 
-    $o->{ILSM}{AUTO_INCLUDE} =~ s{%iostream%}{$iostream}smxg;
+    $o->{ILSM}{AUTO_INCLUDE} =~ s{%iostream%}{$iostream}xg;
 
     # Forward all unknown requests up to Inline::C
     $o->SUPER::validate(@propagate) if @propagate;
@@ -208,7 +208,7 @@ sub info {
     if ( defined $data->{functions} ) {
         for my $function ( sort @{ $data->{functions} } ) {
             my $func = $data->{function}{$function};
-            next if $function =~ m/::/smx;
+            next if $function =~ m/::/x;
             next unless $o->check_type( $func, 0, 0 );
             push @func, "\t" . $func->{rtype} . q{ };
             push @func, $func->{name} . '(';
@@ -320,7 +320,7 @@ END
                     $thing->{body}
                 );
             } elsif ( $type eq 'method' ) {
-                next if $name =~ m/operator/sm;
+                next if $name =~ m/operator/;
                 # generate an XS wrapper
                 $ctor ||= ( $name eq $class    );
                 $dtor ||= ( $name eq "~$class" );
@@ -356,15 +356,15 @@ END
     for my $function ( @{ $data->{functions} } ) {
         # lose constructor defs outside class decls (and "implicit int")
         next if $data->{function}{$function}{rtype} eq q{};
-        next if $data->{function}{$function}{rtype} =~ m/static/sm;#specl case
-        next if $function =~ m/::/smx;       # XXX: skip member functions?
-        next if $function =~ m/operator/sm;  # and operators.
+        next if $data->{function}{$function}{rtype} =~ m/static/;#specl case
+        next if $function =~ m/::/x;       # XXX: skip member functions?
+        next if $function =~ m/operator/;  # and operators.
         push @XS, $o->wrap( $data->{function}{$function}, $function );
     }
 
     for ( @{ $data->{enums} } ) {
         # Global enums.
-        $o->{ILSM}{XS}{BOOT} .= make_enum(  $pkg, @{ $_{ qw( name body ) } }  );
+        $o->{ILSM}{XS}{BOOT} .= make_enum(  $pkg, @{$_}{ qw( name body ) }  );
     }
 #     print "BOOT = \n", $o->{ILSM}{XS}{BOOT};
 
@@ -520,7 +520,7 @@ sub call_or_instantiate {
 
 sub const_cast {
     my( $value, $const, $type ) = @_;
-    return $value unless $const and $type =~ m/[*&]/smx;
+    return $value unless $const and $type =~ m/[*&]/x;
     return "const_cast<$type>($value)";
 }
 
@@ -560,7 +560,7 @@ sub typeconv {
     my $tkind = $o->{ILSM}{typeconv}{type_kind}{$type};
     my $ret;
     {
-#        no strict;
+        no strict;  ## no critic (strict)
         # The conditional avoids uninitialized warnings if user passes
         # a C++ function with 'void' as param.
         if( defined $tkind ) {
@@ -572,7 +572,7 @@ sub typeconv {
         }
     }
     chomp $ret;
-    $ret =~ s/\n/\\\n/smxg if $preproc;
+    $ret =~ s/\n/\\\n/xg if $preproc;
     return $ret;
 }
 
