@@ -4,6 +4,7 @@ Revision history for Perl extension Inline::CPP.
     - Dropped in the re-written test suite that uses Test::More.  This more
       modern test suite facilitates greater introspection for each segment of
       C++ code, and should also be easier to extend and maintain.
+    - Removed Test.pm dependency from distribution.
     - Shifted CPP.pm away from "use base 'Inline::C';" to "our @ISA =
       qw( Inline::C );" to better deal with the fact that one cannot "use"
       Inline::C.
