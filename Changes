@@ -1,5 +1,12 @@
 Revision history for Perl extension Inline::CPP.
 
+0.38 Tue Mar 06 17:09:00 PST 2012
+    - Added a minimum version of Test.pm under BUILD_REQUIRES in
+      Makefile.PL to get a good version of Test.pm for the test suite.
+      This fixes an issue where someone uploaded an empty distribution 
+      to CPAN named Test as version 0.001.  The  minimum version set for 
+      Test.pm was core for Perl 5.6.0.
+
 0.37 Mon Mar 05 15:45:00 PST 2012
     - Backed 'strict' out of test suite; tests began failing randomly on
       *some* minority of platforms (inexplicably).  May be a Test.pm fault.

@@ -194,9 +194,14 @@ for (@lines) {
 
 }
 
-open  CPP, '>CPP.pm'  or die "Can't write to CPP.pm for configuration!\n$!";
-print CPP  @lines;
-close CPP             or die "Can't close CPP.pm after config output!\n$!";
+open  CPP, '>CPP.pm'  
+    or die "Can't write to CPP.pm for configuration!\n$!";
+
+print CPP  @lines
+    or die "Can't write to CPP.pm for configuration!\n$!"; # Unlikely.
+
+close CPP             
+    or die "Can't close CPP.pm after config output!\n$!";
 
 
 WriteMakefile(
@@ -206,8 +211,8 @@ WriteMakefile(
     ABSTRACT_FROM   => 'lib/Inline/CPP.pod',
     PREREQ_PM       => \%PREREQ_PM,
     BUILD_REQUIRES  => {
-        'Test::More'    => '0',
-        'Test'          => '0',
+        'Test::More'    => '0',    # This is core. Just being explicit.
+        'Test'          => '1.13', # This is core from Perl 5.6.0.
     },
     clean           => {
         FILES           => '_Inline/ grammar/_Inline'
