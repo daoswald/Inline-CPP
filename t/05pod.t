@@ -1,4 +1,4 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
+use strict;
 
 use Test::More;
 eval 'use Test::Pod 1.00'; ## no critic (eval)

@@ -1,10 +1,18 @@
 Revision history for Perl extension Inline::CPP.
 
+0.38_001 Tue Mar 06 21:23:00 PST 2012
+    - Dropped in the re-written test suite that uses Test::More.  This more
+      modern test suite facilitates greater introspection for each segment of
+      C++ code, and should also be easier to extend and maintain.
+    - Shifted CPP.pm away from "use base 'Inline::C';" to "our @ISA =
+      qw( Inline::C );" to better deal with the fact that one cannot "use"
+      Inline::C.
+
 0.38 Tue Mar 06 17:09:00 PST 2012
     - Added a minimum version of Test.pm under BUILD_REQUIRES in
       Makefile.PL to get a good version of Test.pm for the test suite.
-      This fixes an issue where someone uploaded an empty distribution 
-      to CPAN named Test as version 0.001.  The  minimum version set for 
+      This fixes an issue where someone uploaded an empty distribution
+      to CPAN named Test as version 0.001.  The  minimum version set for
       Test.pm was core for Perl 5.6.0.
 
 0.37 Mon Mar 05 15:45:00 PST 2012

@@ -194,13 +194,13 @@ for (@lines) {
 
 }
 
-open  CPP, '>CPP.pm'  
+open  CPP, '>CPP.pm'
     or die "Can't write to CPP.pm for configuration!\n$!";
 
 print CPP  @lines
     or die "Can't write to CPP.pm for configuration!\n$!"; # Unlikely.
 
-close CPP             
+close CPP
     or die "Can't close CPP.pm after config output!\n$!";
 
 

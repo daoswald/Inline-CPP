@@ -33,8 +33,13 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.38 tweaks Makefile.PL to ensure that we get a
-good version of Test.pm for the test suite to use.
+Inline::CPP version 0.38_001 represents a rewrite of the test suite.  The new
+test suite tests the same functionality as the old suite, but uses more modern
+tools -- most importantly, Test::More.  This facilitates more in-depth
+introspection of the results of each segment of test C++ code.
+
+Additionally, CPP.pm has altered how it creates inheritance from Inline::C
+to improve compatibility across various platforms.
 
 Perl version 5.6.0 is now explicitly set as the minimum version under which
 Inline::CPP will build and work.
