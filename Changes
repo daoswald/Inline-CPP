@@ -1,5 +1,10 @@
 Revision history for Perl extension Inline::CPP.
 
+0.38_002 Wed Mar 07 10:07:00 PST 2012
+    - Bug fix for a bug introduced in refactoring code within version 0.35:
+      A hash slice got (wrongly) refactored as something else.  Fixed now.
+    - Fine tuned a few other recent refactoring issues.
+
 0.38_001 Tue Mar 06 21:23:00 PST 2012
     - Dropped in the re-written test suite that uses Test::More.  This more
       modern test suite facilitates greater introspection for each segment of
