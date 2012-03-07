@@ -28,8 +28,11 @@ grammar/t/17memberarray.t
 grammar/t/18voidparam.t
 lib/Inline/CPP.pod
 t/00load_prereqs.t
-t/01basic.t
-t/02prefix.t
-t/03pod.t
-META.yml                        Module YAML meta-data (added by MakeMaker)
-META.json                       Module JSON meta-data (added by MakeMaker)
+t/01fn_cans.t
+t/02basic.t
+t/05pod.t
+t/03prefix.t
+t/04charptr.t
+META.yml                            Module YAML meta-data (added by MakeMaker)
+META.json                           Module JSON meta-data (added by MakeMaker)
+

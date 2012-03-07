@@ -1,6 +1,6 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
-use Test;
-BEGIN { Test::plan( test => 1 ); }
+use strict;
+use Test::More;
+
 use Inline CPP => <<'END';
 class Foo {
   public:
@@ -10,4 +10,9 @@ class Foo {
 };
 END
 
-ok(Foo->get_string, "Hello, world!\n");
+is(
+    Foo->get_string, "Hello, world!\n",
+    "Static member function becomes a class member function."
+);
+
+done_testing();

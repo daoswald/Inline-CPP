@@ -1,6 +1,6 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
-use Test;
-BEGIN { Test::plan( tests => 1 ); }
+use strict;
+use Test::More;
+
 use Inline CPP => <<'END';
 
 struct Fizzle {
@@ -19,5 +19,11 @@ struct Fizzle {
 
 END
 
-my $o = new Fizzle;
-ok($o->get_q, 0);
+my $o = new_ok( 'Fizzle' );
+
+is(
+    $o->get_q, 0,
+    "Struct with public member function."
+);
+
+done_testing();

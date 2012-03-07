@@ -1,7 +1,7 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
-use Test;
-# Test declarations of multiple variables in a list
-BEGIN { Test::plan( tests => 2 ); }
+use strict;
+use Test::More;
+# Test declarations of multiple variables in a member data list.
+
 use Inline CPP => <<'END';
 
 #define NUMBER 25
@@ -34,5 +34,16 @@ class Bar {
 };
 
 END
-ok(Foo->new(1.23)->test, 10);
-ok(Bar->new->test, -1);
+
+
+is(
+    Foo->new(1.23)->test, 10,
+    "Declaration of multiple variables in a list."
+);
+
+is(
+    Bar->new->test, -1,
+    "Simple case class following multiple variables class."
+);
+
+done_testing();

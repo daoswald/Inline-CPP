@@ -211,7 +211,7 @@ WriteMakefile(
     ABSTRACT_FROM   => 'lib/Inline/CPP.pod',
     PREREQ_PM       => \%PREREQ_PM,
     BUILD_REQUIRES  => {
-        'Test::More'    => '0',    # This is core. Just being explicit.
+        'Test::More'    => '0.98', # This is core. Just being explicit.
         'Test'          => '1.13', # This is core from Perl 5.6.0.
     },
     clean           => {

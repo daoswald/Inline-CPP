@@ -1,4 +1,4 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
+use strict;
 use Test::More;
 
 BEGIN {

@@ -1,6 +1,6 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
-use Test;
-BEGIN { Test::plan( tests => 1 ); }
+use strict;
+use Test::More;
+
 use Inline CPP => <<'END';
 class Foo {
   public:
@@ -10,4 +10,11 @@ class Foo {
 };
 
 END
-ok(Foo->new->data, "Hello dolly!\n");
+
+
+is(
+    Foo->new->data, "Hello dolly!\n",
+    "Instantiate object and invoke member function returning a const char*"
+);
+
+done_testing();

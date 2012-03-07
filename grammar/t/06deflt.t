@@ -1,6 +1,6 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
-use Test;
-BEGIN { Test::plan( tests => 2 ); }
+use strict;
+use Test::More;
+
 use Inline CPP => <<'END';
 
 int foo(int a=10) { return a; }
@@ -18,5 +18,16 @@ class Freak {
 };
 
 END
-ok(Freak->new->foo, 8);
-ok(foo, 10);
+
+
+is(
+    Freak->new->foo, 8,
+    "Instantiate object and call member with default arguments."
+);
+
+is(
+    foo, 10,
+    "Call simple function with default arguments."
+);
+
+done_testing();

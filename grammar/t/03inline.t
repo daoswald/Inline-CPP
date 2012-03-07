@@ -1,17 +1,21 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
-use Test;
-BEGIN { Test::plan( tests => 2 ); }
+use strict;
+use Test::More;
+
+# Testing proper handling of functions defined inline within a class.
 
 use Inline 'CPP';
 
+my $obj = new_ok( 'Color' );
 
-my $obj = new Color;
-ok(ref $obj, 'main::Color');
 
 $obj->set_color(15);
-print $obj->get_color, "\n";
 
-ok($obj->get_color, 15);
+is(
+    $obj->get_color, 15,
+    "Member function defined inline within class."
+);
+
+done_testing();
 
 __END__
 __CPP__
@@ -46,5 +50,3 @@ class Color {
  private:
   int color;
 };
-
-

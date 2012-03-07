@@ -1,6 +1,7 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
-use Test;
-BEGIN { Test::plan( tests => 1 ); }
+use strict;
+use Test::More;
+
+
 use Inline CPP => <<'END';
 class Foo {
   public:
@@ -10,4 +11,11 @@ class Foo {
     virtual const char *get_data_ro() { return "Hello Sally!\n"; }
 };
 END
-ok(Foo->new->get_data_ro, "Hello Sally!\n");
+
+
+is(
+    Foo->new->get_data_ro, "Hello Sally!\n",
+    "Define and invoke virtual function."
+);
+
+done_testing();

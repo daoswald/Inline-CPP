@@ -23,4 +23,6 @@ BEGIN {
         or BAIL_OUT( prereq_message( 'Inline::C' ) );
 }
 
+use_ok( 'Config' );
+
 done_testing();

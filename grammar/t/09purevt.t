@@ -1,14 +1,15 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
-use Test;
-BEGIN { Test::plan( tests => 2 ); }
+use strict;
+use Test::More;
+
+# Test pure virtual functions (abstract classes).
 use Inline CPP => <<'END';
 
 class Abstract {
   public:
-    virtual char *text() = 0;
-    virtual int greet(char *name) {
-    printf("Hello, %s\n", name);
-    return 17;
+        virtual char *text() = 0;
+        virtual int greet(char *name) {
+        printf("# Hello, %s.\n", name);
+        return 17;
     }
 };
 
@@ -19,8 +20,33 @@ class Impl : public Abstract {
     virtual char *text() { return "Hello from Impl!"; }
 };
 
+
 END
 
-my $o = new Impl;
-ok($o->text, 'Hello from Impl!');
-ok($o->greet('Neil'), 17);
+my $o = new_ok( 'Impl' );
+is(
+    $o->text, 'Hello from Impl!',
+    "Resolved virtual member function from self."
+);
+
+is(
+    $o->greet('Neil'), 17,
+    "Inherited member function from parent."
+);
+
+my $p;
+eval{ $p = Abstract->new(); };
+if( $@ ) {
+    like(
+        $@,
+        qr/^Can't locate object method "new" via package "[^:]+::Abstract"/,
+        "Classes with pure virtual functions cannot be instantiated."
+    );
+} else {
+    not_ok(
+        "Abstract class with pure virtual function should not instantiate."
+    );
+}
+
+
+done_testing();

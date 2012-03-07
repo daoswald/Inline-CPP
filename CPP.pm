@@ -17,7 +17,8 @@ require Inline::C;
 require Inline::CPP::grammar;
 use Carp;
 
-use base 'Inline::C';
+# use base doesn't work because Inline::C cannot be "use"d directly.
+our @ISA = qw( Inline::C ); ## no critic (ISA)
 
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as

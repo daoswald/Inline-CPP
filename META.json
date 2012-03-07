@@ -23,7 +23,7 @@
       "build" : {
          "requires" : {
             "Test" : "1.13",
-            "Test::More" : 0
+            "Test::More" : "0.98"
          }
       },
       "configure" : {

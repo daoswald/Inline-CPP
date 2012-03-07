@@ -1,6 +1,7 @@
-#use strict; # Disabled because tests started randomly failing on some systems.
-use Test;
-BEGIN { Test::plan( tests => 5 ); }
+use strict;
+use Test::More;
+
+# Testing proper handling of inherited object methods.
 
 use Inline CPP => <<'END';
 
@@ -32,15 +33,23 @@ END
 # If it works, it will print this. Otherwise it won't.
 ok(1);
 
-# Test Foo
-my $o = new Foo;
-ok($o->get_secret(), 0);
+# Test Foo.
+my $o = new_ok( 'Foo' );
+is( $o->get_secret(), 0, "Foo: Object getter." );
 $o->set_secret(539);
-ok($o->get_secret(), 539);
+is( $o->get_secret(), 539, "Foo: Object setter." );
 
-# Test Bar
-my $p = new Bar(11);
-ok($p->get_secret(), 11);
-$p->set_secret(21);
-ok($p->get_secret(), 42);
 
+# Test Bar.
+
+
+my $p = new_ok( 'Bar', [ 11 ] );
+is(
+    $p->get_secret(), 11,
+    "Bar: Overrides constructor, inherits accessor from Foo."
+);
+
+$p->set_secret( 21 );
+is( $p->get_secret(), 42, "Bar: Overrides setter." );
+
+done_testing();
