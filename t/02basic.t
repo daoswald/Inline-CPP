@@ -1,5 +1,5 @@
 use strict;
-use Test::More;
+use Test::More tests => 12;
 
 # Test modified from original: Constructor must make copies of the strings
 # passed in as params, otherwise pointers may become invalid.

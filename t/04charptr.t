@@ -1,4 +1,4 @@
-# Testing proper handling of char* c-strings as params and rv's given C++ 
+# Testing proper handling of char* c-strings as params and rv's given C++
 # code that correctly copies the values.
 
 # By copying cstring input param we become impervious to string pointers
@@ -7,7 +7,7 @@
 use strict;
 use warnings;
 
-use Test::More;
+use Test::More tests => 2;
 
 use Inline CPP => 'DATA';
 

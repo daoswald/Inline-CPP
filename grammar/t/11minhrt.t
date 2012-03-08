@@ -1,10 +1,9 @@
-use Test::More;
+use Test::More tests => 38;
 
 use strict;
 use warnings;
 
 use Inline CPP => 'DATA';
-#use Inline CPP => 'DATA' => CLEAN_AFTER_BUILD => 0;
 
 note( 'Instantiating objects.' );
 my @object_descriptions = (
@@ -161,7 +160,7 @@ done_testing();
 
 =cut
 
--------------------- email from Patrick --------------- 
+-------------------- email from Patrick ---------------
 David,
 
 I'm really no C++ expert, but I think the implementation is not viable
