@@ -45,7 +45,7 @@ sub register {
         type     => 'compiled',
         suffix   => $Config{dlext},
     };
-}
+} ### Tested.
 
 #============================================================================
 # Validate the C++ config options: Now mostly done in Inline::C
@@ -54,17 +54,17 @@ sub validate {
     my ( $o, @config_options ) = @_;
     # DO NOT ALTER THE FOLLOWING TWO LINES: Makefile.PL locates them by
     # their comment text and alters them based on install inputs.
- $o->{ILSM}{MAKEFILE}{CC} ||= 'g++'; # default compiler
- $o->{ILSM}{MAKEFILE}{LIBS} ||= ['-lstdc++']; # default libs
+    $o->{ILSM}{MAKEFILE}{CC}   ||= 'g++'; # default compiler
+    $o->{ILSM}{MAKEFILE}{LIBS} ||= ['-lstdc++']; # default libs
 
     # I haven't traced it out yet, but $o->{STRUCT} gets set before getting
     # properly set from Inline::C's validate().
     $o->{STRUCT} ||= {
-              '.macros' => q{},
-              '.xs'     => q{},
-              '.any'    => 0,
-              '.all'    => 0,
-             };
+        '.macros' => q{},
+        '.xs'     => q{},
+        '.any'    => 0,
+        '.all'    => 0,
+    };
     $o->{ILSM}{AUTO_INCLUDE} ||= <<'END';
 #ifndef bool
 #include <%iostream%>
@@ -145,7 +145,7 @@ END_FLAVOR_DEFINITIONS
 
     # IT IS CRITICAL THAT THE FOLLOWING LINE NOT HAVE ITS "COMMENT"
     # ALTERED: Makefile.PL finds the line and alters the iostream name.
- my $iostream = 'iostream'; # default iostream filename
+    my $iostream = 'iostream'; # default iostream filename
 
     $o->{ILSM}{AUTO_INCLUDE} =~ s{%iostream%}{$iostream}xg;
 
@@ -445,12 +445,11 @@ sub wrap {
             }
             push @CODE, "\tRETVAL = " unless $void;
             push @CODE, call_or_instantiate(
-                $name,                          $ctor,
-                $dtor,                          $class,
-                $thing->{rconst},               $thing->{rtype},
+                $name, $ctor, $dtor, $class,
+                $thing->{rconst}, $thing->{rtype},
                 ( map { $_->{name} } @args ),   @tmp
             );
-            push @CODE, "\tbreak; /* case " . ($i+1) . " */\n";
+            push @CODE, "\tbreak; /* case " . ( $i + 1 ) . " */\n";
         }
         push @CODE, "default:\n";
         push @CODE, "\tRETVAL = " unless $void;
@@ -463,9 +462,7 @@ sub wrap {
     elsif ( $void ) {
         push @CODE, "\t";
         push @CODE, call_or_instantiate(
-            $name,              $ctor,
-            $dtor,              $class,
-            0,                  q{},
+            $name, $ctor, $dtor, $class, 0, q{},
             map { $_->{name} } @args
         );
     }
@@ -473,8 +470,7 @@ sub wrap {
         push @CODE, "\t";
         push @CODE, 'RETVAL = ';
         push @CODE, call_or_instantiate(
-            $name,              $ctor,
-            $dtor,              $class,
+            $name, $ctor, $dtor, $class,
             $thing->{rconst},   $thing->{rtype},
             map { $_->{name} } @args
         );
@@ -543,8 +539,6 @@ INPUT
 $TYPEMAP_KIND
 $o->{ILSM}{typeconv}{input_expr}{$TYPEMAP_KIND}
 END
-#    open TYPEMAP, "> $filename"
-#    print TYPEMAP <<END;
     open my $TYPEMAP_FH, '>', $filename
         or croak "Error: Can't write to $filename: $!";
     print {$TYPEMAP_FH} $tm_output;

@@ -174,15 +174,15 @@ close CPP;
 
 for (@lines) {
 
-    $_ =    " \$o->{ILSM}{MAKEFILE}{CC} ||= '$cpp_compiler'; "
+    $_ =    "    \$o->{ILSM}{MAKEFILE}{CC}   ||= '$cpp_compiler'; "
             . "# default compiler\n"
         if /# default compiler/;
 
-    $_  =   " \$o->{ILSM}{MAKEFILE}{LIBS} ||= ['$libs']; "
+    $_  =   "    \$o->{ILSM}{MAKEFILE}{LIBS} ||= ['$libs']; "
             . "# default libs\n"
         if /# default libs/;
 
-    $_  =   " my \$iostream = '$iostream_fname_style';"
+    $_  =   "    my \$iostream = '$iostream_fname_style';"
             . " # default iostream filename\n"
         if /# default iostream filename/;
 
