@@ -78,7 +78,7 @@ subtest 'Inline::CPP::const_cast() tests.' => sub {
 # Test call_or_instantiate().
 subtest 'Inline::CPP::call_or_instantiate() tests.' => sub {
     note 'Testing Inline::CPP::call_or_instantiate()';
-    plan tests => 3;
+    plan tests => 5;
     is(
         Inline::CPP::call_or_instantiate(
             qw( name ctor dtor class const *type args1 args2 )
@@ -86,6 +86,20 @@ subtest 'Inline::CPP::call_or_instantiate() tests.' => sub {
         "const_cast<*type>(new delete name(args1,args2));\n",
         'call_or_instantiate(): const_cast<*type>(new delete name' .
         '(args1,args2));\n (Test conflation expected)'
+    );
+    is(
+        Inline::CPP::call_or_instantiate(
+            '', 'ctor', undef, 'class', undef, '*type', 'args1', 'args2'
+        ),
+        "new (args1,args2);\n",
+        'call_or_instantiate(): new.'
+    );
+    is(
+        Inline::CPP::call_or_instantiate(
+            '', undef, 'dtor', 'class', undef, 'type'
+        ),
+        "delete ();\n",
+        'call_or_instantiate(): delete.'
     );
     is(
         Inline::CPP::call_or_instantiate(
