@@ -33,6 +33,8 @@ t/02basic.t
 t/05pod.t
 t/03prefix.t
 t/04charptr.t
+t/06fn_regress.t
+t/07perlcritic.t
 META.yml                            Module YAML meta-data (added by MakeMaker)
 META.json                           Module JSON meta-data (added by MakeMaker)
 

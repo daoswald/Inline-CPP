@@ -78,46 +78,51 @@ subtest 'Inline::CPP::const_cast() tests.' => sub {
 # Test call_or_instantiate().
 subtest 'Inline::CPP::call_or_instantiate() tests.' => sub {
     note 'Testing Inline::CPP::call_or_instantiate()';
-    plan tests => 5;
-    is(
-        Inline::CPP::call_or_instantiate(
-            qw( name ctor dtor class const *type args1 args2 )
-        ),
-        "const_cast<*type>(new delete name(args1,args2));\n",
-        'call_or_instantiate(): const_cast<*type>(new delete name' .
-        '(args1,args2));\n (Test conflation expected)'
+    plan tests => 14;
+    my @tests = (
+        #   name     ctor dtor class    const type      args
+        # output
+        [ [ 'secr',  0,   0,   'Foo',   0,    '',       qw( s     ) ],
+          'THIS->secr(s);'                                                  ],
+        [ [ 'secr',  0,   0,   'Bar',   0,    '',       qw( s     ) ],
+          'THIS->secr(s);'                                                  ],
+        [ [ 'prn',   0,   0,   '',      0,    '',       qw(       ) ],
+          'prn();'                                                          ],
+        [ [ 'dat',   0,   0,   'Foo',   2,    'char *', qw(       ) ],
+          'const_cast<char *>(THIS->dat());'                                ],
+        [ [ 'dat',   0,   0,   'Foo',   2,    'char *', qw( a     ) ],
+          'const_cast<char *>(THIS->dat(a));'                               ],
+        [ [ 'foo',   0,   0,   'Freak', '',   'int',    qw( a     ) ],
+          'THIS->foo(a);'                                                   ],
+        [ [ 'foo',   0,   0,   'Freak', '',   'int',    qw( a b   ) ],
+          'THIS->foo(a,b);'                                                 ],
+        [ [ 'foo',   0,   0,   'Freak', '',   'int',    qw( a b c ) ],
+          'THIS->foo(a,b,c);'                                               ],
+        [ [ 'foo2',  0,   0,   'Freak', 0,    'int',    qw( a b c ) ],
+          'THIS->foo2(a,b,c);'                                              ],
+        [ [ 'foo',   0,   0,   '',      '',   'int',    qw( a     ) ],
+          'foo(a);'                                                         ],
+        [ [ 'Fizzl', 1,   0,   'Fizzl', '',   '',       qw( Q     ) ],
+          'new Fizzl(Q);'                                                   ],
+        [ [ 'Fizzl', 1,   0,   'Fizzl', '',   '',       qw( Q Fooz) ],
+          'new Fizzl(Q,Fooz);'                                              ],
+        [ [ 'Fizzl', 0,   1,   'Fizzl', '',   '',       qw(       ) ],
+          'delete Fizzl();'                                                 ], # This may exercise unused code.
+        [ [ 'test',  0,   0,   'Bar',   3,    'int',    qw(       ) ],
+          'THIS->test();'                                                   ],
     );
-    is(
-        Inline::CPP::call_or_instantiate(
-            '', 'ctor', undef, 'class', undef, '*type', 'args1', 'args2'
-        ),
-        "new (args1,args2);\n",
-        'call_or_instantiate(): new.'
-    );
-    is(
-        Inline::CPP::call_or_instantiate(
-            '', undef, 'dtor', 'class', undef, 'type'
-        ),
-        "delete ();\n",
-        'call_or_instantiate(): delete.'
-    );
-    is(
-        Inline::CPP::call_or_instantiate(
-            'name', undef, undef, 'class', 'const', '&type', 'args1', 'args2'
-        ),
-        "const_cast<&type>(THIS->name(args1,args2));\n",
-        'call_or_instantiate(): const_cast<&type>(THIS->name(args1,args2));\n'
-    );
-    is(
-        Inline::CPP::call_or_instantiate(
-            'name', undef, undef, 'class', 'const', '&type', 'args_all'
-        ),
-        "const_cast<&type>(THIS->name(args_all));\n",
-        'call_or_instantiate(): const_cast<&type>(THIS->name(args_all));\n'
-    );
+    foreach my $test ( @tests ) {
+        is(
+            Inline::CPP::call_or_instantiate( @{$test->[0]} ),
+            $test->[1] . "\n",
+            sprintf( "%-65s => %-33s",
+                "call_or_instantiate('" . join( "','", @{$test->[0]} ) . "')",
+                $test->[1]
+            )
+        );
+    }
     return;
 };
-
 
 done_testing();
 

@@ -26,6 +26,8 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 our $VERSION = '0.38_002';
 $VERSION = eval $VERSION; ## no critic (eval)
 
+our $LOGFILE = q{ilcpp.log};
+
 
 my $TYPEMAP_KIND;
 {
@@ -511,6 +513,8 @@ sub call_or_instantiate {
     $rval .= 'THIS->'  if ( $class and not ( $ctor or $dtor ) );
     $rval .= $name . '(' . join ( q{,}, @args ) . ')';
 
+    my $log = "name: $name, ctor: $ctor, dtor: $dtor, class: $class, const: $const, type, $type, args: (@args)\n";
+    $log .= "\t" . const_cast( $rval, $const, $type ) . ";\n";
     return const_cast( $rval, $const, $type ) . ";\n";
 }
 
@@ -628,6 +632,15 @@ END
 END
     return join q{}, @enum;
 }
+
+# log_this( $LOGFILE, $log );
+# sub log_this {
+#     my ( $filename, @output ) = @_;
+#     open my $fh, '>>', $filename or die $!;
+#     print {$fh} @output, "\n";
+#     close $fh or die $!;
+# }
+
 
 1;
 
