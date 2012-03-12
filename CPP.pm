@@ -26,7 +26,7 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 our $VERSION = '0.38_002';
 $VERSION = eval $VERSION; ## no critic (eval)
 
-our $LOGFILE = q{ilcpp.log};
+our $LOGFILE = q{c:/Users/daoswald/programming/repos/Inline-CPP/ilcpp.log};
 
 
 my $TYPEMAP_KIND;
@@ -516,13 +516,13 @@ sub call_or_instantiate {
     my $log = "name: $name, ctor: $ctor, dtor: $dtor, class: $class, const: $const, type, $type, args: (@args)\n";
     $log .= "\t" . const_cast( $rval, $const, $type ) . ";\n";
     return const_cast( $rval, $const, $type ) . ";\n";
-}
+} ### Tested.
 
 sub const_cast {
     my( $value, $const, $type ) = @_;
     return $value unless $const and $type =~ m/[*&]/x;
     return "const_cast<$type>($value)";
-}
+} ### Tested.
 
 sub write_typemap {
     my $o         = shift;
@@ -634,12 +634,12 @@ END
 }
 
 # log_this( $LOGFILE, $log );
-# sub log_this {
-#     my ( $filename, @output ) = @_;
-#     open my $fh, '>>', $filename or die $!;
-#     print {$fh} @output, "\n";
-#     close $fh or die $!;
-# }
+#sub log_this {
+#    my ( $filename, @output ) = @_;
+#    open my $fh, '>>', $filename or die $!;
+#    print {$fh} @output, "\n";
+#    close $fh or die $!;
+#}
 
 
 1;

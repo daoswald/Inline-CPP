@@ -7,7 +7,7 @@ require Inline::CPP;
 
 {
     no warnings 'once';
-    ok( defined( $Inline::CPP::grammar::TYPEMAP_KIND ), 'TYPEMAP_KIND defined.' );
+    ok(defined($Inline::CPP::grammar::TYPEMAP_KIND), 'TYPEMAP_KIND defined.');
 }
 
 # Test Inline::CPP::register().
@@ -20,22 +20,16 @@ subtest 'Inline::CPP::register() tests.'  => sub {
     ok( ! $@, 'Call to Inline::CPP::register() succeeds.' );
     diag 'Failure was: ' . $@ if $@;
     is( $rv->{language}, 'CPP', 'Language CPP properly defined.' );
-    is(
-        scalar @{$rv->{aliases}},
+    is( scalar @{$rv->{aliases}},
         scalar @ALIASES,
-        'Got proper number of aliases.'
-    );
+        'Got proper number of aliases.' );
     foreach my $alias ( @ALIASES ) {
-        ok(
-            ( grep { $_ eq $alias } @{$rv->{aliases}} ),
-            "Found alias $alias."
-        );
+        ok( ( grep { $_ eq $alias } @{$rv->{aliases}} ),
+            "Found alias $alias."                        );
     }
     is( $rv->{type}, 'compiled', 'Proper language type.' );
-    ok(
-        defined( $rv->{suffix} ),
-        'An extension suffix is defined by $Config{dlext}.'
-    );
+    ok( defined( $rv->{suffix} ),
+        'An extension suffix is defined by $Config{dlext}.' );
     return;
 };
 
@@ -43,34 +37,31 @@ subtest 'Inline::CPP::register() tests.'  => sub {
 # Test const_cast().
 subtest 'Inline::CPP::const_cast() tests.' => sub {
     note 'Testing Inline::CPP::const_cast()';
-    plan tests => 6;
-    my $v = 100;     # Value
-    my $c = 0;       # Const boolean test.
-    my $t = 'abcde'; # Type.
-    is( Inline::CPP::const_cast( $v, $c, $t ), $v,
-        "const_cast($v,$c,'$t') returns $v."
+    plan tests => 13;
+    my @tests = (
+        [ 'THIS->secr(s)', '0', '', 'THIS->secr(s)' ],
+        [ 'prn()', '0', '', 'prn()' ],
+        [ 'THIS->dat()', '2', 'char *','const_cast<char *>(THIS->dat())' ],
+        [ 'THIS->dat(a)', '2', 'char *','const_cast<char *>(THIS->dat(a))' ],
+        [ 'THIS->foo(a)', '', 'int', 'THIS->foo(a)' ],
+        [ 'THIS->foo(a,b)', '', 'int', 'THIS->foo(a,b)' ],
+        [ 'THIS->foo(a,b,c)', '', 'int', 'THIS->foo(a,b,c)' ],
+        [ 'THIS->foo2(a,b,c)', '0', 'int', 'THIS->foo2(a,b,c)' ],
+        [ 'foo(a)', '', 'int', 'foo(a)' ],
+        [ 'new Fizzl(Q)', '', '', 'new Fizzl(Q)' ],
+        [ 'new Fizzl(Q,Fooz)', '', '', 'new Fizzl(Q,Fooz)' ],
+        [ 'delete Fizzl()', '', '', 'delete Fizzl()' ],
+        [ 'THIS->test()', '3', 'int', 'THIS->test()' ],
     );
-    $c = 1;
-    is( Inline::CPP::const_cast( $v, $c, $t ), $v,
-        "const_cast($v,$c,'$t') returns $v."
-    );
-    $t = '&abcde';
-    $c = 0;
-    is( Inline::CPP::const_cast( $v, $c, $t ), $v,
-        "const_cast($v,$c,'$t') returns $v."
-    );
-    $t = '*abcde';
-    is( Inline::CPP::const_cast( $v, $c, $t ), $v,
-        "const_cast($v,$c,'$t') returns $v."
-    );
-    $c = 1;
-    is( Inline::CPP::const_cast( $v, $c, $t ), "const_cast<$t>($v)",
-        "const_cast($v,$c,'$t') returns const_cast<$t>($v)."
-    );
-    $t = '&abcde';
-    is( Inline::CPP::const_cast( $v, $c, $t ), "const_cast<$t>($v)",
-        "const_cast($v,$c,'$t') returns const_cast<$t>($v)."
-    );
+    foreach my $test ( @tests ) {
+        my( $value, $const, $type, $expect ) = @{$test};
+        is( Inline::CPP::const_cast( $value, $const, $type ),
+            $expect,
+            sprintf( "%-45s => %-32s",
+                "const_cast('$value','$const','$type')", $expect
+            )
+        );
+    }
     return;
 };
 
@@ -112,8 +103,7 @@ subtest 'Inline::CPP::call_or_instantiate() tests.' => sub {
           'THIS->test();'                                                   ],
     );
     foreach my $test ( @tests ) {
-        is(
-            Inline::CPP::call_or_instantiate( @{$test->[0]} ),
+        is( Inline::CPP::call_or_instantiate( @{$test->[0]} ),
             $test->[1] . "\n",
             sprintf( "%-65s => %-33s",
                 "call_or_instantiate('" . join( "','", @{$test->[0]} ) . "')",
@@ -123,6 +113,7 @@ subtest 'Inline::CPP::call_or_instantiate() tests.' => sub {
     }
     return;
 };
+
 
 done_testing();
 
