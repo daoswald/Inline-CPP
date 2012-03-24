@@ -65,7 +65,9 @@ elsif (
     $Config{gccversion} and
     $Config{cc} =~ m#\bgcc\b[^/]*$#
 ) {
+	print "Basic gcc.\n";
     ($cc_guess  = $Config{cc}) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
+    $cc_guess .= ' -xc++';
     $libs_guess = '-lstdc++';
 }
 elsif ($Config{osname} =~ m/^MSWin/) {
@@ -73,6 +75,7 @@ elsif ($Config{osname} =~ m/^MSWin/) {
     $libs_guess = 'MSVCIRT.LIB';
 }
 elsif ($Config{osname} eq 'linux') {
+	print "Linux detected.\n";
     $cc_guess   = 'g++';
     $libs_guess = '-lstdc++';
 }
