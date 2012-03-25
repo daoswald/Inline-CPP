@@ -1,3 +1,4 @@
+use strict;
 use ExtUtils::MakeMaker;
 WriteMakefile(
           NAME => 'Inline::CPP::grammar',

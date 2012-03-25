@@ -1,12 +1,14 @@
 use ExtUtils::MakeMaker;
+use ExtUtils::CppGuess;
 use Config;
-
 use strict;
 use 5.006000;
 
 # We're using bareword file handles and two arg open for backward
 # compatibility in Makefile.PL.  Here we disable those tests in Perl::Critic.
-
+# We also are not loading warnings, again for backward compatibility.
+# perlcritic severity 4 compliant.
+## no critic (warnings)
 ## no critic (bareword file handle)
 ## no critic (two-argument open)
 
@@ -49,70 +51,85 @@ for (sort keys %PREREQ_PM) {
 #============================================================================
 # Make an intelligent guess about what compiler to use
 #============================================================================
+
 my $cc_guess;
 my $libs_guess;
 
-if ($Config{osname} eq 'darwin'){
-    my $stdlib_query =
-        'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p )';
-    my $stdcpp =
-        `$stdlib_query`; + $stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
-    $cc_guess   = 'g++';
-    $libs_guess = "-L$stdcpp -lstdc++";
+my $guesser = ExtUtils::CppGuess->new();
+my %configuration = $guesser->module_build_options();
+
+if( $guesser->is_gcc() ) {
+    $cc_guess = 'g++';
 }
-elsif (
-    $Config{osname} ne 'darwin' and
-    $Config{gccversion} and
-    $Config{cc} =~ m#\bgcc\b[^/]*$#
-) {
-    print "Basic gcc.\n";
-    ($cc_guess  = $Config{cc}) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
-    $cc_guess .= ' -xc++';
-    $libs_guess = '-lstdc++';
+elsif ( $guesser->is_msvc() )
+{
+    $cc_guess = 'cl';
 }
-elsif ($Config{osname} =~ m/^MSWin/) {
-    $cc_guess   = 'cl -TP -EHsc';
-    $libs_guess = 'MSVCIRT.LIB';
-}
-elsif ($Config{osname} eq 'linux') {
-    print "Linux detected.\n";
-    $cc_guess   = 'g++';
-    $libs_guess = '-lstdc++';
-}
-elsif( $Config{osname} eq 'netbsd' ) {
-    $cc_guess   = 'g++';
-    $libs_guess = '-lstdc++ -lgcc_s';
-}
-elsif ($Config{osname} eq 'cygwin') {
-    $cc_guess   = 'g++';
-    $libs_guess = '-lstdc++';
-}
-elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
-    if (
-        $Config{cc} eq 'gcc' ||
-        ( exists( $Config{gccversion} ) && $Config{gccversion} > 0 )
-    ) {
-        $cc_guess   = 'g++';
-        $libs_guess = '-lstdc++';
-    }
-    else {
-        $cc_guess   = 'CC';
-        $libs_guess ='-lCrun';
-    }
-}
-elsif ($Config{osname} eq 'mirbsd') {
-    my $stdlib_query =
-        'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p ) | head -1';
-    my $stdcpp =
-        `$stdlib_query`; + $stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
-    $cc_guess   = 'g++';
-    $libs_guess = "-L$stdcpp -lstdc++ -lc -lgcc_s";
-}
-# Sane defaults for other (probably unix-like) operating systems
-else {
-    $cc_guess   = 'g++';
-    $libs_guess = '-lstdc++';
-}
+
+$cc_guess .= $configuration{extra_compiler_flags};
+$libs_guess = $configuration{extra_linker_flags};
+
+#if ($Config{osname} eq 'darwin'){                                               # Compiler will be g++
+    #my $stdlib_query =                                                          # -Llibstdc++ -lstdc++
+        #'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p )';
+    #my $stdcpp =
+        #`$stdlib_query`; + $stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
+    #$cc_guess   = 'g++';
+    #$libs_guess = "-L$stdcpp -lstdc++";
+#}
+#elsif (                                                                         # Basic default - g++ (Strawberry uses this).
+    #$Config{osname} ne 'darwin' and                                             # -lstdc++
+    #$Config{gccversion} and
+    #$Config{cc} =~ m#\bgcc\b[^/]*$#
+#) {
+    #print "Basic gcc.\n";
+    #($cc_guess  = $Config{cc}) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
+    #$libs_guess = '-lstdc++';
+#}
+#elsif ($Config{osname} =~ m/^MSWin/) {                                          # cl -TP -EHsc
+    #$cc_guess   = 'cl -TP -EHsc';                                               # MSVCIRT.LIB # This seems wrong...
+    #$libs_guess = 'MSVCIRT.LIB';
+#}
+#elsif ($Config{osname} eq 'linux') {                                            # g++
+    #print "Linux detected.\n";                                                  # -lstdc++
+    #$cc_guess   = 'g++';
+    #$libs_guess = '-lstdc++';
+#}
+#elsif( $Config{osname} eq 'netbsd' ) {                                          # g++
+    #$cc_guess   = 'g++';                                                        # -lstdc++ -lgcc_s
+    #$libs_guess = '-lstdc++ -lgcc_s';
+#}
+#elsif ($Config{osname} eq 'cygwin') {                                           # g++
+    #$cc_guess   = 'g++';                                                        # lstdc++
+    #$libs_guess = '-lstdc++';
+#}
+#elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
+    #if (
+        #$Config{cc} eq 'gcc' ||                                                 # g++
+        #( exists( $Config{gccversion} ) && $Config{gccversion} > 0 )            # -lstdc++
+    #) {
+        #$cc_guess   = 'g++';
+        #$libs_guess = '-lstdc++';
+    #}
+    #else {                                                                      # CC
+        #$cc_guess   = 'CC';                                                     # -lCrun  # This also seems wrong.
+        #$libs_guess ='-lCrun';
+    #}
+#}
+#elsif ($Config{osname} eq 'mirbsd') {                                           # g++
+    #my $stdlib_query =                                                          # -Llibstdc++ -lstdc++ -lc -lgcc_s
+        #'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p ) | head -1';
+    #my $stdcpp =
+        #`$stdlib_query`; + $stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
+    #$cc_guess   = 'g++';
+    #$libs_guess = "-L$stdcpp -lstdc++ -lc -lgcc_s";
+#}
+## Sane defaults for other (probably unix-like) operating systems
+#else {                                                                          # g++
+    #$cc_guess   = 'g++';                                                        # -lstdc++
+    #$libs_guess = '-lstdc++';
+#}
+
 
 print "This will configure and build Inline::C++.\n";
 
@@ -125,6 +142,8 @@ my $libs         = prompt(
     "What default libraries would you like to include?",
     $libs_guess
 );
+
+print "Configuring with compiler [$cpp_compiler] and libraries [$libs].\n";
 
 #============================================================================
 # Test whether the compiler prefers <iostream> or <iostream.h>.
@@ -140,13 +159,13 @@ my $result;
 if( $cpp_compiler =~ m/^cl/ ) {
     # MS compilers don't support -o (or -o is deprecated for them).
     $result = system(
-        qq{$cpp_compiler -Fe:$test_cpp_filename.exe } .
+        qq{$cpp_compiler $libs -Fe:$test_cpp_filename.exe } .
         qq{$test_cpp_filename.cpp}
     );
 }
 else {
     $result = system(
-        qq{$cpp_compiler -o $test_cpp_filename.exe } .
+        qq{$cpp_compiler $libs -o $test_cpp_filename.exe } .
         qq{$test_cpp_filename.cpp}
     );
 }
@@ -198,13 +217,13 @@ for (@lines) {
 }
 
 open  CPP, '>CPP.pm'
-    or die "Can't write to CPP.pm for configuration!\n$!";
+    or die "Can't open CPP.pm to write configuration!\n$!";
 
 print CPP  @lines
     or die "Can't write to CPP.pm for configuration!\n$!"; # Unlikely.
 
 close CPP
-    or die "Can't close CPP.pm after config output!\n$!";
+    or die "Can't close CPP.pm after writing configuration!\n$!";
 
 
 WriteMakefile(

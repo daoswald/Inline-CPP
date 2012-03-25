@@ -23,7 +23,7 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.38_002';
+our $VERSION = '0.38_003';
 $VERSION = eval $VERSION; ## no critic (eval)
 
 our $LOGFILE = q{c:/Users/daoswald/programming/repos/Inline-CPP/ilcpp.log};
@@ -57,7 +57,7 @@ sub validate {
     # DO NOT ALTER THE FOLLOWING TWO LINES: Makefile.PL locates them by
     # their comment text and alters them based on install inputs.
     $o->{ILSM}{MAKEFILE}{CC}   ||= 'g++ -xc++ '; # default compiler
-    $o->{ILSM}{MAKEFILE}{LIBS} ||= ['-lstdc++']; # default libs
+    $o->{ILSM}{MAKEFILE}{LIBS} ||= [' -lstdc++ ']; # default libs
 
     # I haven't traced it out yet, but $o->{STRUCT} gets set before getting
     # properly set from Inline::C's validate().

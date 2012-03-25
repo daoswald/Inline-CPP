@@ -33,8 +33,11 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.38_002 is a developer's release.  It includes a bug-fix
-for a bug introduced during refactoring in version 0.36.
+*** Version 0.38_003 is not for general use.  This is a smoke-testers version.
+Inline::CPP version 0.38_003 is an experimental developer's release.
+It adds a Makefile.PL dependency on ExtUtils::CppGuess as a first step in
+moving compiler guess logic out of Makefile.PL in favor of a more general
+solution.
 
 Perl version 5.6.0 is now explicitly set as the minimum version under which
 Inline::CPP will build and work.

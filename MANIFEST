@@ -35,6 +35,7 @@ t/03prefix.t
 t/04charptr.t
 t/06fn_regress.t
 t/07perlcritic.t
+t/08cppguess.t
 META.yml                            Module YAML meta-data (added by MakeMaker)
 META.json                           Module JSON meta-data (added by MakeMaker)
 
