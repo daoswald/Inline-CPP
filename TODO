@@ -4,9 +4,7 @@
 
 ***** In no particular order *****
 
-Test Suite Expansion / Rewrite
-
 Multi-dimensional arrays as member functions.
     ( Currently only single dimensional. )
 
-The NetBSD install issue.
+Sort out various installation and portability issues.

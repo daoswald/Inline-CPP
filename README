@@ -33,14 +33,18 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.38_002 is a developer's release.  It includes a bug-fix
-for a bug introduced during refactoring in version 0.36.
-
+Inline::CPP version 0.38_003 is a developer's release.
 Perl version 5.6.0 is now explicitly set as the minimum version under which
 Inline::CPP will build and work.
 
 -----------------------------------------------------------------------------
 INSTALLATION:
+
+It should go without saying, but you will need a C++ compiler on your system.
+The C++ compiler should be of the same flavor as the C compiler used to build
+perl itself.  If you're using GNU C++, be sure that you have the g++ front
+end installed (it isn't installed by default on some Linux distros, for
+example).
 
 This module requires Inline::C.pm version 0.50 or higher to be installed.
 It also uses Parse::RecDescent.

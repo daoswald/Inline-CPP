@@ -33,6 +33,10 @@ Inline::C, you will need a suitable compiler the first time you run the
 script. Choosing a C++ compiler can prove difficult, because Perl is
 written in C, not C++.
 
+If you're one of the fortunate majority, you will accept the defaults as you
+install Inline::CPP.  If you're one of the unfortunate (and shrinking)
+minority, read on.
+
 Here's the rule: use any C++ compiler that's compatible with the compiler
 which built C<perl>. For instance, if C<perl> was built with C<gcc>,
 use C<g++>.  If you're on a Sun or an IRIX box and the system C compiler
@@ -41,6 +45,10 @@ C<cc> built C<perl>, then use the system C++ compiler, C<CC>.
 Some compilers actually compile both C and C++ with the same compiler.
 Microsoft's C<cl.exe> is one such compiler -- you pass it the <-TP> flag
 to convince it that you want C++ mode.
+
+If you're using the GNU C++ compiler, make sure that you have the g++ front
+end installed (some Linux distros don't install it by default, but provide
+it via their package management utilities).
 
 =head1 Using Inline::CPP
 
@@ -689,13 +697,13 @@ a few more new features of Inline::CPP: default values to arguments,
 
 =head1 Minimum Perl version requirements
 
-As L<Inline> currently requires Perl 5.6.0 or later. Since L<Inline::CPP> 
-depends on L<Inline>, Perl 5.6.0 is also required for L<Inline::CPP>.  It's 
-hard to imagine anyone still using a Perl older than 5.6.0 wanting to 
-interface with C++, but if you're in that camp, you'll need to roll back 
-L<Inline> and L<Inline::CPP> to older versions through the magic of backpan.  
-L<Inline::CPP> version 0.25 was still compatible with Perl 5.005_03.  Review 
-the Changes file from the L<Inline> distribution to decide which L<Inline> 
+As L<Inline> currently requires Perl 5.6.0 or later. Since L<Inline::CPP>
+depends on L<Inline>, Perl 5.6.0 is also required for L<Inline::CPP>.  It's
+hard to imagine anyone still using a Perl older than 5.6.0 wanting to
+interface with C++, but if you're in that camp, you'll need to roll back
+L<Inline> and L<Inline::CPP> to older versions through the magic of backpan.
+L<Inline::CPP> version 0.25 was still compatible with Perl 5.005_03.  Review
+the Changes file from the L<Inline> distribution to decide which L<Inline>
 version is appropriate for your pre-5.6.0 Perl.
 
 
@@ -717,7 +725,7 @@ L<http://lists.perl.org/list/inline.html> to learn how to subscribe.
 
 =head1 BUGS AND DEFICIENCIES
 
-There are bound to be other bugs in code this uncivilized.  If you find one, 
+There are bound to be other bugs in code this uncivilized.  If you find one,
 please file a bug report.
 
 When reporting a bug, please do the following:
@@ -755,7 +763,7 @@ Here are some things to watch out for:
 
 =over 4
 
-=item 1 The grammar used for parsing C++ is still quite simple, and does not 
+=item 1 The grammar used for parsing C++ is still quite simple, and does not
 allow several features of C++:
 
 =over 4
@@ -774,7 +782,7 @@ to Perl.
 =item e Multi-dimensional arrays as member data aren't implemented (yet).
 
 =item f Declaring a paramater type of void isn't implemented (yet).  Just use
-C<int myfunc();> instead of C<int myfunc(void);>.
+C<int myfunc();> instead of C<int myfunc(void);>.  This is C++, not C.
 
 =back
 
@@ -791,9 +799,9 @@ future are:
 as many platforms as possible.  The goal is to achieve a smoke-test
 "pass" rate similar to Inline::C.
 
-The current "smoke test" pass rate seems to be around 95%.  I'm always
-working on chipping away at that last 5%.  If you're one of the unfortunate
-5% get in touch with me so we can try to figure out what the problem is.
+The current "smoke test" pass rate seems to be around 85%.  I'm always
+working on chipping away at that last 15%.  If you're one of the unfortunate
+15% get in touch with me so we can try to figure out what the problem is.
 
 =item b Improvements to the test suite.
 
@@ -807,7 +815,7 @@ working on chipping away at that last 5%.  If you're one of the unfortunate
 
 =head1 AUTHOR
 
-Neil Watkiss <NEILW@cpan.org>
+Neil Watkiss <NEILW@cpan.org> was the original author.
 
 David Oswald <DAVIDO@cpan.org> is the current maintainer.
 David Oswald's Inline::CPP githug repo is:
