@@ -72,10 +72,9 @@ elsif ($Config{osname} =~ m/^MSWin/) {
     $cc_guess   = 'cl -TP -EHsc';
     $libs_guess = 'MSVCIRT.LIB';
 }
-# Added -lgcc_s to 'linux'... another hunch, could be ineffective.
 elsif ($Config{osname} eq 'linux') {
     $cc_guess   = 'g++';
-    $libs_guess = '-lstdc++ -lgcc_s';
+    $libs_guess = '-lstdc++';
 }
 # Dragonfly patch is just a hunch...
 elsif( $Config{osname} eq 'netbsd' || $Config{osname} eq 'dragonfly' ) {
@@ -124,6 +123,7 @@ my $libs         = prompt(
     "What default libraries would you like to include?",
     $libs_guess
 );
+
 
 #============================================================================
 # Test whether the compiler prefers <iostream> or <iostream.h>.
@@ -214,7 +214,6 @@ WriteMakefile(
     PREREQ_PM       => \%PREREQ_PM,
     BUILD_REQUIRES  => {
         'Test::More'    => '0.98', # This is core. Just being explicit.
-#        'Test'          => '1.13', # This is core from Perl 5.6.0.
     },
     clean           => {
         FILES           => '_Inline/ grammar/_Inline'

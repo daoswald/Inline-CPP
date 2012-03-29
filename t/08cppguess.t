@@ -87,7 +87,7 @@ sub ilcpp_results {
     elsif ($Config{osname} eq 'linux') {    # Linux: g++ with -lstdc++
         diag( "Detected Linux." );
         $cc_guess   = 'g++';
-        $libs_guess = '-lstdc++ -lgcc_s';  # Added -lgcc_s to 0.38_004.
+        $libs_guess = '-lstdc++';
     }
     elsif( $Config{osname} eq 'netbsd' || $Config{osname} eq 'dragonfly' ) {
         # netbsd: g++.  Added dragonfly to 0.38_004.
