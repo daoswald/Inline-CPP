@@ -72,6 +72,7 @@ elsif ($Config{osname} =~ m/^MSWin/) {
     $cc_guess   = 'cl -TP -EHsc';
     $libs_guess = 'MSVCIRT.LIB';
 }
+# Added -lgcc_s to 'linux'... another hunch, could be ineffective.
 elsif ($Config{osname} eq 'linux') {
     $cc_guess   = 'g++';
     $libs_guess = '-lstdc++ -lgcc_s';
