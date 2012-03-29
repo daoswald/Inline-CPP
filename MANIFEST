@@ -25,7 +25,6 @@ grammar/t/14const.t
 grammar/t/15stvar.t
 grammar/t/16varlst.t
 grammar/t/17memberarray.t
-grammar/t/18voidparam.t
 lib/Inline/CPP.pod
 t/00load_prereqs.t
 t/01fn_cans.t
@@ -35,6 +34,7 @@ t/03prefix.t
 t/04charptr.t
 t/06fn_regress.t
 t/07perlcritic.t
+t/08cppguess.t
 META.yml                            Module YAML meta-data (added by MakeMaker)
 META.json                           Module JSON meta-data (added by MakeMaker)
 
