@@ -57,7 +57,7 @@ sub validate {
     # DO NOT ALTER THE FOLLOWING TWO LINES: Makefile.PL locates them by
     # their comment text and alters them based on install inputs.
     $o->{ILSM}{MAKEFILE}{CC}   ||= 'g++'; # default compiler
-    $o->{ILSM}{MAKEFILE}{LIBS} ||= ['-lstdc++ -lgcc_s']; # default libs
+    $o->{ILSM}{MAKEFILE}{LIBS} ||= ['-lstdc++']; # default libs
 
     # I haven't traced it out yet, but $o->{STRUCT} gets set before getting
     # properly set from Inline::C's validate().
