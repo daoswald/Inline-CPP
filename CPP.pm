@@ -57,7 +57,7 @@ sub validate {
     # DO NOT ALTER THE FOLLOWING TWO LINES: Makefile.PL locates them by
     # their comment text and alters them based on install inputs.
     $o->{ILSM}{MAKEFILE}{CC}   ||= 'g++'; # default compiler
-    $o->{ILSM}{MAKEFILE}{LIBS} ||= ['-lstdc++']; # default libs
+    $o->{ILSM}{MAKEFILE}{LIBS} ||= ['-lstdc++ -lgcc_s']; # default libs
 
     # I haven't traced it out yet, but $o->{STRUCT} gets set before getting
     # properly set from Inline::C's validate().
@@ -513,8 +513,6 @@ sub call_or_instantiate {
     $rval .= 'THIS->'  if ( $class and not ( $ctor or $dtor ) );
     $rval .= $name . '(' . join ( q{,}, @args ) . ')';
 
-    my $log = "name: $name, ctor: $ctor, dtor: $dtor, class: $class, const: $const, type, $type, args: (@args)\n";
-    $log .= "\t" . const_cast( $rval, $const, $type ) . ";\n";
     return const_cast( $rval, $const, $type ) . ";\n";
 } ### Tested.
 
@@ -632,6 +630,10 @@ END
 END
     return join q{}, @enum;
 }
+
+
+#    my $log = "name: $name, ctor: $ctor, dtor: $dtor, class: $class, const: $const, type, $type, args: (@args)\n";
+#    $log .= "\t" . const_cast( $rval, $const, $type ) . ";\n";
 
 # log_this( $LOGFILE, $log );
 #sub log_this {

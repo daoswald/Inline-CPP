@@ -66,7 +66,7 @@ elsif (
     $Config{cc} =~ m#\bgcc\b[^/]*$#
 ) {
     ($cc_guess  = $Config{cc}) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
-    $libs_guess = '-lstdc++';
+    $libs_guess = '-lstdc++ -lgcc_s';  # Added -lgcc_s.
 }
 elsif ($Config{osname} =~ m/^MSWin/) {
     $cc_guess   = 'cl -TP -EHsc';
@@ -76,7 +76,8 @@ elsif ($Config{osname} eq 'linux') {
     $cc_guess   = 'g++';
     $libs_guess = '-lstdc++';
 }
-elsif( $Config{osname} eq 'netbsd' ) {
+# Dragonfly patch is just a hunch...
+elsif( $Config{osname} eq 'netbsd' || $Config{osname} eq 'dragonfly' ) {
     $cc_guess   = 'g++';
     $libs_guess = '-lstdc++ -lgcc_s';
 }
