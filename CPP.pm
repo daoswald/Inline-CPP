@@ -15,6 +15,8 @@ use 5.006000;
 
 require Inline::C;
 require Inline::CPP::grammar;
+require Inline::CPP::Config;
+
 use Carp;
 
 # use base doesn't work because Inline::C cannot be "use"d directly.
@@ -23,7 +25,7 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.38_002';
+our $VERSION = '0.38_004';
 $VERSION = eval $VERSION; ## no critic (eval)
 
 our $LOGFILE = q{c:/Users/daoswald/programming/repos/Inline-CPP/ilcpp.log};
@@ -54,10 +56,9 @@ sub register {
 #============================================================================
 sub validate {
     my ( $o, @config_options ) = @_;
-    # DO NOT ALTER THE FOLLOWING TWO LINES: Makefile.PL locates them by
-    # their comment text and alters them based on install inputs.
-    $o->{ILSM}{MAKEFILE}{CC}   ||= 'g++'; # default compiler
-    $o->{ILSM}{MAKEFILE}{LIBS} ||= ['-lstdc++']; # default libs
+    # Set default compiler and libraries.
+    $o->{ILSM}{MAKEFILE}{CC}   ||= $Inline::CPP::Config::compiler;
+    $o->{ILSM}{MAKEFILE}{LIBS} ||= $Inline::CPP::Config::libs;
 
     # I haven't traced it out yet, but $o->{STRUCT} gets set before getting
     # properly set from Inline::C's validate().
@@ -89,15 +90,7 @@ END
 # Preprocessor definitions that will be defined if we're operating under
 # "Standard C++", and *not* if we're operating under pre-Standard.
 
-# DON'T EDIT THIS HERE-DOC.  These are set by Makefile.PL.  Override
-# by supplying undefs in an AUTO_INCLUDE configuration.
-my $flavor_defs =  <<'END_FLAVOR_DEFINITIONS';
-
-#define __INLINE_CPP_STANDARD_HEADERS 1
-#define __INLINE_CPP_NAMESPACE_STD 1
-
-END_FLAVOR_DEFINITIONS
-
+my $flavor_defs =  $Inline::CPP::Config::cpp_flavor_defs;
 
     # Prepend the compiler flavor (Standard versus Legacy) #define's
     # to the AUTO_INCLUDE boilerplate.  We prepend because that way
@@ -144,10 +137,7 @@ END_FLAVOR_DEFINITIONS
     }
 
     # Replace %iostream% with the correct iostream library
-
-    # IT IS CRITICAL THAT THE FOLLOWING LINE NOT HAVE ITS "COMMENT"
-    # ALTERED: Makefile.PL finds the line and alters the iostream name.
-    my $iostream = 'iostream'; # default iostream filename
+    my $iostream = $Inline::CPP::Config::iostream_fn;  # iostream filename
 
     $o->{ILSM}{AUTO_INCLUDE} =~ s{%iostream%}{$iostream}xg;
 

@@ -2,13 +2,15 @@ use ExtUtils::MakeMaker;
 use Config;
 
 use strict;
-use 5.006000;
+# use 5.006000;
 
 # We're using bareword file handles and two arg open for backward
 # compatibility in Makefile.PL.  Here we disable those tests in Perl::Critic.
 
 ## no critic (bareword file handle)
 ## no critic (two-argument open)
+
+my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
 
 my %PREREQ_PM = (
@@ -150,15 +152,13 @@ else {
     );
 }
 
-my $iostream_fname_style = 'iostream';
-my $namespace_std        = "#define __INLINE_CPP_NAMESPACE_STD 1\n";
-my $standard_headers     = "#define __INLINE_CPP_STANDARD_HEADERS 1\n";
+my $iostream_fname    = 'iostream';
+my $comment           = '';
 if( $result != 0 ) {
     # Compiling with <iostream> failed, so we'll assume .h headers.
     print "Detected <iostream.h> style headers. ('.h' needed.)\n";
-    $iostream_fname_style = 'iostream.h';
-    $namespace_std        = "// $namespace_std";
-    $standard_headers     = "// $standard_headers";
+    $iostream_fname    = 'iostream.h';
+    $comment           = '//';          # Prepend a comment to a #define.
 }
 else {
     # Compiling with <iostream> passed, so we'll assume Standard headers.
@@ -170,52 +170,43 @@ unlink "$test_cpp_filename.cpp" or warn $!;  # Unlink the test source.
 
 
 # Apply the defaults:
-open CPP, "CPP.pm" or die "Can't read from CPP.pm for configuration!\n$!";
-my @lines = <CPP>;
-close CPP;
+open CPP_Config, $CPP_Config_path
+    or die "Can't read from $CPP_Config_path for configuration!\n$!";
+my @lines = <CPP_Config>;
+close CPP_Config;
 
 for (@lines) {
-
-    $_ =    "    \$o->{ILSM}{MAKEFILE}{CC}   ||= '$cpp_compiler'; "
-            . "# default compiler\n"
-        if /# default compiler/;
-
-    $_  =   "    \$o->{ILSM}{MAKEFILE}{LIBS} ||= ['$libs']; "
-            . "# default libs\n"
-        if /# default libs/;
-
-    $_  =   "    my \$iostream = '$iostream_fname_style';"
-            . " # default iostream filename\n"
-        if /# default iostream filename/;
-
-    $_  =   $namespace_std
-        if /#define __INLINE_CPP_NAMESPACE_STD/;
-
-    $_  =   $standard_headers
-        if /#define __INLINE_CPP_STANDARD_HEADERS/;
-
+    s{ ( our \s* \$compiler    \s* = \s* ['"] ) [^'"]+ } {$1$cpp_compiler}x;
+    s{ ( our \s* \$libs        \s* = \s* ['"] ) [^'"]+ } {$1$libs}x;
+    s{ ( our \s* \$iostream_fn \s* = \s* ['"] ) [^'"]+ } {$1$iostream_fname}x;
+    s{ ^ [^#]* ( \#define \s+ __INLINE_CPP_NAMESPACE_STD    ) } {$comment$1}x;
+    s{ ^ [^#]* ( \#define \s+ __INLINE_CPP_STANDARD_HEADERS ) } {$comment$1}x;
 }
 
-open  CPP, '>CPP.pm'
-    or die "Can't write to CPP.pm for configuration!\n$!";
+open  CPP_Config, ">$CPP_Config_path"
+    or die "Can't write to $CPP_Config_path for configuration!\n$!";
 
-print CPP  @lines
-    or die "Can't write to CPP.pm for configuration!\n$!"; # Unlikely.
+print CPP_Config  @lines
+    or die "Can't write to $CPP_Config_path for configuration!\n$!";
 
-close CPP
-    or die "Can't close CPP.pm after config output!\n$!";
+close CPP_Config
+    or die "Can't close $CPP_Config_path after config output!\n$!";
 
 
 WriteMakefile(
-    NAME            => 'Inline::CPP',
-    AUTHOR          => 'David Oswald <davido@cpan.org>',
-    VERSION_FROM    => 'CPP.pm',
-    ABSTRACT_FROM   => 'lib/Inline/CPP.pod',
-    PREREQ_PM       => \%PREREQ_PM,
-    BUILD_REQUIRES  => {
-        'Test::More'    => '0.98', # This is core. Just being explicit.
+    NAME            	=> 'Inline::CPP',
+    AUTHOR          	=> 'David Oswald <davido@cpan.org>',
+    VERSION_FROM    	=> 'CPP.pm',
+    ABSTRACT_FROM   	=> 'lib/Inline/CPP.pod',
+    PREREQ_PM       	=> \%PREREQ_PM,
+    BUILD_REQUIRES		=> {
+        'Test::More'    		=> '0.98', # Core. Just being explicit.
     },
-    clean           => {
-        FILES           => '_Inline/ grammar/_Inline'
+    CONFIGURE_REQUIRES	=> {
+		'ExtUtils::MakeMaker'	=> '6.56',
+	},
+    MIN_PERL_VERSION 	=> '5.006001',
+    clean           	=> {
+        FILES           		=> '_Inline/ grammar/_Inline'
     },
 );

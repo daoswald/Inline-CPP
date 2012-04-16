@@ -1,5 +1,25 @@
 Revision history for Perl extension Inline::CPP.
 
+0.38_004 Mon Apr 16 12:12:00 PDT 2012
+    - Revert Makefile.PL to 0.38_002 logic
+      (remove ExtUtils::CppGuess dependency).
+    - Add Inline::CPP::Config.pm
+        Makefile.PL now writes to Inline::CPP::Config.pm rather than
+        directly to CPP.pm.
+    - Modify Makefile.PL to write to new configuration location.
+    - Modify CPP.pm to utilize Inline::CPP::Config.pm rather than expecting
+      hard-coded defaults to be written directly to CPP.pm by Makefile.PL.
+    - Make t/08cppguess.t **optional**.
+    - Update MANIFEST.
+    - Improved how Makefile.PL specifies minimum Perl version.
+    - Makefile.PL now includes a CONFIGURE_REQUIRES directive for a version of
+      ExtUtils::MakeMaker that will support important meta tags.
+
+0.38_003 Sat Mar 24 10:36:00 PDT 2012
+    - Makefile.PL rewritten to use ExtUtils::CppGuess.  THIS IS A PRELIMINARY
+      TEST.  EXPECT PROBLEMS.
+    - t/08cppguess.t to provide diagnostic info regarding Makefile.PL rewrite.
+
 0.38_002 Wed Mar 07 10:07:00 PST 2012
     - Bug fix for a bug introduced in refactoring code within version 0.35:
       A hash slice got (wrongly) refactored as something else.  Fixed now.
