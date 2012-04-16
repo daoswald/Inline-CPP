@@ -1,13 +1,5 @@
 package Inline::CPP;
 
-#============================================================================
-# Editing Best practices:
-#     Unix line endings.
-#     Four spaces for indentation (no tabs).
-#     Conditional modifiers go on the following line, indented four spaces.
-#     Maintain Perl::Critic level 4 or better.
-#     Others as issues reveal themselves.
-#============================================================================
 
 use strict;
 use warnings;
@@ -57,9 +49,11 @@ sub register {
 sub validate {
     my ( $o, @config_options ) = @_;
     # Set default compiler and libraries.
-    $o->{ILSM}{MAKEFILE}{CC}   ||= $Inline::CPP::Config::compiler;
-    $o->{ILSM}{MAKEFILE}{LIBS} ||= $Inline::CPP::Config::libs;
-
+    {
+        no warnings qw( once ); ## no critic (warnings)
+        $o->{ILSM}{MAKEFILE}{CC}   ||= $Inline::CPP::Config::compiler;
+        $o->{ILSM}{MAKEFILE}{LIBS} ||= $Inline::CPP::Config::libs;
+    }
     # I haven't traced it out yet, but $o->{STRUCT} gets set before getting
     # properly set from Inline::C's validate().
     $o->{STRUCT} ||= {
@@ -83,23 +77,22 @@ extern "C" {
 #include <%iostream%>
 #endif
 
-
 END
 
 
-# Preprocessor definitions that will be defined if we're operating under
-# "Standard C++", and *not* if we're operating under pre-Standard.
-
-my $flavor_defs =  $Inline::CPP::Config::cpp_flavor_defs;
-
-    # Prepend the compiler flavor (Standard versus Legacy) #define's
-    # to the AUTO_INCLUDE boilerplate.  We prepend because that way
-    # it's easy for a user to #undef them in a custom-supplied
-    # AUTO_INCLUDE.  May be useful for overriding errant defaults,
-    # or testing.
-    $o->{ILSM}{AUTO_INCLUDE} =
-        $flavor_defs . $o->{ILSM}{AUTO_INCLUDE};
-
+    # Preprocessor definitions that will be defined if we're operating under
+    # "Standard C++", and *not* if we're operating under pre-Standard.
+    {
+        no warnings qw( once ); ## no critic (warnings)
+        my $flavor_defs =  $Inline::CPP::Config::cpp_flavor_defs;
+        # Prepend the compiler flavor (Standard versus Legacy) #define's
+        # to the AUTO_INCLUDE boilerplate.  We prepend because that way
+        # it's easy for a user to #undef them in a custom-supplied
+        # AUTO_INCLUDE.  May be useful for overriding errant defaults,
+        # or testing.
+        $o->{ILSM}{AUTO_INCLUDE} =
+            $flavor_defs . $o->{ILSM}{AUTO_INCLUDE};
+    }
 
     $o->{ILSM}{PRESERVE_ELLIPSIS} = 0
       unless defined $o->{ILSM}{PRESERVE_ELLIPSIS};
@@ -110,18 +103,11 @@ my $flavor_defs =  $Inline::CPP::Config::cpp_flavor_defs;
         my ( $key, $value )
             = (  shift @config_options,  shift @config_options  );
         if ( $key eq 'LIBS' ) {
-            $value = [$value] unless ref $value eq 'ARRAY';
-            my $num = scalar @{ $o->{ILSM}{MAKEFILE}{LIBS} } - 1;
-            $o->{ILSM}{MAKEFILE}{LIBS}[$num] .= q{ } . $_
-                for ( @{$value} );
+            _handle_libs_cfg_option( $o, $value );
             next;
         }
         if ( $key eq 'ALTLIBS' ) {
-            $value = [$value] unless ref $value eq 'ARRAY';
-            push @{ $o->{ILSM}{MAKEFILE}{LIBS} }, q{};
-            my $num = scalar @{ $o->{ILSM}{MAKEFILE}{LIBS} } - 1;
-            $o->{ILSM}{MAKEFILE}{LIBS}[$num] .= q{ } . $_
-                for ( @{$value} );
+            _handle_altlibs_cfg_option( $o, $value );
             next;
         }
         if (     $key eq 'PRESERVE_ELLIPSIS'
@@ -137,12 +123,44 @@ my $flavor_defs =  $Inline::CPP::Config::cpp_flavor_defs;
     }
 
     # Replace %iostream% with the correct iostream library
-    my $iostream = $Inline::CPP::Config::iostream_fn;  # iostream filename
-
-    $o->{ILSM}{AUTO_INCLUDE} =~ s{%iostream%}{$iostream}xg;
+    {
+        no warnings qw( once ); ## no critic (warnings)
+        my $iostream = $Inline::CPP::Config::iostream_fn;  # iostream filename
+        $o->{ILSM}{AUTO_INCLUDE} =~ s{%iostream%}{$iostream}xg;
+    }
 
     # Forward all unknown requests up to Inline::C
     $o->SUPER::validate(@propagate) if @propagate;
+    return;
+}
+
+
+sub _handle_libs_cfg_option {
+    my( $o, $value ) = @_;
+    $value = _make_arrayref( $value );
+    _add_libs( $o, $value );
+    return;
+}
+
+sub _handle_altlibs_cfg_option {
+    my( $o, $value ) = @_;
+    $value = _make_arrayref( $value );
+    push @{ $o->{ILSM}{MAKEFILE}{LIBS} }, q{};
+    _add_libs( $o, $value );
+    return;
+}
+
+sub _make_arrayref {
+    my $value = shift;
+    $value = [ $value ] unless ref $value eq 'ARRAY';
+    return $value;
+}
+
+sub _add_libs {
+    my( $o, $libs ) = @_;
+    my $num = scalar @{ $o->{ILSM}{MAKEFILE}{LIBS} } - 1;
+    $o->{ILSM}{MAKEFILE}{LIBS}[$num] .= q{ } . $_
+        for @{ $libs };
     return;
 }
 
@@ -620,18 +638,6 @@ END
 END
     return join q{}, @enum;
 }
-
-
-#    my $log = "name: $name, ctor: $ctor, dtor: $dtor, class: $class, const: $const, type, $type, args: (@args)\n";
-#    $log .= "\t" . const_cast( $rval, $const, $type ) . ";\n";
-
-# log_this( $LOGFILE, $log );
-#sub log_this {
-#    my ( $filename, @output ) = @_;
-#    open my $fh, '>>', $filename or die $!;
-#    print {$fh} @output, "\n";
-#    close $fh or die $!;
-#}
 
 
 1;
