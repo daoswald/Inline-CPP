@@ -6,8 +6,7 @@ use strict;
 use warnings;
 
 our $VERSION = '0.38_004';
-$VERSION = eval $VERSION;
-
+$VERSION = eval $VERSION; ## no critic (eval)
 
 
 # DO NOT MANUALLY ALTER THE FOLLOWING TWO LINES: Makefile.PL locates them by

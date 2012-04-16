@@ -1,13 +1,13 @@
 ---
-abstract: 'Write Perl subroutines and classes in C++.'
+abstract: Write Perl subroutines and classes in C++.
 author:
   - 'David Oswald <davido@cpan.org>'
 build_requires:
   Test::More: 0.98
 configure_requires:
-  ExtUtils::MakeMaker: 0
+  ExtUtils::MakeMaker: 6.56
 dynamic_config: 1
-generated_by: 'ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.113640'
+generated_by: 'ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.120921'
 license: unknown
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -21,4 +21,5 @@ requires:
   Inline: 0.50
   Inline::C: 0.50
   Parse::RecDescent: 0
-version: 0.38_002
+  perl: 5.006001
+version: 0.38_004
