@@ -22,7 +22,6 @@ $VERSION = eval $VERSION; ## no critic (eval)
 
 our $LOGFILE = q{c:/Users/daoswald/programming/repos/Inline-CPP/ilcpp.log};
 
-
 my $TYPEMAP_KIND;
 {
     no warnings qw/ once /; ## no critic (warnings)
@@ -47,22 +46,44 @@ sub register {
 # Validate the C++ config options: Now mostly done in Inline::C
 #============================================================================
 sub validate {
-    my ( $o, @config_options ) = @_;
-    # Set default compiler and libraries.
-    {
+    my ( $o, @config_options     )  =  @_;
+    my ( $flavor_defs, $iostream );
+
+    {   # "used only once" warning. We know it's ok.
         no warnings qw( once ); ## no critic (warnings)
+
+        # Set default compiler and libraries.
         $o->{ILSM}{MAKEFILE}{CC}   ||= $Inline::CPP::Config::compiler;
         $o->{ILSM}{MAKEFILE}{LIBS} ||= $Inline::CPP::Config::libs;
+
+        $flavor_defs = $Inline::CPP::Config::cpp_flavor_defs; # "Standard"?
+        $iostream    = $Inline::CPP::Config::iostream_fn; # iostream filename.
     }
+
     # I haven't traced it out yet, but $o->{STRUCT} gets set before getting
     # properly set from Inline::C's validate().
     $o->{STRUCT} ||= {
-        '.macros' => q{},
-        '.xs'     => q{},
-        '.any'    => 0,
-        '.all'    => 0,
+        '.macros' => q{},   '.any' => 0,
+        '.xs'     => q{},   '.all' => 0,
     };
-    $o->{ILSM}{AUTO_INCLUDE} ||= <<'END';
+
+    _build_auto_include( $o, $flavor_defs, $iostream );
+
+    $o->{ILSM}{PRESERVE_ELLIPSIS} = 0
+        unless defined $o->{ILSM}{PRESERVE_ELLIPSIS};
+
+    # Filter out the parameters we treat differently than Inline::C,
+    # forwarding unknown requests back up to Inline::C.
+    my @propagate = _handle_config_options( $o, @config_options );
+    $o->SUPER::validate(@propagate) if @propagate;
+
+    return;
+}
+
+
+sub _build_auto_include {
+    my ( $o, $flavor_defs, $iostream ) = @_;
+    my $auto_include = <<'END';
 #ifndef bool
 #include <%iostream%>
 #endif
@@ -79,26 +100,18 @@ extern "C" {
 
 END
 
+    $o->{ILSM}{AUTO_INCLUDE} ||= $auto_include;
+    $o->{ILSM}{AUTO_INCLUDE} =   $flavor_defs  .  $o->{ILSM}{AUTO_INCLUDE};
+    # Replace %iostream% with the correct iostream library
+    $o->{ILSM}{AUTO_INCLUDE} =~ s{%iostream%}{$iostream}xg;
+    return;
+}
 
-    # Preprocessor definitions that will be defined if we're operating under
-    # "Standard C++", and *not* if we're operating under pre-Standard.
-    {
-        no warnings qw( once ); ## no critic (warnings)
-        my $flavor_defs =  $Inline::CPP::Config::cpp_flavor_defs;
-        # Prepend the compiler flavor (Standard versus Legacy) #define's
-        # to the AUTO_INCLUDE boilerplate.  We prepend because that way
-        # it's easy for a user to #undef them in a custom-supplied
-        # AUTO_INCLUDE.  May be useful for overriding errant defaults,
-        # or testing.
-        $o->{ILSM}{AUTO_INCLUDE} =
-            $flavor_defs . $o->{ILSM}{AUTO_INCLUDE};
-    }
 
-    $o->{ILSM}{PRESERVE_ELLIPSIS} = 0
-      unless defined $o->{ILSM}{PRESERVE_ELLIPSIS};
-
-    # Filter out the parameters we treat differently than Inline::C
+sub _handle_config_options {
+    my ( $o, @config_options ) = @_;
     my @propagate;
+
     while ( @config_options ) {
         my ( $key, $value )
             = (  shift @config_options,  shift @config_options  );
@@ -121,17 +134,7 @@ END
         }
         push @propagate, $key, $value;
     }
-
-    # Replace %iostream% with the correct iostream library
-    {
-        no warnings qw( once ); ## no critic (warnings)
-        my $iostream = $Inline::CPP::Config::iostream_fn;  # iostream filename
-        $o->{ILSM}{AUTO_INCLUDE} =~ s{%iostream%}{$iostream}xg;
-    }
-
-    # Forward all unknown requests up to Inline::C
-    $o->SUPER::validate(@propagate) if @propagate;
-    return;
+    return @propagate;
 }
 
 
@@ -142,6 +145,7 @@ sub _handle_libs_cfg_option {
     return;
 }
 
+
 sub _handle_altlibs_cfg_option {
     my( $o, $value ) = @_;
     $value = _make_arrayref( $value );
@@ -150,11 +154,13 @@ sub _handle_altlibs_cfg_option {
     return;
 }
 
+
 sub _make_arrayref {
     my $value = shift;
     $value = [ $value ] unless ref $value eq 'ARRAY';
     return $value;
 }
+
 
 sub _add_libs {
     my( $o, $libs ) = @_;
@@ -163,6 +169,7 @@ sub _add_libs {
         for @{ $libs };
     return;
 }
+
 
 #============================================================================
 # Print a small report if PRINT_INFO option is set
