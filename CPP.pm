@@ -9,6 +9,8 @@ require Inline::C;
 require Inline::CPP::grammar;
 require Inline::CPP::Config;
 
+# Note: Parse::RecDescent 'require'd within get_parser().
+
 use Carp;
 
 # use base doesn't work because Inline::C cannot be "use"d directly.
@@ -51,6 +53,7 @@ sub validate {
 
     {   # "used only once" warning. We know it's ok.
         no warnings qw( once ); ## no critic (warnings)
+        ## no critic (package variable)
 
         # Set default compiler and libraries.
         $o->{ILSM}{MAKEFILE}{CC}   ||= $Inline::CPP::Config::compiler;
@@ -296,24 +299,79 @@ sub xs_bindings {
     for my $class ( @{ $data->{classes} } ) {
         my $proper_pkg = $pkg . "::$class";
         # Set up the proper namespace
-        push @XS, <<"END";
+        push @XS, _build_namespace( $module, $proper_pkg );
+        push @XS,
+             _generate_member_xs_wrappers( $o, $pkg, $class, $proper_pkg );
+    }
+
+    push @XS, _remove_xs_prefixes ( $o, $module, $pkg );
+    push @XS, _generate_nonmember_xs_wrappers( $o );
+
+    for ( @{ $data->{enums} } ) {
+        # Global enums.
+        $o->{ILSM}{XS}{BOOT} .= make_enum(  $pkg, @{$_}{ qw( name body ) }  );
+    }
+    return join q{}, @XS;
+}
+
+
+# Set up the proper namespace.
+sub _build_namespace {
+    my ( $module, $proper_pkg ) = @_;
+    return <<"END";
 
 MODULE = $module        PACKAGE = $proper_pkg
 
 PROTOTYPES: DISABLE
 
 END
+}
 
-        my ( $ctor, $dtor, $abstract ) = ( 0, 0, 0 ); ## no critic (ambiguous)
-        for my $thing ( @{ $data->{class}{$class} } ) {
-            my ( $name, $scope, $type ) = @{$thing}{ qw| name scope thing | };
 
-            # Let Perl handle inheritance
-            if ( $type eq 'inherits' and $scope eq 'public' ) {
-                $o->{ILSM}{XS}{BOOT} ||= q{};
-                my $ISA_name = "${pkg}::${class}::ISA";
-                my $parent = "${pkg}::${name}";
-                $o->{ILSM}{XS}{BOOT} .= <<"END";
+sub _generate_member_xs_wrappers {
+    my( $o, $pkg, $class, $proper_pkg ) = @_;
+    my @XS;
+    my $data = $o->{ILSM}{parser}{data};
+    my ( $ctor, $dtor, $abstract ) = ( 0, 0, 0 ); ## no critic (ambiguous)
+    for my $thing ( @{ $data->{class}{$class} } ) {
+        my ( $name, $scope, $type ) = @{$thing}{ qw| name scope thing | };
+
+        _handle_inheritance ( $o, $type, $scope, $pkg, $class, $name );
+        # Get/set methods will go here:
+        # Cases we skip:
+        $abstract ||= ( $type eq 'method' and $thing->{abstract} );
+        next if ( $type eq 'method' and $thing->{abstract} );
+        next if   $scope ne 'public';
+        if ( $type eq 'enum' ) {
+            $o->{ILSM}{XS}{BOOT} .= make_enum(
+                $proper_pkg, $name, $thing->{body}
+            );
+        } elsif (  $type eq 'method'  and  $name !~ m/operator/  ) {
+            # generate an XS wrapper
+            $ctor ||= ( $name eq $class    );
+            $dtor ||= ( $name eq "~$class" );
+            push @XS, $o->wrap( $thing, $name, $class );
+        }
+    }
+
+    # Provide default constructor and destructor:
+    push @XS, "$class *\n${class}::new()\n\n"
+        unless ( $ctor or $abstract );
+
+    push @XS, "void\n${class}::DESTROY()\n\n"
+        unless ( $dtor or $abstract );
+    return @XS;
+}
+
+
+# Let Perl handle inheritance.
+sub _handle_inheritance {
+    my( $o, $type, $scope, $pkg, $class, $name ) = @_;
+    if ( $type eq 'inherits' and $scope eq 'public' ) {
+        $o->{ILSM}{XS}{BOOT} ||= q{};
+        my $ISA_name = "${pkg}::${class}::ISA";
+        my $parent = "${pkg}::${name}";
+        $o->{ILSM}{XS}{BOOT} .= <<"END";
 {
 #ifndef get_av
     AV *isa = perl_get_av("$ISA_name", 1);
@@ -323,53 +381,15 @@ END
     av_push(isa, newSVpv("$parent", 0));
 }
 END
-            }
-
-            # Get/set methods will go here:
-
-            # Cases we skip:
-            $abstract ||= ( $type eq 'method' and $thing->{abstract} );
-            next if ( $type eq 'method' and $thing->{abstract} );
-            next if $scope ne 'public';
-            if ( $type eq 'enum' ) {
-                $o->{ILSM}{XS}{BOOT} .= make_enum(
-                    $proper_pkg, $name,
-                    $thing->{body}
-                );
-            } elsif ( $type eq 'method' ) {
-                next if $name =~ m/operator/;
-                # generate an XS wrapper
-                $ctor ||= ( $name eq $class    );
-                $dtor ||= ( $name eq "~$class" );
-                push @XS, $o->wrap( $thing, $name, $class );
-            }
-        }
-
-    # Provide default constructor and destructor:
-        push @XS, <<"END" unless ( $ctor or $abstract );
-$class *
-${class}::new()
-
-END
-        push @XS, <<"END" unless ( $dtor or $abstract );
-void
-${class}::DESTROY()
-
-END
     }
+    return;
+}
 
-    my $prefix = (
-        $o->{ILSM}{XS}{PREFIX}
-            ? "PREFIX = $o->{ILSM}{XS}{PREFIX}"
-            : q{}
-    );
-    push @XS, <<"END";
-MODULE = $module        PACKAGE = $pkg  $prefix
 
-PROTOTYPES: DISABLE
-
-END
-
+sub _generate_nonmember_xs_wrappers {
+    my $o = shift;
+    my $data = $o->{ILSM}{parser}{data};
+    my @XS;
     for my $function ( @{ $data->{functions} } ) {
         # lose constructor defs outside class decls (and "implicit int")
         next if $data->{function}{$function}{rtype} eq q{};
@@ -378,15 +398,27 @@ END
         next if $function =~ m/operator/;  # and operators.
         push @XS, $o->wrap( $data->{function}{$function}, $function );
     }
-
-    for ( @{ $data->{enums} } ) {
-        # Global enums.
-        $o->{ILSM}{XS}{BOOT} .= make_enum(  $pkg, @{$_}{ qw( name body ) }  );
-    }
-#     print "BOOT = \n", $o->{ILSM}{XS}{BOOT};
-
-    return join q{}, @XS;
+    return @XS;
 }
+
+
+# Generate XS code to remove prefixes from function names.
+sub _remove_xs_prefixes {
+    my( $o, $module, $pkg ) = @_;
+    my $prefix = (
+        $o->{ILSM}{XS}{PREFIX}
+            ? "PREFIX = $o->{ILSM}{XS}{PREFIX}"
+            : q{}
+    );
+    return <<"END";
+MODULE = $module        PACKAGE = $pkg  $prefix
+
+PROTOTYPES: DISABLE
+
+END
+
+}
+
 
 #============================================================================
 # Generate an XS wrapper around anything: a C++ method or function
