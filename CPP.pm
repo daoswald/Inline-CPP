@@ -393,8 +393,8 @@ sub _generate_nonmember_xs_wrappers {
     for my $function ( @{ $data->{functions} } ) {
         # lose constructor defs outside class decls (and "implicit int")
         next if $data->{function}{$function}{rtype} eq q{};
-        next if $data->{function}{$function}{rtype} =~ m/static/;#specl case
-        next if $function =~ m/::/x;       # XXX: skip member functions?
+        next if $data->{function}{$function}{rtype} =~ m/static/;  #specl case
+        next if $function =~ m/::/x;       # skip member functions.
         next if $function =~ m/operator/;  # and operators.
         push @XS, $o->wrap( $data->{function}{$function}, $function );
     }
@@ -427,34 +427,26 @@ sub wrap {
     my( $o, $thing, $name, $class ) = @_;
     $class ||= q{};
     my $t  =   q{ } x 4; # indents in 4-space increments.
-
     my ( @XS, @PREINIT, @CODE );
-    my ( $ctor, $dtor ) = ( 0, 0 );
 
-    if ( $name eq $class ) {  # ctor
-        push @XS, $class . " *\n" . $class . '::new';
-        $ctor = 1;
-    }
-    elsif ( $name eq "~$class" ) { # dtor
-        push @XS, "void\n$class" . '::DESTROY';
-        $dtor = 1;
-    }
-    elsif ( $class ) {        # method
-        push @XS, "$thing->{rtype}\n$class" . "::$thing->{name}";
-    }
-    else {          # function
-        push @XS, "$thing->{rtype}\n$thing->{name}";
-    }
+    my ( $XS, $ctor, $dtor )
+        = _map_subnames_cpp_to_perl( $thing, $name, $class );
+
+    push @XS, $XS;
 
     return q{} unless $o->check_type( $thing, $ctor, $dtor );
 
     # Filter out optional subroutine arguments
     my ( @args, @opts, $ellipsis, $void );
+
     $_->{optional} ? push @opts, $_ : push @args, $_
         for @{ $thing->{args} };
+
     $ellipsis = pop @args
         if ( @args and $args[-1]{name} eq '...' );
+
     $void = ( $thing->{rtype} and $thing->{rtype} eq 'void' );
+
     push @XS, join q{}, (
         '(',
         join( ', ',
@@ -549,6 +541,29 @@ END
     push @XS, "\n";
     return "@XS";
 }
+
+
+sub _map_subnames_cpp_to_perl {
+    my ( $thing, $name, $class ) = @_;
+    my ( $XS,    $ctor, $dtor  ) = ( q{}, 0, 0 );
+
+    if ( $name eq $class ) {  # ctor
+        $XS   = $class . " *\n" . $class . '::new';
+        $ctor = 1;
+    }
+    elsif ( $name eq "~$class" ) { # dtor
+        $XS   = "void\n$class" . '::DESTROY';
+        $dtor = 1;
+    }
+    elsif ( $class ) {        # method
+        $XS   = "$thing->{rtype}\n$class" . "::$thing->{name}";
+    }
+    else {          # function
+        $XS   = "$thing->{rtype}\n$thing->{name}";
+    }
+    return ( $XS, $ctor, $dtor );
+}
+
 
 sub call_or_instantiate {
     my (  $name,   $ctor,  $dtor,  $class, $const,  $type,  @args  ) = @_;
@@ -667,14 +682,10 @@ END
     foreach ( @{$body} ) {
         my ( $k, $v ) = @{$_};
         $val = $v if defined $v;
-        push @enum, <<"END";
-\tnewCONSTSUB(pkg, \"$k\", newSViv($val));
-END
+        push @enum, "\tnewCONSTSUB(pkg, \"$k\", newSViv($val));\n";
         ++$val;
     }
-    push @enum, <<"END";
-\t}
-END
+    push @enum, "\t}\n";
     return join q{}, @enum;
 }
 
