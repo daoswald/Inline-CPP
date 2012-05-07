@@ -1,4 +1,5 @@
 use strict;
+use warnings;
 use Test::More;
 
 note( 'Regression tests for CPP.pm to assure refactoring breaks nothing.' );
@@ -6,7 +7,7 @@ note( 'Regression tests for CPP.pm to assure refactoring breaks nothing.' );
 require Inline::CPP;
 
 {
-    no warnings 'once';
+    no warnings 'once';  ## no critic (warnings)
     ok(defined($Inline::CPP::grammar::TYPEMAP_KIND), 'TYPEMAP_KIND defined.');
 }
 

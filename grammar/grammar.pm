@@ -509,3 +509,10 @@ sub strip_ellipsis {
 }
 
 1;
+
+__END__
+=head1 Inline::CPP::grammar
+
+All functions are internal.  No documentation necessary.
+
+=cut

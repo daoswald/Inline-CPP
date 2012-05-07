@@ -6,7 +6,7 @@
    "dynamic_config" : 1,
    "generated_by" : "ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.120921",
    "license" : [
-      "unknown"
+      "artistic_1"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
@@ -22,16 +22,20 @@
    "prereqs" : {
       "build" : {
          "requires" : {
+            "Config" : "0",
+            "English" : "0",
             "Test::More" : "0.98"
          }
       },
       "configure" : {
          "requires" : {
+            "Config" : "0",
             "ExtUtils::MakeMaker" : "6.56"
          }
       },
       "runtime" : {
          "requires" : {
+            "Carp" : "0",
             "Inline" : "0.50",
             "Inline::C" : "0.50",
             "Parse::RecDescent" : "0",

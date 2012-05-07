@@ -33,3 +33,9 @@ END_FLAVOR_DEFINITIONS
 
 
 1;
+
+__END__
+
+=head1  Inline::CPP::Config
+
+For internal consumption; nothing to document.

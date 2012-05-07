@@ -17,6 +17,7 @@ my %PREREQ_PM = (
     'Inline'            => '0.50',
     'Inline::C'         => '0.50',
     'Parse::RecDescent' => '0',
+    'Carp'				=> '0',
 );
 
 #============================================================================
@@ -198,12 +199,16 @@ WriteMakefile(
     AUTHOR          	=> 'David Oswald <davido@cpan.org>',
     VERSION_FROM    	=> 'CPP.pm',
     ABSTRACT_FROM   	=> 'lib/Inline/CPP.pod',
+    LICENSE				=> 'artistic',
     PREREQ_PM       	=> \%PREREQ_PM,
     BUILD_REQUIRES		=> {
-        'Test::More'    		=> '0.98', # Core. Just being explicit.
+        'Test::More'    		=> '0.98', 		# Core. Minimum version.
+        'Config'				=> '0', 		# Core.
+        'English'				=> '0',			# Core.
     },
     CONFIGURE_REQUIRES	=> {
-		'ExtUtils::MakeMaker'	=> '6.56',
+		'ExtUtils::MakeMaker'	=> '6.56', 		# Minimum version.
+		'Config'				=> '0', 		# Core.
 	},
     MIN_PERL_VERSION 	=> '5.006001',
     clean           	=> {

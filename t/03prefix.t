@@ -1,4 +1,5 @@
 use strict;
+use warnings;
 use Test::More tests => 4;
 
 # Originally one of these tests was passing char* strings, there's no need

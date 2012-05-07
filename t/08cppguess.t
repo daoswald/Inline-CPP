@@ -1,5 +1,6 @@
 use Config;
 use strict;
+use warnings;
 use Test::More tests => 2;
 use English qw( -no_match_vars );
 

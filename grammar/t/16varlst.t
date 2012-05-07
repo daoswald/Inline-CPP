@@ -1,4 +1,5 @@
 use strict;
+use warnings;
 use Test::More;
 # Test declarations of multiple variables in a member data list.
 

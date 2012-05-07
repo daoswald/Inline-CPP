@@ -1,4 +1,5 @@
 use strict;
+use warnings;
 use Test::More;
 # Test member array feature (single-dimensional only).
 

@@ -5,14 +5,14 @@ use Test::More;
 use English qw( -no_match_vars );
 
 
-# To enable this suite one must set the ILCPP_TEST_AUTHOR to a true value.
+# To enable this suite one must set the RELEASE_TESTING to a true value.
 # This prevents author tests from running on a user install.
 # It's possible users would have their own conflicting Perl::Critic config,
 # so it would be a bad idea to let this test run on users systems.
 
-if ( not $ENV{ILCPP_TEST_AUTHOR} ) {
+if ( not $ENV{RELEASE_TESTING} ) {
     my $msg =
-        'Author Test: Set $ENV{ILCPP_TEST_AUTHOR} to a true value to run.';
+        'Author Test: Set $ENV{RELEASE_TESTING} to a true value to run.';
     plan( skip_all => $msg );
 }
 

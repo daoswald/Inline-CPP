@@ -1,4 +1,5 @@
 use strict;
+use warnings;
 use Test::More;
 
 # Test pure virtual functions (abstract classes).
