@@ -17,7 +17,7 @@ my %PREREQ_PM = (
     'Inline'            => '0.50',
     'Inline::C'         => '0.50',
     'Parse::RecDescent' => '0',
-    'Carp'				=> '0',
+    'Carp'              => '0',
 );
 
 #============================================================================
@@ -79,7 +79,7 @@ elsif ($Config{osname} eq 'linux') {
     $cc_guess   = 'g++';
     $libs_guess = '-lstdc++';
 }
-# Dragonfly patch is just a hunch...
+# Dragonfly patch is just a hunch... (still doesn't work)
 elsif( $Config{osname} eq 'netbsd' || $Config{osname} eq 'dragonfly' ) {
     $cc_guess   = 'g++';
     $libs_guess = '-lstdc++ -lgcc_s';
@@ -101,6 +101,7 @@ elsif ($Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS') {
         $libs_guess ='-lCrun';
     }
 }
+# MirBSD: Still problematic.
 elsif ($Config{osname} eq 'mirbsd') {
     my $stdlib_query =
         'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p ) | head -1';
@@ -195,23 +196,23 @@ close CPP_Config
 
 
 WriteMakefile(
-    NAME            	=> 'Inline::CPP',
-    AUTHOR          	=> 'David Oswald <davido@cpan.org>',
-    VERSION_FROM    	=> 'CPP.pm',
-    ABSTRACT_FROM   	=> 'lib/Inline/CPP.pod',
-    LICENSE				=> 'artistic',
-    PREREQ_PM       	=> \%PREREQ_PM,
-    BUILD_REQUIRES		=> {
-        'Test::More'    		=> '0.98', 		# Core. Minimum version.
-        'Config'				=> '0', 		# Core.
-        'English'				=> '0',			# Core.
+    NAME                => 'Inline::CPP',
+    AUTHOR              => 'David Oswald <davido@cpan.org>',
+    VERSION_FROM        => 'CPP.pm',
+    ABSTRACT_FROM       => 'lib/Inline/CPP.pod',
+    LICENSE             => 'artistic',
+    PREREQ_PM           => \%PREREQ_PM,
+    BUILD_REQUIRES      => {
+        'Test::More'            => '0.98',      # Core. Minimum version.
+        'Config'                => '0',         # Core.
+        'English'               => '0',         # Core.
     },
-    CONFIGURE_REQUIRES	=> {
-		'ExtUtils::MakeMaker'	=> '6.56', 		# Minimum version.
-		'Config'				=> '0', 		# Core.
-	},
-    MIN_PERL_VERSION 	=> '5.006001',
-    clean           	=> {
-        FILES           		=> '_Inline/ grammar/_Inline'
+    CONFIGURE_REQUIRES  => {
+        'ExtUtils::MakeMaker'   => '6.56',      # Minimum version.
+        'Config'                => '0',         # Core.
+    },
+    MIN_PERL_VERSION    => '5.006001',
+    clean               => {
+        FILES                   => '_Inline/ grammar/_Inline'
     },
 );

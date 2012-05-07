@@ -1,5 +1,19 @@
 Revision history for Perl extension Inline::CPP.
 
+0.39 Mon May 07 00:30:00 PDT 2012
+    - All changes from 0.38_004 remain.
+    - Inline::CPP::Config is now the write target for Makefile.PL rather than
+      directly writing to CPP.pm.
+    - Added 09pod_coverage.t and 10kwalitee.t tests.
+    - Major refactor for Inline::CPP::validate() and
+      Inline::CPP::XS_bindings().
+    - Warnings added to all tests.
+    - Explicit mention of all dependencies (even core) in Makefile.PL.
+    - LICENSE tag added to Makefile.PL so that the license is properly
+      identified in the META.* files.
+    - MINIMUM_PERL_VERSION tag used in Makefile.PL to take advantage of
+      more modern META tags.
+
 0.38_004 Mon Apr 16 12:12:00 PDT 2012
     - Revert Makefile.PL to 0.38_002 logic
       (remove ExtUtils::CppGuess dependency).

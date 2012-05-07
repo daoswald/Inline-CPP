@@ -43,6 +43,6 @@
          }
       }
    },
-   "release_status" : "testing",
-   "version" : "0.38_004"
+   "release_status" : "stable",
+   "version" : "0.39"
 }

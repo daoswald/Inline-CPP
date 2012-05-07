@@ -26,4 +26,4 @@ requires:
   Inline::C: 0.50
   Parse::RecDescent: 0
   perl: 5.006001
-version: 0.38_004
+version: 0.39
