@@ -1,5 +1,9 @@
 Revision history for Perl extension Inline::CPP.
 
+x.xx ????????????????????????????
+    - Added META_MERGE => provides to Makefile.PL.
+
+
 0.39 Mon May 07 00:30:00 PDT 2012
     - All changes from 0.38_004 remain.
     - Inline::CPP::Config is now the write target for Makefile.PL rather than

@@ -20,6 +20,16 @@ no_index:
   directory:
     - t
     - inc
+provides:
+  Inline::CPP:
+    file: CPP.pm
+    version: 0.39
+  Inline::CPP::Config:
+    file: lib/Inline/CPP/Config.pm
+    version: 0.39
+  Inline::CPP::grammar:
+    file: grammar/grammar.pm
+    version: 0.39
 requires:
   Carp: 0
   Inline: 0.50

@@ -43,7 +43,8 @@ It should go without saying, but you will need a C++ compiler on your system.
 The C++ compiler should be of the same flavor as the C compiler used to build
 perl itself.  If you're using GNU C++, be sure that you have the g++ front
 end installed (it isn't installed by default on some Linux distros, for
-example).
+example).  If you cannot execute 'g++ -v' from the command prompt, or some
+variation for your specific C++ compiler,
 
 This module requires Inline::C.pm version 0.50 or higher to be installed.
 It also uses Parse::RecDescent.
