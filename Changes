@@ -1,5 +1,16 @@
 Revision history for Perl extension Inline::CPP.
 
+0.40_001 Fri Aug 24 20:12 PDT 2012
+    ( DEVELOPER'S RELEASE -- Changes to CPP.pm require smoke testing. )
+    - Added test to release test to test compile after wiping out pre-existing
+      Inline config file.
+    - Added test for consistent version numbering.
+    - Added test to ensure 'LIBS' configuration directive wraps in an array-ref
+    - Converted all "author" type tests to run only with RELEASE_TESTING (some
+      were already that way.  Just created better consistency).
+    - Bug-fix: library specification needed to be wrapped in an array-ref.
+      Reported and tracked down by Paul Grinberg++.
+
 0.40 Thu Aug 23 15:34:00 PDT 2012
     - Added META_MERGE => provides to Makefile.PL.
     - Added another example to the POD (elipses, exceptions, overloading

@@ -38,6 +38,9 @@ t/07perlcritic.t
 t/08cppguess.t
 t/09pod_coverage.t
 t/10kwalitee.t
+t/11rewrite_config.t
+t/12custom_libs.t
+t/13version_numbers.t
 META.yml                            Module YAML meta-data (added by MakeMaker)
 META.json                           Module JSON meta-data (added by MakeMaker)
 

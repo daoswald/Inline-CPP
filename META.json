@@ -4,7 +4,7 @@
       "David Oswald <davido@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120630",
+   "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "artistic_1"
    ],
@@ -46,17 +46,9 @@
    "provides" : {
       "Inline::CPP" : {
          "file" : "CPP.pm",
-         "version" : "0.39"
-      },
-      "Inline::CPP::Config" : {
-         "file" : "lib/Inline/CPP/Config.pm",
-         "version" : "0.39"
-      },
-      "Inline::CPP::grammar" : {
-         "file" : "grammar/grammar.pm",
-         "version" : "0.39"
+         "version" : "0.40_001"
       }
    },
-   "release_status" : "stable",
-   "version" : "0.40"
+   "release_status" : "testing",
+   "version" : "0.40_001"
 }

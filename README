@@ -33,8 +33,8 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.40 is a stable release.  See the 'Changes' file for
-details.  Most of the changes compared to 0.39 are POD-related.  No bug-fixes.
+Inline::CPP version 0.40_001 is a Developer's Release.  See the 'Changes' file
+for details.
 
 -----------------------------------------------------------------------------
 INSTALLATION:

@@ -19,8 +19,8 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.40';
-# $VERSION = eval $VERSION; ## no critic (eval)
+our $VERSION = '0.40_001';
+$VERSION = eval $VERSION; ## no critic (eval)
 
 our $LOGFILE = q{c:/Users/daoswald/programming/repos/Inline-CPP/ilcpp.log};
 
@@ -56,9 +56,11 @@ sub validate {
         ## no critic (package variable)
 
         # Set default compiler and libraries.
-        $o->{ILSM}{MAKEFILE}{CC}   ||= $Inline::CPP::Config::compiler;
-        $o->{ILSM}{MAKEFILE}{LIBS} ||= $Inline::CPP::Config::libs;
-
+        $o->{ILSM}{MAKEFILE}{CC}
+            ||= $Inline::CPP::Config::compiler;
+        $o->{ILSM}{MAKEFILE}{LIBS}
+            ||= _make_arrayref( $Inline::CPP::Config::libs );
+        
         $flavor_defs = $Inline::CPP::Config::cpp_flavor_defs; # "Standard"?
         $iostream    = $Inline::CPP::Config::iostream_fn; # iostream filename.
     }
@@ -164,7 +166,6 @@ sub _make_arrayref {
     $value = [ $value ] unless ref $value eq 'ARRAY';
     return $value;
 }
-
 
 sub _add_libs {
     my( $o, $libs ) = @_;

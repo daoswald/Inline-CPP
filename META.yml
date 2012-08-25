@@ -10,7 +10,7 @@ configure_requires:
   Config: 0
   ExtUtils::MakeMaker: 6.56
 dynamic_config: 1
-generated_by: 'ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120630'
+generated_by: 'ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120921'
 license: artistic
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -23,17 +23,11 @@ no_index:
 provides:
   Inline::CPP:
     file: CPP.pm
-    version: 0.39
-  Inline::CPP::Config:
-    file: lib/Inline/CPP/Config.pm
-    version: 0.39
-  Inline::CPP::grammar:
-    file: grammar/grammar.pm
-    version: 0.39
+    version: 0.40_001
 requires:
   Carp: 0
   Inline: 0.50
   Inline::C: 0.50
   Parse::RecDescent: 0
   perl: 5.006001
-version: 0.40
+version: 0.40_001
