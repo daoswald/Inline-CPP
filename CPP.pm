@@ -19,8 +19,8 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.40_001';
-$VERSION = eval $VERSION; ## no critic (eval)
+our $VERSION = '0.41';
+#$VERSION = eval $VERSION; ## no critic (eval)
 
 our $LOGFILE = q{c:/Users/daoswald/programming/repos/Inline-CPP/ilcpp.log};
 

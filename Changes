@@ -1,5 +1,7 @@
 Revision history for Perl extension Inline::CPP.
-
+0.41 Wed Sept 5 19:14 PDT 2012
+    - POD enhancements: Better description of compilation, _Inline/, and 
+      code-reuse (modules, distributions).
 0.40_001 Fri Aug 24 20:12 PDT 2012
     ( DEVELOPER'S RELEASE -- Changes to CPP.pm require smoke testing. )
     - Added test to release test to test compile after wiping out pre-existing

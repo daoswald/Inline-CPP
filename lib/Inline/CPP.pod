@@ -22,7 +22,7 @@ Inline::CPP - Write Perl subroutines and classes in C++.
 
 =head1 DESCRIPTION
 
-The C<Inline::CPP> module allows you to put C++ source code directly
+The L<Inline::CPP> module allows you to put C++ source code directly
 "inline" in a Perl script or module. You code classes or functions in
 C++, and you can use them as if they were written in Perl.
 
@@ -108,12 +108,13 @@ it via their package management utilities).
 
 =head1 Using Inline::CPP
 
-Inline::CPP is very similar to Inline::C. It uses a grammar to
-parse your C++ code, and binds to functions or classes which are
+Inline::CPP is very similar to Inline::C, and in most cases can be used in
+place of Inline::C without changing a single line of Perl or C code. It uses a 
+grammar to parse your C++ code, and binds to functions or classes which are
 recognized. If a function is recognized, it will be available from
 Perl space. If the function's signature is not recognized, it will not
 be available from Perl space, but will be available from other
-functions in C++.
+functions or classes within the C++ code.
 
 For more information about the grammar used to parse C++ code, see the
 section called "Grammar".
@@ -169,11 +170,95 @@ It doesn't work because C<$obj> is not a blessed hash. It's a blessed
 reference to a C++ object (and anyway, C++ wouldn't let you do that either,
 since extrafield wasn't defined).
 
+=head1 C++ Compilation Phase
+
+The first time you run a program that uses Inline::CPP, the C++ code will be
+compiled into an C<_Inline/> or C<.Inline/> folder within the working directory.
+The first run will consequently incur a startup penalty.  However, the compiled
+code is cached, and assuming it's not modified, subsequent runs will skip the 
+C++ compilation, and startup time will be fast.
+
+While code is under development the default C<_Inline/> directory arrangement
+is probably fine.  But eventually it's probably best to set up a specific
+C<.Inline> folder.  It's easy to do.  The method is well documented in the 
+L<Inline> POD under the heading 
+L<The Inline DIRECTORY|http://search.cpan.org/perldoc?Inline#The_Inline_DIRECTORY>.
+
+=head Where to put C++ code
+
+Inline C++ code can reside just about anywhere you want within your Perl code.
+Much of this is documented more fully in the L<Inline> POD, but here are some
+basics:
+
+    use Inline CPP => 'DATA';
+    
+    # Perl code here
+    
+    __DATA__
+    __CPP__
+    
+    // C++ code here.
+    
+Or....
+
+    use Inline CPP => <<'END_CPP';
+        // C++ code here.
+    END_CPP
+    
+Ok, so that takes care of where code can reside within a given file.  But
+structurally where does it belong?  For simple one-off scripts, just put it
+anywhere you want.  But in the spirit of code reusability, it's often better to
+simply create a module that houses the functionality build upon C++ code:
+
+    # Foo/Bar.pm
+    package Foo::Bar;
+    use Inline CPP => 'DATA';
+    
+    # Perl code here, including Exporter mantra, if needed.
+    
+    __DATA__
+    __CPP__
+    // C++ here.....
+
+Where you place your module's file(s) follows the same rules as plain old Perl,
+which is beyond the scope of this POD, but fortunatly no different from what
+you're used to (assuming you're used to writing Perl modules).
+
+One big advantage to putting the C++ code in a module is that it can be shared
+by multiple scripts while only incurring that compilation startup penalty one
+time, ever.
+
+For this reason, when placing the C++ code in a module, it's usually a good 
+idea to specify where the C<_Inline> directory should reside, and again that's 
+covered in full detail in the L<Inline> POD.
+
+=head1 Basing (CPAN) Distributions on Inline::CPP
+
+Taking the concept of code-reuse one step further, it is entirely possible to
+package a distribution with an Inline::CPP dependency.  When the user installs
+the distribution (aka, the module), the C++ code will be compiled during module
+build time, and never again (unless the user upgrades the module).  So the user
+will never see the startup lag associated with C++ code compilation.
+
+An example and proof-of-concept for this approach can be found in the CPAN
+module L<Math::Prime::FastSieve>.
+
+This approach involves using L<Inline::MakeMaker>, and is well documented in 
+the L<Inline> POD under the heading
+L<Writing Modules with Inline|http://search.cpan.org/perldoc?Inline#Writing_Modules_with_Inline>
+
+However, you may wish to remove the Inline::CPP dependency altogether from the
+code that you bundle into a distribution.  This can be done using 
+L<InlineX::CPP2XS>, which converts the Inline::CPP generated code to
+Perl XS code, fit for distribution without the Inline::CPP dependency.  
+L<InlineX::CPP2XS> includes an example/ directory that actually converts
+Math::Prime::FastSieve to pure XS.
+
 =head1 C++ Configuration Options
 
 For information on how to specify Inline configuration options, see
 L<Inline>. This section describes each of the configuration options
-available for C. Most of the options correspond either the MakeMaker
+available for C/C++. Most of the options correspond either to the MakeMaker
 or XS options of the same name. See L<ExtUtils::MakeMaker> and
 L<perlxs>.
 
@@ -831,7 +916,7 @@ For general information about how C<Inline> binds code to Perl, see
 L<Inline>.
 
 For information on using C with Perl, see L<Inline::C> and
-L<Inline::C-Cookbook>. For C<WMTYEWTK>, see L<perlguts>, L<perlxs>,
+L<Inline::C-Cookbook>. For I<WMTYEWTK>, see L<perlguts>, L<perlxs>,
 L<perlxstut>, L<perlapi>, and L<perlcall>.  The literature for Inline::C
 (including the cookbook) is relevant and useful in learning Inline::CPP too;
 just about everything that works for Inline::C will work for Inline::CPP.
@@ -848,12 +933,9 @@ and Inline::MakeMaker as dependencies).  It serves as a proof of concept,
 another example of Inline::CPP at work, and a working example of basing a CPAN
 distribution on Inline::CPP.
 
-For information on using C and C++ structs with Perl, see
-L<Inline::Struct>.
-
-User and development discussion for Inline modules, including
+B<< User and development discussion for Inline modules, including
 Inline::CPP occurs on the inline.perl.org mailing list.  See
-L<http://lists.perl.org/list/inline.html> to learn how to subscribe.
+L<http://lists.perl.org/list/inline.html> to learn how to subscribe. >>
 
 The maintainer has found I<Advanced Perl Programming, 2nd Edition> (O'Reilly)
 helpful, although its discussion is focused on Inline::C.
@@ -916,14 +998,16 @@ will give the compiler a type to work with.
 =item c Function overloading -- This is a similar issue to the template problem.
 Perl doesn't know about C++'s function overload resolution rules.  And C++
 doesn't know about Perl.  XS was never designed to deal with this sort of
-mismatch.  
+mismatch.  This prevents implementing the I<Rule of Three> for code that is
+intended to bind with Perl, but because Perl handles your bindings, that's 
+probably not an issue.
 
 =item d Multiple inheritance doesn't work right (yet).
 
 =item e Multi-dimensional arrays as member data aren't implemented (yet).
 
-=item f Declaring a paramater type of void isn't implemented (yet).  Just use
-C<int myfunc();> instead of C<int myfunc(void);>.  This is C++, not C.  It's ok,
+=item f Declaring a paramater type of void isn't implemented.  Just use
+C<int myfunc();> instead of C<int myfunc(void);>.  This is C++, not C. It's ok,
 really.
 
 =item g Exceptions: While it's ok to throw an exception using 'throw', Perl
@@ -952,9 +1036,9 @@ future are:
 as many platforms as possible.  The goal is to achieve a smoke-test
 "pass" rate similar to Inline::C.
 
-The current "smoke test" pass rate seems to be around 90%.  I'm always
-working on chipping away at that last 10%.  If you're one of the unfortunate
-10% get in touch with me so we can try to figure out what the problem is.
+The current "smoke test" pass rate seems to be around 95%.  I'm always
+working on chipping away at that last 5%.  If you're one of the unfortunate
+5% get in touch with me so we can try to figure out what the problem is.
 Often progress can be made when we find a failure case we can work on together.
 
 =item b Improvements to the test suite.
@@ -977,7 +1061,7 @@ David Oswald <DAVIDO@cpan.org> is the current maintainer.
 David Oswald's Inline::CPP githug repo is:
 L<https://github.com/daoswald/Inline-CPP>
 
-Brian Ingerson <INGY@cpan.org> is the author of C<Inline>,
+Ingy döt Net <INGY@cpan.org> is the author of C<Inline>,
 C<Inline::C> and C<Inline::CPR>. He is known in the innermost Inline
 circles as "Batman". ;)
 
