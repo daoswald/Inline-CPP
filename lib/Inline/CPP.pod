@@ -184,7 +184,7 @@ C<.Inline> folder.  It's easy to do.  The method is well documented in the
 L<Inline> POD under the heading 
 L<The Inline DIRECTORY|http://search.cpan.org/perldoc?Inline#The_Inline_DIRECTORY>.
 
-=head Where to put C++ code
+=head1 Where to put C++ code
 
 Inline C++ code can reside just about anywhere you want within your Perl code.
 Much of this is documented more fully in the L<Inline> POD, but here are some
