@@ -1,4 +1,11 @@
 Revision history for Perl extension Inline::CPP.
+
+0.42 ?????????????????????????
+    - POD enhancements: Explanation of what parts of C++11 do and don't map
+      to Perl.  Better explanation of why templates don't work for Perl
+      binding.
+    - POD enhancements: Example code for specifying compiler flags, and
+      compiler version: CC, CCFLAGS.
 0.41 Wed Sept 5 19:14 PDT 2012
     - POD enhancements: Better description of compilation, _Inline/, and 
       code-reuse (modules, distributions).
