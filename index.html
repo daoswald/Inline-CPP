@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Inline-cpp : Perl Module: Inline::CPP: Include C++ code inline within Perl code." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Inline-cpp</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/daoswald/Inline-CPP">View on GitHub</a>
+
+          <h1 id="project_title">Inline-cpp</h1>
+          <h2 id="project_tagline">Perl Module: Inline::CPP: Include C++ code inline within Perl code.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/daoswald/Inline-CPP/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/daoswald/Inline-CPP/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>INTRODUCTION:</h1>
+
+<p>Inline::CPP -- Write Perl subroutines and classes in C++.</p>
+
+<p>Inline::CPP lets you write Perl subroutines and classes in C++. You
+don't have to learn XS (at first) or SWIG (ever), you can just put code right "inline"
+in your source.</p>
+
+<h2>Example:</h2>
+
+<pre><code>use Inline CPP =&gt; &lt;&lt;'END';
+
+class JAxH {
+  public:
+    JAxH(char *x);
+
+    SV* data();
+  private:
+    SV *dat;
+};
+
+JAxH::JAxH(char *x) { dat = newSVpvf("Just Another %s Hacker", x); }
+SV* JAxH::data() { return dat; }
+
+END
+
+print JAxH-&gt;new('Inline')-&gt;data(), "\n";
+</code></pre>
+
+<p>When run, this complete program prints:</p>
+
+<pre><code>Just Another Inline Hacker.
+</code></pre>
+
+<hr><h1>FEATURES:</h1>
+
+<p>Inline::CPP version 0.41 is a Stable Release.  See the 'Changes' file
+for details.</p>
+
+<hr><h1>INSTALLATION:</h1>
+
+<p>It should go without saying, but you will need a C++ compiler on your system.
+The C++ compiler should be of the same flavor as the C compiler used to build
+perl itself.  If you're using GNU C++, be sure that you have the g++ front
+end installed (it isn't installed by default on some Linux distros, for
+example).  If you cannot execute 'g++ -v' from the command prompt, or some
+variation for your specific C++ compiler,</p>
+
+<p>This module requires Inline::C.pm version 0.50 or higher to be installed.
+It also uses Parse::RecDescent.</p>
+
+<p>To install Inline::CPP do this:</p>
+
+<pre><code>perl Makefile.PL
+make
+make test
+make install
+</code></pre>
+
+<p>(On ActivePerl for MSWin32, use nmake instead of make.)
+(On Strawberry Perl you may use dmake instead.)</p>
+
+<p>As Makefile.PL runs you will be prompted for what C++ compiler and library to
+use.  Accepting the default should work in nearly every case (and if it
+doesn't, let me know).</p>
+
+<hr><h1>INFORMATION:</h1>
+
+<ul>
+<li>For more information on Inline::CPP see 'perldoc Inline::CPP'.</li>
+<li>For information about Inline.pm, see 'perldoc Inline'.</li>
+<li>For information about Inline::C (of which this is a subclass)
+see 'perldoc Inline::C', as well as 'perldoc Inline::C-Cookbook'.</li>
+<li>For information on using Perl with C or C++, see 'perldoc perlapi'</li>
+</ul><p>The Inline mailing list is <a href="mailto:inline@perl.org">inline@perl.org</a>. Send mail to
+<a href="mailto:inline-subscribe@perl.org">inline-subscribe@perl.org</a> to subscribe.</p>
+
+<p>This module's development is under version control with Git, hosted on Github
+at <a href="https://github.com/daoswald/Inline-CPP">https://github.com/daoswald/Inline-CPP</a></p>
+
+<p>Please send questions and comments to "David Oswald" <a href="mailto:DAVIDO@cpan.org">DAVIDO@cpan.org</a></p>
+
+<p>Copyright (c) 2003 - 2012, Neil Watkiss, David Oswald. All Rights Reserved.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Inline-cpp maintained by <a href="https://github.com/daoswald">daoswald</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
