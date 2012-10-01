@@ -278,7 +278,7 @@ the list.
 Specifies extra statements to be automatically included. They will be
 added on to the defaults. A newline char will automatically be added.
 
-    use Inline Config => AUTO_INCLUDE => '#include "something.h"';
+    use Inline CPP => Config => AUTO_INCLUDE => '#include "something.h"';
 
 =head2 BOOT
 

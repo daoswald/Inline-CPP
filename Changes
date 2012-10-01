@@ -6,6 +6,7 @@ Revision history for Perl extension Inline::CPP.
       binding.
     - POD enhancements: Example code for specifying compiler flags, and
       compiler version: CC, CCFLAGS.
+    - Fixed an error in the AUTO_INCLUDE documentation.
 0.41 Wed Sept 5 19:14 PDT 2012
     - POD enhancements: Better description of compilation, _Inline/, and 
       code-reuse (modules, distributions).
