@@ -41,6 +41,7 @@ t/10kwalitee.t
 t/11rewrite_config.t
 t/12custom_libs.t
 t/13version_numbers.t
+t/14changes.t
 META.yml                            Module YAML meta-data (added by MakeMaker)
 META.json                           Module JSON meta-data (added by MakeMaker)
 

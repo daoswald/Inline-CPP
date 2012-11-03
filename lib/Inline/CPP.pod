@@ -1,3 +1,5 @@
+=encoding utf8
+
 =head1 NAME
 
 Inline::CPP - Write Perl subroutines and classes in C++.

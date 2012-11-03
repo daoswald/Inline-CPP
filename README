@@ -33,7 +33,7 @@ When run, this complete program prints:
 -----------------------------------------------------------------------------
 FEATURES:
 
-Inline::CPP version 0.41 is a Stable Release.  See the 'Changes' file
+Inline::CPP version 0.42 is a Stable Release.  See the 'Changes' file
 for details.
 
 -----------------------------------------------------------------------------
@@ -46,7 +46,14 @@ end installed (it isn't installed by default on some Linux distros, for
 example).  If you cannot execute 'g++ -v' from the command prompt, or some
 variation for your specific C++ compiler,
 
-This module requires Inline::C.pm version 0.50 or higher to be installed.
+*** DISABLE HARNESS_OPTIONS=j9 ***
+
+If you have the HARNESS_OPTIONS environment variable set to run tests 
+concurrently in multiple processes, the test suite will attempt to invoke
+the C++ compiler multiple times concurrently.  This option isn't compatible
+with most C++ compilers.  Don't forget to unset your HARNESS_OPTIONS.
+
+This module requires Inline::C.pm version 0.51 or higher to be installed.
 It also uses Parse::RecDescent.
 
 To install Inline::CPP do this:
