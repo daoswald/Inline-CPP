@@ -5,8 +5,8 @@ package Inline::CPP::Config;
 use strict;
 use warnings;
 
-our $VERSION = '0.42';
-#$VERSION = eval $VERSION; ## no critic (eval)
+our $VERSION = '0.42_002';
+$VERSION = eval $VERSION; ## no critic (eval)
 
 
 # DO NOT MANUALLY ALTER THE FOLLOWING TWO LINES: Makefile.PL locates them by

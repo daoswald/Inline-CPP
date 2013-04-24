@@ -1,5 +1,17 @@
 Revision history for Perl extension Inline::CPP.
 
+
+0.42_002 2013-04-24
+  - Require Inline::C version 0.52_02, to test a fix for the bug raised in
+    Inline's RT #11748, and Inline::CPP's RT #84762: Typemaps were causing INC
+    to be clobbered.  Though this may be an Inline::CPP bug, the simplest fix
+    turned out to be a patch to Inline::C.
+
+0.42_001 2013-04-24
+  - Added documentation on the Some::Foo::Foo problem (See the POD section,
+    "The Perl Namespace Hack").
+  - Removed version number from README; fewer places to make a mistake.
+  
 0.42 2012-11-02
   - POD enhancements: Explanation of what parts of C++11 do and don't map
     to Perl.  Better explanation of why templates don't work for Perl

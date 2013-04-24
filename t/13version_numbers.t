@@ -50,21 +50,6 @@ is( $makefile_pl_version, $TARGET_VERSION,
     'Makefile.PL version matches target.'  );
 
 
-
-
-
-my $readme = slurp_file( '../README' );
-ok( $readme =~ m/Inline::CPP\sversion\s+([\d._]+)/, 
-    'Found Inline::CPP version number in README.'   );
-
-my $readme_version = eval $1;
-is( $readme_version, $TARGET_VERSION,
-    'README version matches target.'  );
-
-
-
-
-
 my $changes = slurp_file( '../Changes' );
 ok( $changes =~ m/^([\d._]+)\s/m,
     'Found Inline::CPP version number in Changes' );

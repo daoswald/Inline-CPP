@@ -256,6 +256,49 @@ Perl XS code, fit for distribution without the Inline::CPP dependency.
 L<InlineX::CPP2XS> includes an example/ directory that actually converts
 Math::Prime::FastSieve to pure XS.
 
+=head2 The Perl Namespace Hack
+
+Let's say you use Inline::CPP like this:
+
+    package Some::Foo;
+    use Inline CPP => <<'END_CPP';
+
+    #include <iostream>
+    using namespace std;
+
+    class Foo {
+      private:
+        int data;
+      public:
+        Foo()  { cout << "creating a Foo()" << endl; }
+        ~Foo() { cout << "deleting a Foo()" << endl; }
+    };
+
+    END_CPP
+    1;
+    
+The unfortunate issue is that the C++ class, "C<Foo>" will be mapped to Perl
+below the C<Some::Foo> namespace, as C<Some::Foo::Foo>, and would need to be
+instantiated like this: C<my $foo = Some::Foo::Foo->new()>.  This probably isn't
+what the user intended. Here's a devious hack (provided by BrowserUk) that
+eliminates the problem:
+
+    package Some::Foo;
+    package Some;        # Now we're using the "Some" namespace, and Inline::CPP
+                         # will create the Foo class as Some::Foo.
+    use Inline CPP => <<'END_CPP';
+
+    // No changes to the C++ code from the previous example.
+
+    END_CPP
+
+    package Some::Foo;
+    return 1 if caller;
+
+Now, C<Foo> falls under the C<Some> heirarchy: C<Some::Foo>, and can be
+instantiated as C<my $foo = Some::Foo->new()>.  This probably I<is> what the
+user intended.
+
 =head1 C++ Configuration Options
 
 For information on how to specify Inline configuration options, see
