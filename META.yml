@@ -23,11 +23,11 @@ no_index:
 provides:
   Inline::CPP:
     file: CPP.pm
-    version: 0.42_001
+    version: 0.42_002
 requires:
   Carp: 0
-  Inline: 0.51
-  Inline::C: 0.51
+  Inline: 0.52_02
+  Inline::C: 0.52_02
   Parse::RecDescent: 0
   perl: 5.006001
-version: 0.42_001
+version: 0.42_002
