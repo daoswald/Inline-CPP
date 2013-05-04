@@ -45,11 +45,12 @@ variation for your specific C++ compiler,
 
 If you have the HARNESS_OPTIONS environment variable set to run tests 
 concurrently in multiple processes, the test suite will attempt to invoke
-the C++ compiler multiple times concurrently.  This option isn't compatible
-with most C++ compilers.  Don't forget to unset your HARNESS_OPTIONS.
+the C++ compiler multiple times concurrently.  We're finding that this option
+is incompatible with Inline::CPP, and the compilation process is too complex
+to work out why.
 
-This module requires Inline::C.pm version 0.51 or higher to be installed.
-It also uses Parse::RecDescent.
+This module requires Inline::C.pm version 0.53 or higher to be installed.
+It also uses Parse::RecDescent, and a new-ish version of ExtUtils::MakeMaker.
 
 To install Inline::CPP do this:
 

@@ -14,8 +14,8 @@ use strict;
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
 my %PREREQ_PM = (
-    'Inline'            => '0.52_02',
-    'Inline::C'         => '0.52_02',
+    'Inline'            => '0.53',
+    'Inline::C'         => '0.53',
     'Parse::RecDescent' => '0',
     'Carp'              => '0',
 );
@@ -209,7 +209,7 @@ WriteMakefile(
         provides => {
             'Inline::CPP' => {
                 file    => 'CPP.pm',
-                version => '0.42_002'
+                version => '0.43'
             },
         },
     },

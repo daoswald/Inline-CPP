@@ -1,6 +1,11 @@
 Revision history for Perl extension Inline::CPP.
 
-
+0.43 2013-05-04
+  - Require Inline::C version 0.53 to mainstream the bug fix that addressed
+    Inline's RT # 11748, and Inline::CPP's RT#84762.
+  - No changes from 0.42_002 (dev) other than to bump the version number to a
+    'production' number.
+    
 0.42_002 2013-04-24
   - Require Inline::C version 0.52_02, to test a fix for the bug raised in
     Inline's RT #11748, and Inline::CPP's RT #84762: Typemaps were causing INC
