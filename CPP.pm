@@ -4,6 +4,7 @@ package Inline::CPP;
 use strict;
 use warnings;
 use 5.006000;
+use Fcntl qw( :DEFAULT :flock );
 
 require Inline::C;
 require Inline::CPP::grammar;
@@ -19,7 +20,7 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.43';
+our $VERSION = '0.44';
 #$VERSION = eval $VERSION; ## no critic (eval)
 
 our $LOGFILE = q{c:/Users/daoswald/programming/repos/Inline-CPP/ilcpp.log};
@@ -605,11 +606,29 @@ INPUT
 $TYPEMAP_KIND
 $o->{ILSM}{typeconv}{input_expr}{$TYPEMAP_KIND}
 END
-    open my $TYPEMAP_FH, '>', $filename
-        or croak "Error: Can't write to $filename: $!";
+
+
+    # Open an output file, create if necessary, then lock, then truncate.
+    # This replaces the following, which wasn't lock-safe:
+      #    open my $TYPEMAP_FH, '>', $filename
+      #        or croak "Error: Can't write to $filename: $!";
+
+    sysopen( my $TYPEMAP_FH, $filename, O_WRONLY | O_CREAT )
+      or croak "Error: Can't write to $filename: $!";
+
+    # Flock and truncate (truncating to zero length to simulate '>' mode).
+    flock $TYPEMAP_FH, LOCK_EX
+      or croak "Error: Can't obtain lock for $filename: $!";
+    truncate $TYPEMAP_FH, 0
+      or croak "Error: Can't truncate $filename: $!";
+
+    # End of new lock-safe code.
+    
     print {$TYPEMAP_FH} $tm_output;
+
     close $TYPEMAP_FH
         or croak "Error: Can't close $filename after write: $!";
+
     $o->validate( TYPEMAPS => $filename );
     return;
 }

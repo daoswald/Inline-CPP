@@ -1,5 +1,6 @@
 use ExtUtils::MakeMaker;
 use Config;
+use Fcntl qw( :DEFAULT :flock );
 
 use strict;
 
@@ -129,9 +130,21 @@ my $libs = prompt( "What default libraries would you like to include?",
 #============================================================================
 # Test whether the compiler prefers <iostream> or <iostream.h>.
 #============================================================================
-open TESTCPP, ">$test_cpp_filename.cpp"
-    or die "Makefile.PL: Couldn't open $test_cpp_filename for output:\n$!\n";
+
+# Lock-safe open:
+# Used to be:
+  # open TESTCPP, ">$test_cpp_filename.cpp"
+  #    or die "Makefile.PL: Couldn't open $test_cpp_filename for output:\n$!\n";
+
+sysopen TESTCPP, "$test_cpp_filename.cpp", O_WRONLY | O_CREAT
+  or die "Makefile.PL: Couldn't open $test_cpp_filename.cpp for output:\n$!\n";
+flock TESTCPP, LOCK_EX
+  or die "Makefile.PL: Couldn't flock $test_cpp_filename.cpp:\n$!\n";
+truncate TESTCPP, 0
+  or die "Makefile.PL: Couldn't truncate $test_cpp_filename.cpp:\n$!\n";
+
 print TESTCPP $test_cpp;
+
 close TESTCPP
     or die "Makefile.PL: Couldn't close $test_cpp_filename:\n$!\n";
 
@@ -167,9 +180,18 @@ else {
 unlink "$test_cpp_filename.cpp" or warn $!;        # Unlink the test source.
 
 # Apply the defaults:
+# Lock friendly.  This isn't a race condition because even if the file gets
+# modified between read and write, it will be modified to the same system
+# state, unless human intervention changes defaults, in which case it's
+# virtually impossible for concurrency to be a problem.
+
 open CPP_Config, $CPP_Config_path
-    or die "Can't read from $CPP_Config_path for configuration!\n$!";
+  or die "Makefile.PL: Can't read from $CPP_Config_path for configuration!\n$!";
+flock CPP_Config, LOCK_SH
+  or die "Makefile.PL: Can't flock $CPP_Config_path for input:\n$!\n";
+
 my @lines = <CPP_Config>;
+
 close CPP_Config;
 
 for (@lines) {
@@ -180,8 +202,13 @@ for (@lines) {
     s{ ^ [^#]* ( \#define \s+ __INLINE_CPP_STANDARD_HEADERS ) } {$comment$1}x;
 }
 
-open CPP_Config, ">$CPP_Config_path"
-    or die "Can't write to $CPP_Config_path for configuration!\n$!";
+
+# Lock friendly open for output.
+sysopen CPP_Config, $CPP_Config_path, O_WRONLY | O_CREAT
+  or die "Makefile.PL: Can't open $CPP_Config_path to write configuration:\n$!";
+
+truncate CPP_Config, 0
+  or die "Makefile.PL: Can't truncate $CPP_Config_path to write config:\n$!";
 
 print CPP_Config @lines
     or die "Can't write to $CPP_Config_path for configuration!\n$!";
@@ -209,7 +236,7 @@ WriteMakefile(
         provides => {
             'Inline::CPP' => {
                 file    => 'CPP.pm',
-                version => '0.43'
+                version => '0.44'
             },
         },
     },

@@ -1,5 +1,11 @@
 Revision history for Perl extension Inline::CPP.
 
+0.44 2013-05-17
+  - Add flocking to output file handling in CPP.pm and Makefile.PL to prevent
+    race conditions that might occur during parallel testing.
+    (Note: There are still race-condition issues in Inline that will affect
+    us until they're fixed.)
+
 0.43 2013-05-04
   - Require Inline::C version 0.53 to mainstream the bug fix that addressed
     Inline's RT # 11748, and Inline::CPP's RT#84762.
