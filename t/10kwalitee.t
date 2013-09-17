@@ -7,18 +7,21 @@ use Test::More;
 # This prevents author tests from running on a user install.
 
 if ( not $ENV{RELEASE_TESTING} ) {
-    my $msg =
-        'Author Test: Set $ENV{RELEASE_TESTING} to a true value to run.';
-    plan( skip_all => $msg );
+    plan(
+      skip_all =>
+        'Author Test: Set $ENV{RELEASE_TESTING} to a true value to run.'
+    );
+    done_testing();
+    exit(0);
 }
-
 
 eval { require Test::Kwalitee; Test::Kwalitee->import() };  ## no cricit (eval)
 
-plan( skip_all => 'Test::Kwalitee not installed; skipping' ) if $@;
-
-done_testing();
-
+if( $@ ) {
+  plan( skip_all => 'Test::Kwalitee not installed; skipping' );
+  done_testing();
+  exit(0);
+}
 
 # Clean up.  I haven't traced out where this is getting created, but we
 # certainly don't need to leave it behind as clutter.

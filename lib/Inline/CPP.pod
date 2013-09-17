@@ -1092,14 +1092,12 @@ L<http://lists.perl.org/list/inline.html> for details on subscribing.
 
 Here are some things to watch out for:
 
-=over 4
-
-=item 1 The grammar used for parsing C++ is still quite simple, and does not
+The grammar used for parsing C++ is still quite simple, and does not
 allow several features of C++:
 
 =over 4
 
-=item a Templates: You may use template libraries in your code, but
+=item Templates: You may use template libraries in your code, but
 L<Inline::CPP> won't know how to parse and bind template definitions.  The
 core problem is that the C++ compiler has no idea how a dynamic language like
 Perl intends to invoke template-generated code, and thus, cannot know what
@@ -1107,9 +1105,9 @@ code to generate from the templates.  Keep the templates encapsulated away from
 the interface that will be exposed to Perl by wrapping calls in functions that
 will give the compiler a type to work with.
 
-=item b Operator overloading
+=item Operator overloading
 
-=item c Function overloading -- This is a similar issue to the template problem.
+=item Function overloading -- This is a similar issue to the template problem.
 Perl doesn't know about C++'s function overload resolution rules.  And C++
 doesn't know about Perl.  XS was never designed to deal with this sort of
 mismatch.  This prevents implementing the I<Rule of Three> for code that is
@@ -1129,15 +1127,15 @@ features of C++ don't map into Perl, and vice versa.  Consider C++ enums.
 Should Perl treat them as constants by mapping them via the constant pragma?
 The answer is unclear, and the fact is they won't be bound into Perl at all.
 
-=item d Multiple inheritance doesn't work right (yet).
+=item Multiple inheritance doesn't work right (yet).
 
-=item e Multi-dimensional arrays as member data aren't implemented (yet).
+=item Multi-dimensional arrays as member data aren't implemented (yet).
 
-=item f Declaring a paramater type of void isn't implemented.  Just use
+=item Declaring a paramater type of void isn't implemented.  Just use
 C<int myfunc();> instead of C<int myfunc(void);>.  This is C++, not C. It's ok,
 really.
 
-=item g Exceptions: While it's ok to throw an exception using 'throw', Perl
+=item Exceptions: While it's ok to throw an exception using 'throw', Perl
 won't know how to recover from it, and you'll get a core-dump instead of a
 Perlish death.  The solution is simple, C<croak("Message")>.  Perl will treat
 that as a call to C<die>.  The fifth example above demonstrates how to get
@@ -1151,34 +1149,6 @@ with gracefully, re-throw back to Perl using C<croak>.
 Other grammar problems will probably be noticed quickly.  This is Perl, C++, and
 XS all sealed into one can of worms.  But it can be fun, which is a description
 never applied to raw XS.
-
-=item 2
-
-In order of relative importance, improvements planned in the near
-future are:
-
-=over 4
-
-=item a Work through issues relating to successful installation and use on
-as many platforms as possible.  The goal is to achieve a smoke-test
-"pass" rate similar to Inline::C.
-
-The current "smoke test" pass rate seems to be around 95%.  I'm always
-working on chipping away at that last 5%.  If you're one of the unfortunate
-5% get in touch with me so we can try to figure out what the problem is.
-Often progress can be made when we find a failure case we can work on together.
-
-=item b Improvements to the test suite.
-
-=item c Address some of the bugs and deficiences mentioned above.
-
-=item d Binding to unions.
-
-=item e More examples.
-
-=back
-
-=back
 
 
 =head1 SEE ALSO
