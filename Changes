@@ -1,5 +1,8 @@
 Revision history for Perl extension Inline::CPP.
 
+0.46 2013-10-29
+  - Add a newline before MODULE keyword to fix RT#89839(srezic).
+
 0.45 2013-09-17
   - Fix POD syntax errors.
   - Remove TODO list from POD.

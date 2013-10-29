@@ -20,7 +20,7 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.45';
+our $VERSION = '0.46';
 #$VERSION = eval $VERSION; ## no critic (eval)
 
 our $LOGFILE = q{c:/Users/daoswald/programming/repos/Inline-CPP/ilcpp.log};
@@ -414,6 +414,7 @@ sub _remove_xs_prefixes {
             : q{}
     );
     return <<"END";
+
 MODULE = $module        PACKAGE = $pkg  $prefix
 
 PROTOTYPES: DISABLE
