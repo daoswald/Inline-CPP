@@ -1,5 +1,9 @@
 Revision history for Perl extension Inline::CPP.
 
+0.47 2014-01-30
+  - Applied patch from Graham Ollis closing RT#92595:
+    FreeBSD v10 uses the clang++ compiler, and so do we.
+
 0.46 2013-10-29
   - Add a newline before MODULE keyword to fix RT#89839(srezic).
 
