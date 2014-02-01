@@ -46,9 +46,9 @@
    "provides" : {
       "Inline::CPP" : {
          "file" : "CPP.pm",
-         "version" : "0.47"
+         "version" : "0.48"
       }
    },
    "release_status" : "stable",
-   "version" : "0.47"
+   "version" : "0.48"
 }

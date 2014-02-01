@@ -115,7 +115,7 @@ elsif ( $Config{osname} eq 'mirbsd' ) {
 
 elsif( $Config{osname} eq 'freebsd' && $Config{osvers} =~ /^(\d+)/ && $1 >= 10 ){
   $cc_guess = 'clang++';
-  $libs_guess = '-ls++';
+  $libs_guess = '-lc++';
 }
 
 # Sane defaults for other (probably unix-like) operating systems
@@ -241,7 +241,7 @@ WriteMakefile(
         provides => {
             'Inline::CPP' => {
                 file    => 'CPP.pm',
-                version => '0.47'
+                version => '0.48'
             },
         },
     },
