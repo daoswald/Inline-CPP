@@ -47,7 +47,11 @@ If you have the HARNESS_OPTIONS environment variable set to run tests
 concurrently in multiple processes, the test suite will attempt to invoke
 the C++ compiler multiple times concurrently.  We're finding that this option
 is incompatible with Inline::CPP, and the compilation process is too complex
-to work out why.
+to work out why without considerable effort.
+
+Also, some smoke testers run their testing in parallel, which has a similar
+negative effect, and results in FAIL reports for reasons that will never
+occur in the real world.
 
 This module requires Inline::C.pm version 0.53 or higher to be installed.
 It also uses Parse::RecDescent, and a new-ish version of ExtUtils::MakeMaker.

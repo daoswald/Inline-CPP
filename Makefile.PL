@@ -241,7 +241,7 @@ WriteMakefile(
         provides => {
             'Inline::CPP' => {
                 file    => 'CPP.pm',
-                version => '0.48'
+                version => '0.49'
             },
         },
     },

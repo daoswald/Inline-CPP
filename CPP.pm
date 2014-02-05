@@ -20,14 +20,12 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.48';
+our $VERSION = '0.49';
 #$VERSION = eval $VERSION; ## no critic (eval)
-
-our $LOGFILE = q{c:/Users/daoswald/programming/repos/Inline-CPP/ilcpp.log};
 
 my $TYPEMAP_KIND;
 {
-    no warnings qw/ once /; ## no critic (warnings)
+    no warnings 'once'; ## no critic (warnings)
     $TYPEMAP_KIND = $Inline::CPP::grammar::TYPEMAP_KIND;
 }
 
@@ -53,7 +51,7 @@ sub validate {
     my ( $flavor_defs, $iostream );
 
     {   # "used only once" warning. We know it's ok.
-        no warnings qw( once ); ## no critic (warnings)
+        no warnings 'once'; ## no critic (warnings)
         ## no critic (package variable)
 
         # Set default compiler and libraries.

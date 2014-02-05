@@ -279,7 +279,7 @@ Let's say you use Inline::CPP like this:
     
 The unfortunate issue is that the C++ class, "C<Foo>" will be mapped to Perl
 below the C<Some::Foo> namespace, as C<Some::Foo::Foo>, and would need to be
-instantiated like this: C<my $foo = Some::Foo::Foo->new()>.  This probably isn't
+instantiated like this: C<< my $foo = Some::Foo::Foo->new() >>.  This probably isn't
 what the user intended. Here's a devious hack (provided by BrowserUk) that
 eliminates the problem:
 
@@ -296,7 +296,7 @@ eliminates the problem:
     return 1 if caller;
 
 Now, C<Foo> falls under the C<Some> heirarchy: C<Some::Foo>, and can be
-instantiated as C<my $foo = Some::Foo->new()>.  This probably I<is> what the
+instantiated as C<< my $foo = Some::Foo->new() >>.  This probably I<is> what the
 user intended.
 
 =head1 C++ Configuration Options
@@ -1150,6 +1150,10 @@ Other grammar problems will probably be noticed quickly.  This is Perl, C++, and
 XS all sealed into one can of worms.  But it can be fun, which is a description
 never applied to raw XS.
 
+There are a number of smoke test FAILS that will only reasonably occur in a
+testing environment.  Most of these are a result of the module being tested
+in parallel.  It is unlikely that in a real-world environment compilation will
+ever take place in parallel.
 
 =head1 SEE ALSO
 
