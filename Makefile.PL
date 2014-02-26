@@ -8,7 +8,6 @@ use strict;
 
 # We're using bareword file handles and two arg open for backward
 # compatibility in Makefile.PL.  Here we disable those tests in Perl::Critic.
-
 ## no critic (bareword file handle)
 ## no critic (two-argument open)
 
