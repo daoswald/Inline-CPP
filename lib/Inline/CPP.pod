@@ -256,7 +256,7 @@ Perl XS code, fit for distribution without the Inline::CPP dependency.
 L<InlineX::CPP2XS> includes an example/ directory that actually converts
 Math::Prime::FastSieve to pure XS.
 
-=head2 The Perl Namespace Hack
+=head2 The Perl Namespace Issue
 
 Let's say you use Inline::CPP like this:
 
@@ -277,11 +277,11 @@ Let's say you use Inline::CPP like this:
     END_CPP
     1;
     
-The unfortunate issue is that the C++ class, "C<Foo>" will be mapped to Perl
-below the C<Some::Foo> namespace, as C<Some::Foo::Foo>, and would need to be
-instantiated like this: C<< my $foo = Some::Foo::Foo->new() >>.  This probably isn't
-what the user intended. Here's a devious hack (provided by BrowserUk) that
-eliminates the problem:
+The issue is that the C++ class, "C<Foo>" will be mapped to Perl below the 
+C<Some::Foo> namespace, as C<Some::Foo::Foo>, and would need to be instantiated 
+like this: C<< my $foo = Some::Foo::Foo->new() >>.  This probably isn't what 
+the user intended. Here's a solution (provided by BrowserUk) that circumvents 
+the issue:
 
     package Some::Foo;
     package Some;        # Now we're using the "Some" namespace, and Inline::CPP
