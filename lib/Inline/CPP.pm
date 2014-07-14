@@ -1,9 +1,7 @@
 package Inline::CPP;
-
-
 use strict;
 use warnings;
-use 5.006000;
+
 use Fcntl qw( :DEFAULT :flock );
 
 require Inline::C;
@@ -59,7 +57,7 @@ sub validate {
             ||= $Inline::CPP::Config::compiler;
         $o->{ILSM}{MAKEFILE}{LIBS}
             ||= _make_arrayref( $Inline::CPP::Config::libs );
-        
+
         $flavor_defs = $Inline::CPP::Config::cpp_flavor_defs; # "Standard"?
         $iostream    = $Inline::CPP::Config::iostream_fn; # iostream filename.
     }
@@ -622,7 +620,7 @@ END
       or croak "Error: Can't truncate $filename: $!";
 
     # End of new lock-safe code.
-    
+
     print {$TYPEMAP_FH} $tm_output;
 
     close $TYPEMAP_FH
@@ -709,7 +707,4 @@ END
     return join q{}, @enum;
 }
 
-
 1;
-
-__END__
