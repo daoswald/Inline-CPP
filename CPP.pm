@@ -120,28 +120,39 @@ sub _handle_config_options {
     while ( @config_options ) {
         my ( $key, $value )
             = (  shift @config_options,  shift @config_options  );
-        if ( $key eq 'LIBS' ) {
+        warn "Processing config option: $key => $value";
+        if( $key eq 'BASE_NAMESPACE' ) {
+            warn "BASE_NAMESPACE detected with $value";
+            _handle_namespace_cfg_option( $o, $value );
+        }
+        elsif ( $key eq 'LIBS' ) {
             _handle_libs_cfg_option( $o, $value );
-            next;
         }
-        if ( $key eq 'ALTLIBS' ) {
+        elsif ( $key eq 'ALTLIBS' ) {
             _handle_altlibs_cfg_option( $o, $value );
-            next;
         }
-        if (     $key eq 'PRESERVE_ELLIPSIS'
-             or  $key eq 'STD_IOSTREAM' )
+        elsif (     $key eq 'PRESERVE_ELLIPSIS'
+                or  $key eq 'STD_IOSTREAM'      )
         {
             croak "Argument to $key must be 0 or 1"
                 unless $value == 0
                     or $value == 1;
             $o->{ILSM}{$key} = $value;
-            next;
         }
-        push @propagate, $key, $value;
+        else {
+            push @propagate, $key, $value;
+        }
     }
     return @propagate;
 }
 
+sub _handle_namespace_cfg_option {
+  my ( $o, $value ) = @_;
+  warn "PKG: ", $o->{API}{pkg};
+  warn "MODULE: ", $o->{API}{module};
+
+  return;
+}
 
 sub _handle_libs_cfg_option {
     my( $o, $value ) = @_;
@@ -285,6 +296,7 @@ sub xs_generate {
 #============================================================================
 sub xs_bindings {
     my $o = shift;
+    # What is modfname, and why are we taking it from a slice but not using it?
     my ( $pkg, $module ) = @{ $o->{API} }{ qw(pkg module modfname) };
     my $data = $o->{ILSM}{parser}{data};
     my @XS;
