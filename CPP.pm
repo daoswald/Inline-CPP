@@ -120,9 +120,7 @@ sub _handle_config_options {
     while ( @config_options ) {
         my ( $key, $value )
             = (  shift @config_options,  shift @config_options  );
-        warn "Processing config option: $key => $value";
-        if( $key eq 'BASE_NAMESPACE' ) {
-            warn "BASE_NAMESPACE detected with $value";
+        if( $key eq 'NAMESPACE' || $key eq 'namespace' ) {
             _handle_namespace_cfg_option( $o, $value );
         }
         elsif ( $key eq 'LIBS' ) {
@@ -146,13 +144,14 @@ sub _handle_config_options {
     return @propagate;
 }
 
+#############
 sub _handle_namespace_cfg_option {
   my ( $o, $value ) = @_;
-  warn "PKG: ", $o->{API}{pkg};
-  warn "MODULE: ", $o->{API}{module};
-
+  $value =~ s/^::|::$//g;
+  $o->{API}{pkg} = $value;
   return;
 }
+
 
 sub _handle_libs_cfg_option {
     my( $o, $value ) = @_;
@@ -297,7 +296,7 @@ sub xs_generate {
 sub xs_bindings {
     my $o = shift;
     # What is modfname, and why are we taking it from a slice but not using it?
-    my ( $pkg, $module ) = @{ $o->{API} }{ qw(pkg module modfname) };
+    my ( $pkg, $module ) = @{ $o->{API} }{ qw(pkg module) };
     my $data = $o->{ILSM}{parser}{data};
     my @XS;
 
