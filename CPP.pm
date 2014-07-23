@@ -120,7 +120,8 @@ sub _handle_config_options {
     while ( @config_options ) {
         my ( $key, $value )
             = (  shift @config_options,  shift @config_options  );
-        if( $key eq 'NAMESPACE' || $key eq 'namespace' ) {
+        $key = uc $key;
+        if( $key eq 'NAMESPACE' ) {
             _handle_namespace_cfg_option( $o, $value );
         }
         elsif ( $key eq 'LIBS' ) {
@@ -148,6 +149,8 @@ sub _handle_config_options {
 sub _handle_namespace_cfg_option {
   my ( $o, $value ) = @_;
   $value =~ s/^::|::$//g;
+  # Note: This regex should use \p{XID_Start} and \p{XID_Continue}.
+  croak "$value is an invalid package name." unless $value =~ m/^\w+(?:::\w+)$/;
   $o->{API}{pkg} = $value;
   return;
 }
