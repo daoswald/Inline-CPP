@@ -1,5 +1,5 @@
 Changes
-CPP.pm
+lib/Inline/CPP.pm
 MANIFEST
 MANIFEST.SKIP
 Makefile.PL

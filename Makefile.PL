@@ -223,7 +223,7 @@ close CPP_Config
 WriteMakefile(
     NAME           => 'Inline::CPP',
     AUTHOR         => 'David Oswald <davido@cpan.org>',
-    VERSION_FROM   => 'CPP.pm',
+    VERSION_FROM   => 'lib/Inline/CPP.pm',
     ABSTRACT_FROM  => 'lib/Inline/CPP.pod',
     LICENSE        => 'artistic',
     PREREQ_PM      => \%PREREQ_PM,
@@ -239,7 +239,7 @@ WriteMakefile(
     META_MERGE => {
         provides => {
             'Inline::CPP' => {
-                file    => 'CPP.pm',
+                file    => 'lib/Inline/CPP.pm',
                 version => '0.51'
             },
         },

@@ -1,6 +1,5 @@
 package Inline::CPP;
 
-
 use strict;
 use warnings;
 use 5.006000;
