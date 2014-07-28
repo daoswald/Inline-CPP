@@ -245,5 +245,6 @@ WriteMakefile(
         },
     },
     MIN_PERL_VERSION => '5.006001',
+    test =>        { RECURSIVE_TEST_FILES => 1 },
     clean            => { FILES => '_Inline/ grammar/_Inline' },
 );

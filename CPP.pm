@@ -150,7 +150,8 @@ sub _handle_namespace_cfg_option {
   my ( $o, $value ) = @_;
   $value =~ s/^::|::$//g;
   # Note: This regex should use \p{XID_Start} and \p{XID_Continue}.
-  croak "$value is an invalid package name." unless $value =~ m/^\w+(?:::\w+)$/;
+  croak "$value is an invalid package name." unless $value =~
+    m/\A\p{XID_Start}\p{XID_Continue}+(?:::\p{XID_Start}\p{XID_Continue}+)*\z/;
   $o->{API}{pkg} = $value;
   return;
 }

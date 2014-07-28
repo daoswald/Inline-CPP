@@ -3,7 +3,6 @@ package main;
 use strict;
 use warnings;
 
-use Inline CPP => Config => DIRECTORY => '/home/davido/repos/Inline-CPP/_Inline/';
 use Inline CPP => Config => CLEAN_AFTER_BUILD => 0, FORCE_BUILD => 1, namespace => 'Foo';
 
 use Inline CPP => <<'EOCPP';
