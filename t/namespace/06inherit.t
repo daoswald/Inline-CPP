@@ -3,7 +3,7 @@ package Foo;
 use strict;
 use warnings;
 
-use Inline CPP => Config => namespace         => '';
+use Inline CPP => Config => namespace => '';
 
 use Inline CPP => <<'EOCPP';
 
@@ -20,19 +20,22 @@ EOCPP
 
 package Bar;
 
-our @ISA = 'Foo';
-sub myfetch { my $self = shift; $self->fetch() }
+our @ISA = ('Foo');
+sub myfetch { my $self = shift; $self->fetch(); }
 
-1;
 
 package main;
 use Test::More;
 
-can_ok 'Bar::Foo', 'new';
-my $f = new_ok 'Bar::Foo';
-is ref($f), 'Bar::Foo', 'Our "Foo" is a "Bar::Foo"';
+can_ok 'Foo', 'new';
+my $f = new_ok 'Foo';
+is ref($f), 'Foo', 'Our "Foo" is a "Foo".';
+is $f->fetch, '10', 'Accessor properly associated.';
 
 
-is $f->fetch, 10, 'Proper object method association from Baz::Foo.';
+can_ok 'Bar', 'new';
+my $bf = new_ok 'Bar';
+is ref($bf), 'Bar', 'Our "Bar" is a "Bar"';
+is $bf->fetch, 10, 'Proper object method association from Bar.';
 
 done_testing();
