@@ -280,20 +280,10 @@ Let's say you use Inline::CPP like this:
 The issue is that the C++ class, "C<Foo>" will be mapped to Perl below the 
 C<Some::Foo> namespace, as C<Some::Foo::Foo>, and would need to be instantiated 
 like this: C<< my $foo = Some::Foo::Foo->new() >>.  This probably isn't what 
-the user intended. Here's a solution (provided by BrowserUk) that circumvents 
-the issue:
+the user intended. Use the L<NAMESPACE> configuration option to set your base
+namespace:
 
-    package Some::Foo;
-    package Some;        # Now we're using the "Some" namespace, and Inline::CPP
-                         # will create the Foo class as Some::Foo.
-    use Inline CPP => <<'END_CPP';
-
-    // No changes to the C++ code from the previous example.
-
-    END_CPP
-
-    package Some::Foo;
-    return 1 if caller;
+    use Inline CPP => NAMESPACE => 'Some';
 
 Now, C<Foo> falls under the C<Some> heirarchy: C<Some::Foo>, and can be
 instantiated as C<< my $foo = Some::Foo->new() >>.  This probably I<is> what the
@@ -313,7 +303,7 @@ Adds a new entry to the end of the list of alternative libraries to
 bind with. MakeMaker will search through this list and use the first
 entry where all the libraries are found.
 
-    use Inline Config => ALTLIBS => '-L/my/other/lib -lfoo';
+    use Inline CPP => Config => ALTLIBS => '-L/my/other/lib -lfoo';
 
 See also the LIBS config option, which appends to the last entry in
 the list.
@@ -330,7 +320,7 @@ added on to the defaults. A newline char will automatically be added.
 Specifies code to be run when your code is loaded. May not contain any
 blank lines. See L<perlxs> for more information.
 
-    use Inline Config => BOOT => 'foo();';
+    use Inline CPP => Config => BOOT => 'foo();';
 
 =head2 CC
 
@@ -351,7 +341,7 @@ the code just prior to parsing. The filters are executed one after another,
 each operating on the output of the previous one. You can pass in a code
 reference or the name of a prepackaged filter.
 
-    use Inline Config => FILTERS => [Strip_POD => \&myfilter];
+    use Inline CPP => Config => FILTERS => [Strip_POD => \&myfilter];
 
 The filter may do anything. The code is passed as the first argument, and
 it returns the filtered code.
@@ -361,7 +351,7 @@ it returns the filtered code.
 Specifies extra include directories. Corresponds to the MakeMaker
 parameter.
 
-    use Inline Config => INC => '-I/my/path';
+    use Inline CPP => Config => INC => '-I/my/path';
 
 =head2 LD
 
@@ -380,12 +370,12 @@ respecify them here.
 Specifies external libraries that should be linked into your
 code. Corresponds to the MakeMaker parameter.
 
-    use Inline Config => LIBS => '-L/your/path -lyourlib';
+    use Inline CPP => Config => LIBS => '-L/your/path -lyourlib';
 
 Unlike the LIBS configuration parameter used in Inline::C, successive
 calls to LIBS append to the previous calls. For example,
 
-    use Inline Config => LIBS => '-L/my/path', LIBS => '-lyourlib';
+    use Inline CPP => Config => LIBS => '-L/my/path', LIBS => '-lyourlib';
 
 will work correctly. If you want to add a new element to the list of
 possible libraries to link with, use the Inline::CPP configuration ALTLIBS.
@@ -399,7 +389,95 @@ Specifies the name of the 'make' utility to use.
 Specifies a user compiled object that should be linked in. Corresponds
 to the MakeMaker parameter.
 
-    use Inline Config => MYEXTLIB => '/your/path/something.o';
+    use Inline CPP => Config => MYEXTLIB => '/your/path/something.o';
+
+=head2 NAMESPACE
+
+    use Inline CPP => Config => NAMESPACE => 'Foo';
+    use Inline CPP => Config => NAMESPACE => 'main';
+    use Inline CPP => Config => NAMESPACE => q{};
+
+Override default base namespace.
+
+Under default behavior, a C++ class C<Foo> created by invoking L<Inline::CPP>
+from C<package Bar> will result in the C++ C<Foo> class being accessible from
+Perl as C<Bar::Foo>.  While this default behavior may be desirable in some
+cases, it might be undesirable in others.  An example would be creating a C<Foo>
+class while invoking Inline::CPP from package C<Foo>.  The resulting class will
+bind to Perl as C<Foo::Foo>, which is probably not what was intended.
+
+This default behavior can be overridden by specifying an alternate base
+C<NAMESPACE>.  Examples are probably the best way to explain this:
+
+
+    package Foo;
+    use Inline CPP => Config => NAMESPACE => 'Bar';
+    use Inline CPP => <<'EOCPP';
+
+    class Baz {
+      private:
+        int a;
+      public:
+        Baz() :a(20) {}
+        int fetch () { return a; }
+    };
+    EOCPP
+
+    package main;
+    my $b = Bar::Baz->new();
+    print $b->fetch, "\n"; # 20.
+
+
+As demonstrated here, the namespace in which "Baz" resides can now be made
+independent of the package from which Inline::CPP has been invoked.  Consider
+instead the default behavior:
+
+
+    package Foo;
+    use Inline CPP => <<'EOCPP';
+    class Foo {
+      private:
+        int a;
+      public:
+        Baz() :a(20) {}
+        int fetch () { return a; }
+    };
+    EOCPP
+
+    package main;
+    my $b = Foo::Foo->new();
+    print $b->fetch, "\n"; # 20.
+
+
+It is probably, in this case, undesirable for the C++ class C<Foo> to reside in
+the Perl C<Foo::Foo> namespace.  We can fix this by adding our own namespace
+configuration:
+
+
+    package Foo;
+    use Inline CPP => Config => NAMESPACE => q{};  # Disassociate from
+                                                   # calling package.
+    use Inline CPP => <<'EOCPP';
+
+    class Baz {
+      private:
+        int a;
+      public:
+        Baz() :a(20) {}
+        int fetch () { return a; }
+    };
+    EOCPP
+
+    package main;
+    my $b = Foo->new();
+    print $b->fetch, "\n"; # 20.
+
+
+Note: Due to an XS implementation detail, C<ref($b)> will return C<main::Foo> if
+the C<NAMESPACE> configuration has been set to an empty string; XS doesn't allow
+for its internal C<PACKAGE> specification to be empty.  From a caller's
+standpoint this is probably not relevant; A class named C<main::Foo> can be
+referred to as C<Foo>, even from outside of package C<main>.
 
 =head2 PREFIX
 
@@ -407,7 +485,7 @@ Specifies a prefix that will automatically be stripped from C++
 functions when they are bound to Perl. Less useful than in C, because
 C++ mangles its function names to facilitate function overloading.
 
-    use Inline Config => PREFIX => 'ZLIB_';
+    use Inline CPP Config => PREFIX => 'ZLIB_';
 
 This only affects C++ function names, not C++ class names or methods.
 
@@ -418,9 +496,9 @@ spaces, since the arguments are always passed on the Perl Stack, not on
 the C stack. This is usually desired, since it allows functions with
 no fixed arguments (most compilers require at least one fixed argument).
 
-    use Inline Config => PRESERVE_ELLIPSIS => 1;
+    use Inline CPP Config => PRESERVE_ELLIPSIS => 1;
 or
-    use Inline Config => ENABLE => PRESERVE_ELLIPSIS;
+    use Inline CPP Config => ENABLE => PRESERVE_ELLIPSIS;
 
 For an example of why PRESERVE_ELLIPSIS is normally not needed, see the
 examples section, below.
@@ -451,23 +529,23 @@ Inline::CPP.
 
 You can invoke STRUCTS in several ways:
 
-    use Inline Config => STRUCTS => 'Foo';
+    use Inline CPP Config => STRUCTS => 'Foo';
 or
-    use Inline Config => STRUCTS => ['Bar', 'Baz'];
+    use Inline CPP Config => STRUCTS => ['Bar', 'Baz'];
 
 Binds the named structs to Perl. Emits warnings if a struct was requested
 but could not be bound for some reason.
 
-    use Inline Config => ENABLE => 'STRUCTS';
+    use Inline CPP Config => ENABLE => 'STRUCTS';
 or
-    use Inline Config => STRUCTS => 1;
+    use Inline CPP Config => STRUCTS => 1;
 
 Enables binding structs to Perl. All structs which can be bound, will. This
 parameter overrides all requests for particular structs.
 
-    use Inline Config => DISABLE => 'STRUCTS';
+    use Inline CPP Config => DISABLE => 'STRUCTS';
 or
-    use Inline Config => STRUCTS => 0;
+    use Inline CPP Config => STRUCTS => 0;
 
 Disables binding structs to Perl. Overrides any other settings.
 
@@ -479,7 +557,7 @@ binds C structs to Perl.
 Specifies extra typemap files to use. These types will modify the
 behaviour of C++ parsing. Corresponds to the MakeMaker parameter.
 
-    use Inline Config => TYPEMAPS => '/your/path/typemap';
+    use Inline CPP Config => TYPEMAPS => '/your/path/typemap';
 
 =head1 C++-Perl Bindings
 
@@ -499,14 +577,14 @@ C<Inline::CPP> uses a much simpler approach. It parses the system's
 typemap files and only binds to functions with supported types. You
 can tell C<Inline::CPP> about custom typemap files too.
 
-If you have very complicated data structures in either C++ or Perl,
-you should just pass them as an SV* and do the conversion yourself in
+If you have non-trivial data structures in either C++ or Perl,
+you should probably just pass them as an SV* and do the conversion yourself in
 your C++ function.
 
 In C++, a struct is a class whose default scope is public, not
 private.  Inline::CPP binds to structs with this in mind -- get/set
-methods are not yet auto-generated (although they are scheduled to
-land in an upcoming release).
+methods are not yet auto-generated (although this feature may be added to
+an upcoming release).
 
 If you have a C struct, you can use Inline::Struct to allow Perl
 complete access to the internals of the struct. You can create and
@@ -518,12 +596,12 @@ details.
 
 =head1 <iostream>, Standard Headers, Namespaces, and Portability Solutions
 
-As mentioned earlier, Inline::CPP automatically includes <iostream>, or
-<iostream.h>, depending on the preference of the target compiler.  This
-distinction illustrates a potential problem when trying to write portable code
-in C++.  Legacy C++ (pre-ANSI-Standard) used headers named, for example,
-<iostream.h>.  As legacy C++ didn't support namespaces, these standard
-tools were not segregated into a separate namespace.
+Inline::CPP automatically includes <iostream>, or <iostream.h>, depending on the
+preference of the target compiler.  This distinction illustrates a potential
+problem when trying to write portable code in C++.  Legacy C++
+(pre-ANSI-Standard) used headers named, for example, <iostream.h>.  As legacy
+C++ didn't support namespaces, these standard tools were not segregated into a
+separate namespace.
 
 ANSI Standard C++ changed that.  Headers were renamed without the '.h' suffix,
 and standard tools were placed in the 'C<std>' namespace.  The
@@ -564,12 +642,12 @@ Modern "ANSI Standard C++" compilers would require code like this:
        return 0;
    }
 
-Obviously the first snippet is going to be completely incompabible with the
-second, third or fourth snippets.  This is no problem for a C++ developer who
-knows his target compiler.  But Perl runs just about everywhere.  If similar
-portability (including backward compatibility) is a design goal, Inline::CPP
-helps by providing two C<#define> constants that may be checked to ascertain
-which style of headers are being used.  The constants are:
+The first snippet is going to be completely incompabible with the second, third
+or fourth snippets.  This is no problem for a C++ developer who knows his target
+compiler.  But Perl runs just about everywhere.  If similar portability
+(including backward compatibility) is a design goal, Inline::CPP helps by
+providing two C<#define> constants that may be checked to ascertain which style
+of headers are being used.  The constants are:
 
    __INLINE_CPP_STANDARD_HEADERS
    __INLINE_CPP_NAMESPACE_STD
@@ -1194,14 +1272,12 @@ David Oswald <DAVIDO@cpan.org> is the current maintainer.
 David Oswald's Inline::CPP githug repo is:
 L<https://github.com/daoswald/Inline-CPP>
 
-Ingy döt Net <INGY@cpan.org> is the author of C<Inline>,
-C<Inline::C> and C<Inline::CPR>. He is known in the innermost Inline
-circles as "Batman". ;)
+Ingy döt Net <INGY@cpan.org> is the author of C<Inline>, and C<Inline::C>.
 
 =head1 LICENSE AND COPYRIGHT
 
 Copyright (c) 2000 - 2003 Neil Watkiss.
-Copyright (c) 2011 - 2012 David Oswald.
+Copyright (c) 2011 - 2014 David Oswald.
 
 All Rights Reserved. This module is free software. It may be used,
 redistributed and/or modified under the same terms as Perl itself.

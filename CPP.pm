@@ -20,7 +20,7 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.49';
+our $VERSION = '0.51';
 #$VERSION = eval $VERSION; ## no critic (eval)
 
 my $TYPEMAP_KIND;
@@ -145,13 +145,19 @@ sub _handle_config_options {
     return @propagate;
 }
 
-#############
 sub _handle_namespace_cfg_option {
   my ( $o, $value ) = @_;
   $value =~ s/^::|::$//g;
-  # Note: This regex should use \p{XID_Start} and \p{XID_Continue}.
-  croak "$value is an invalid package name." unless $value =~
-    m/\A\p{XID_Start}\p{XID_Continue}+(?:::\p{XID_Start}\p{XID_Continue}+)*\z/;
+  croak "$value is an invalid package name."
+    unless
+      length $value == 0
+      || $value =~ m/
+                      \A
+                      [\p{XID_Start}_][\p{XID_Continue}_]+
+                      (?:::[\p{XID_Start}_][\p{XID_Continue}_]+)*
+                      \z
+                    /x;
+  $value ||= 'main';
   $o->{API}{pkg} = $value;
   return;
 }
