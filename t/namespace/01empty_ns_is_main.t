@@ -1,4 +1,4 @@
-package main;
+package main; ## no critic (package)
 
 use strict;
 use warnings;

@@ -1,3 +1,5 @@
+## no critic (package)
+
 package Foo;
 
 use strict;

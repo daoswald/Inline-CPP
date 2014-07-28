@@ -1,4 +1,4 @@
-package Bar;
+package Bar; ## no critic (package)
 
 use strict;
 use warnings;

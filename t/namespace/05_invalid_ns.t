@@ -1,4 +1,6 @@
-package Foo;
+package Foo; ## no critic (package)
+
+## no critic (eval)
 
 use Test::More;
 

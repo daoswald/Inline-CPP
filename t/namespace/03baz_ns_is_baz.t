@@ -1,4 +1,4 @@
-package Ball;
+package Ball; ## no critic (package)
 
 use strict;
 use warnings;
