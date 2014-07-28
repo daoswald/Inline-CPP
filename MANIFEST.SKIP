@@ -21,11 +21,11 @@
 # Custom skips.
 ^grammar/_Inline\b
 ^_Inline/\b
-^FastSieve\.inl
 ^grammar/pm_to_blib
 ^pm_to_blib
 ^grammar/Makefile$
 ^grammar/t/_Inline/
 ^t/_Inline/
+^t/namespace/_Inline/
 \.gz$
 MYMETA\b

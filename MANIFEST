@@ -42,7 +42,12 @@ t/11rewrite_config.t
 t/12custom_libs.t
 t/13version_numbers.t
 t/14changes.t
-t/namespace/01basic_ns.t
+t/namespace/01empty_ns_is_main.t
+t/namespace/02main_ns_is_main.t
+t/namespace/03baz_ns_is_baz.t
+t/namespace/04invoke_from_non_main.t
+t/namespace/05invalid_ns.t
+t/namespace/06inherit.t
 META.yml                            Module YAML meta-data (added by MakeMaker)
 META.json                           Module JSON meta-data (added by MakeMaker)
 
