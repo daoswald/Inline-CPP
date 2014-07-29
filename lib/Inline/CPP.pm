@@ -655,7 +655,6 @@ END
 # Generate type conversion code: perl2c or c2perl.
 sub typeconv {
     my( $o, $var, $arg, $type, $dir, $preproc ) = @_;
-    my $ntype = ''; # typemap var - stops eval below giving "Uninit"
     my $tkind = $o->{ILSM}{typeconv}{type_kind}{$type};
     my $ret;
     {
@@ -663,6 +662,7 @@ sub typeconv {
         # The conditional avoids uninitialized warnings if user passes
         # a C++ function with 'void' as param.
         if( defined $tkind ) {
+	    no warnings 'uninitialized'; # eval of typemap below gives "Uninit"
             # Even without the conditional this line must remain.
             $ret = eval                                    ## no critic (eval)
                 qq{qq{$o->{ILSM}{typeconv}{$dir}{$tkind}}};
