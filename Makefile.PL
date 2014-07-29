@@ -16,8 +16,8 @@ my $DIST_VERSION = '0.54';                        # DRY in Makefile.PL.
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
 my %PREREQ_PM = (
-    'Inline'            => '0.53',
-    'Inline::C'         => '0.53',
+    'Inline'            => '0.64',
+    'Inline::C'         => '0.62',
     'Parse::RecDescent' => '0',
     'Carp'              => '0',
 );

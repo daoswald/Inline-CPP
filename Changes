@@ -3,6 +3,7 @@ Revision history for Perl extension Inline::CPP.
 0.54 2014-07-29
   - Added LICENSE file (no change to licensing, however).
   - Improved distribution version number consistency test.
+  - Require a modern Inline and Inline::C (>= 0.64, 0.62, respectively).
 
 0.53 2014-07-29
   - lib/Inline/CPP/grammar.pm renamed to Grammar.pm.

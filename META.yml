@@ -23,17 +23,17 @@ no_index:
 provides:
   Inline::CPP:
     file: lib/Inline/CPP.pm
-    version: '0.53'
+    version: '0.54'
   Inline::CPP::Config:
     file: lib/Inline/CPP/Config.pm
-    version: '0.53'
+    version: '0.54'
   Inline::CPP::Grammar:
     file: lib/Inline/CPP/Grammar.pm
-    version: '0.53'
+    version: '0.54'
 requires:
   Carp: '0'
-  Inline: '0.53'
-  Inline::C: '0.53'
+  Inline: '0.64'
+  Inline::C: '0.62'
   Parse::RecDescent: '0'
   perl: '5.006001'
-version: '0.53'
+version: '0.54'
