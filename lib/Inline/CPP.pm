@@ -663,7 +663,7 @@ sub typeconv {
         # a C++ function with 'void' as param.
         if( defined $tkind ) {
             # eval of typemap gives "Uninit"
-	          no warnings 'uninitialized'; ## no critic (warnings)
+            no warnings 'uninitialized'; ## no critic (warnings)
             # Even without the conditional this line must remain.
             $ret = eval                                    ## no critic (eval)
                 qq{qq{$o->{ILSM}{typeconv}{$dir}{$tkind}}};
