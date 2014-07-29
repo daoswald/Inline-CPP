@@ -1,5 +1,8 @@
 Revision history for Perl extension Inline::CPP.
 
+0.53 2014-07-29
+  - lib/Inline/CPP/grammar.pm renamed to Grammar.pm.
+
 0.52 2014-07-29
   - Reorganized distribution file heirarchy to conform to modern structure.
   - Silence irrelevant ntype warnings from typeconv().
