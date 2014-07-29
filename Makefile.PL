@@ -240,11 +240,19 @@ WriteMakefile(
         provides => {
             'Inline::CPP' => {
                 file    => 'lib/Inline/CPP.pm',
-                version => '0.51'
+                version => '0.51',
+            },
+            'Inline::CPP::grammar' => {
+                file    => 'lib/Inline/CPP/grammar.pm',
+                version => '0.51',
+            },
+            'Inline::CPP::Config' => {
+                file    => 'lib/Inline/CPP/Config.pm',
+                version => '0.51',
             },
         },
     },
     MIN_PERL_VERSION => '5.006001',
-    test =>        { RECURSIVE_TEST_FILES => 1 },
-    clean            => { FILES => '_Inline/ grammar/_Inline' },
+    test  => { RECURSIVE_TEST_FILES => 1 },
+    clean => { FILES => '_Inline/' }, # May add more than one path, space delimeted.
 );

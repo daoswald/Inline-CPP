@@ -1,5 +1,8 @@
 Revision history for Perl extension Inline::CPP.
 
+0.52 2014-07-28
+  - Reorganized distribution file heirarchy to conform to modern structure.
+
 0.51 2014-07-28
   - Add NAMESPACE configuration option to override a class's base namespace
     (Eliminates the need for the "Namespace Hack").
