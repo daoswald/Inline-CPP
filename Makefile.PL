@@ -240,15 +240,15 @@ WriteMakefile(
         provides => {
             'Inline::CPP' => {
                 file    => 'lib/Inline/CPP.pm',
-                version => '0.53',
+                version => '0.54',
             },
             'Inline::CPP::Grammar' => {
                 file    => 'lib/Inline/CPP/Grammar.pm',
-                version => '0.53',
+                version => '0.54',
             },
             'Inline::CPP::Config' => {
                 file    => 'lib/Inline/CPP/Config.pm',
-                version => '0.53',
+                version => '0.54',
             },
         },
     },

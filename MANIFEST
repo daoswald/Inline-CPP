@@ -1,10 +1,11 @@
 Changes
-lib/Inline/CPP.pm
 MANIFEST
 MANIFEST.SKIP
 Makefile.PL
 README
 TESTED
+LICENSE
+lib/Inline/CPP.pm
 lib/Inline/CPP.pod
 lib/Inline/CPP/Grammar.pm
 lib/Inline/CPP/Config.pm

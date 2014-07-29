@@ -1,5 +1,8 @@
 Revision history for Perl extension Inline::CPP.
 
+0.54 2014-07-29
+  - Added LICENSE file (no change to licensing, however).
+
 0.53 2014-07-29
   - lib/Inline/CPP/grammar.pm renamed to Grammar.pm.
 
