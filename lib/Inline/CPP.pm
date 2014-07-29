@@ -655,6 +655,7 @@ END
 # Generate type conversion code: perl2c or c2perl.
 sub typeconv {
     my( $o, $var, $arg, $type, $dir, $preproc ) = @_;
+    my $ntype = ''; # typemap var - stops eval below giving "Uninit"
     my $tkind = $o->{ILSM}{typeconv}{type_kind}{$type};
     my $ret;
     {
