@@ -4,12 +4,7 @@ Makefile
 Makefile.old
 _Inline
 blib
-grammar/MYMETA.json
-grammar/MYMETA.yml
-grammar/Makefile
-grammar/Makefile.old
-grammar/_Inline
-grammar/pm_to_blib
 pm_to_blib
 Inline-CPP-*.tar.gz
+Inline-CPP-*/
 ilcpp.diff

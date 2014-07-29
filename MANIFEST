@@ -6,7 +6,7 @@ Makefile.PL
 README
 TESTED
 lib/Inline/CPP.pod
-lib/Inline/CPP/grammar.pm
+lib/Inline/CPP/Grammar.pm
 lib/Inline/CPP/Config.pm
 t/00load_prereqs.t
 t/01fn_cans.t

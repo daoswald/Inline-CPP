@@ -8,7 +8,7 @@ require Inline::CPP;
 
 {
     no warnings 'once';  ## no critic (warnings)
-    ok(defined($Inline::CPP::grammar::TYPEMAP_KIND), 'TYPEMAP_KIND defined.');
+    ok(defined($Inline::CPP::Grammar::TYPEMAP_KIND), 'TYPEMAP_KIND defined.');
 }
 
 # Test Inline::CPP::register().

@@ -242,8 +242,8 @@ WriteMakefile(
                 file    => 'lib/Inline/CPP.pm',
                 version => '0.52',
             },
-            'Inline::CPP::grammar' => {
-                file    => 'lib/Inline/CPP/grammar.pm',
+            'Inline::CPP::Grammar' => {
+                file    => 'lib/Inline/CPP/Grammar.pm',
                 version => '0.52',
             },
             'Inline::CPP::Config' => {

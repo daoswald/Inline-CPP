@@ -1,4 +1,4 @@
-package Inline::CPP::grammar; ## no critic (Package)
+package Inline::CPP::Grammar; ## no critic (Package)
 
 use strict;
 use warnings;
@@ -50,13 +50,13 @@ use vars qw( $code_block $string $number $parens $funccall );
 
 # $RE{balanced}{-parens=>q|{}()[]"'|}
 eval <<'END'; ## no critic (eval)
-$code_block = qr'(?-xism:(?-xism:(?:[{](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[}]))|(?-xism:(?-xism:(?:[(](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[)]))|(?-xism:(?-xism:(?:[[](?:(?>[^][)(}{]+)|(??{$Inline::CPP::grammar::code_block}))*[]]))|(?-xism:(?!)))))';
+$code_block = qr'(?-xism:(?-xism:(?:[{](?:(?>[^][)(}{]+)|(??{$Inline::CPP::Grammar::code_block}))*[}]))|(?-xism:(?-xism:(?:[(](?:(?>[^][)(}{]+)|(??{$Inline::CPP::Grammar::code_block}))*[)]))|(?-xism:(?-xism:(?:[[](?:(?>[^][)(}{]+)|(??{$Inline::CPP::Grammar::code_block}))*[]]))|(?-xism:(?!)))))';
 END
 $code_block = qr'{[^}]*}' if $@; # For the stragglers: here's a lame regexp.
 
 # $RE{balanced}{-parens=>q|()"'|}
 eval <<'END'; ## no critic (eval)
-$parens = qr'(?-xism:(?-xism:(?:[(](?:(?>[^)(]+)|(??{$Inline::CPP::grammar::parens}))*[)]))|(?-xism:(?!)))';
+$parens = qr'(?-xism:(?-xism:(?:[(](?:(?>[^)(]+)|(??{$Inline::CPP::Grammar::parens}))*[)]))|(?-xism:(?!)))';
 END
 $parens = qr'\([^)]*\)' if $@; # For the stragglers: here's another
 
@@ -65,7 +65,7 @@ $string = qr'(?:(?:\")(?:[^\\\"]*(?:\\.[^\\\"]*)*)(?:\")|(?:\')(?:[^\\\']*(?:\\.
 
 # $RE{num}{real}|$RE{num}{real}{-base=>16}|$RE{num}{int}
 $number   = qr'(?:(?i)(?:[+-]?)(?:(?=[0123456789]|[.])(?:[0123456789]*)(?:(?:[.])(?:[0123456789]{0,}))?)(?:(?:[E])(?:(?:[+-]?)(?:[0123456789]+))|))|(?:(?i)(?:[+-]?)(?:(?=[0123456789ABCDEF]|[.])(?:[0123456789ABCDEF]*)(?:(?:[.])(?:[0123456789ABCDEF]{0,}))?)(?:(?:[G])(?:(?:[+-]?)(?:[0123456789ABCDEF]+))|))|(?:(?:[+-]?)(?:\d+))';
-$funccall = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*(?:$Inline::CPP::grammar::parens)?/;
+$funccall = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*(?:$Inline::CPP::Grammar::parens)?/;
 
 #============================================================================
 # Inline::CPP's grammar
@@ -86,7 +86,7 @@ sub grammar {
             unless defined $thisparser->{data}{class}{$class};
         $thisparser->{data}{class}{$class} = \@parts;
 #   print "Class $class:\n", Dumper \@parts;
-        Inline::CPP::grammar::typemap($thisparser, $class);
+        Inline::CPP::Grammar::typemap($thisparser, $class);
         [$class, \@parts];
     }
     sub handle_typedef {
@@ -101,7 +101,7 @@ sub grammar {
             && !exists($thisparser->{data}{class}{$name})) {
             push @{$thisparser->{data}{classes}}, $name;
             $thisparser->{data}{class}{$name} = $thisparser->{data}{class}{$type};
-            Inline::CPP::grammar::typemap($thisparser, $name);
+            Inline::CPP::Grammar::typemap($thisparser, $name);
         }
         $t;
     }
@@ -138,7 +138,7 @@ part: comment
      for my $arg (@{$item[1]->{args}}) {
         $arg->{name} = 'dummy' . ++$i unless defined $arg->{name};
      }
-     Inline::CPP::grammar::strip_ellipsis($thisparser,
+     Inline::CPP::Grammar::strip_ellipsis($thisparser,
                           $item[1]->{args});
      push @{$thisparser->{data}{functions}}, $name
            unless defined $thisparser->{data}{function}{$name};
@@ -152,7 +152,7 @@ typedef: 'typedef' class IDENTIFIER(?) '{' <commit> class_part(s?) '}' IDENTIFIE
        {
      my ($class, $parts);
          $class = $item[3][0] || 'anon_class'.($thisparser->{data}{anonclass}++);
-         ($class, $parts)= handle_class_def($thisparser, [$class, $item{$Inline::CPP::grammar::class_part}]);
+         ($class, $parts)= handle_class_def($thisparser, [$class, $item{$Inline::CPP::Grammar::class_part}]);
      { thing => 'typedef', name => $item[8], type => $class, body => $parts }
        }
        | 'typedef' IDENTIFIER IDENTIFIER ';'
@@ -176,13 +176,13 @@ enum_item: IDENTIFIER '=' <commit> /[0-9]+/
 
 class_def: class IDENTIFIER '{' <commit> class_part(s?) '}' ';'
            {
-              [@item{'IDENTIFIER',$Inline::CPP::grammar::class_part}]
+              [@item{'IDENTIFIER',$Inline::CPP::Grammar::class_part}]
        }
      | class IDENTIFIER ':' <commit> <leftop: inherit ',' inherit>
             '{' class_part(s?) '}' ';'
        {
-          push @{$item{$Inline::CPP::grammar::class_part}}, [$item{__DIRECTIVE2__}];
-          [@item{'IDENTIFIER',$Inline::CPP::grammar::class_part}]
+          push @{$item{$Inline::CPP::Grammar::class_part}}, [$item{__DIRECTIVE2__}];
+          [@item{'IDENTIFIER',$Inline::CPP::Grammar::class_part}]
        }
 
 inherit: scope IDENTIFIER
@@ -191,10 +191,10 @@ inherit: scope IDENTIFIER
 class_part: comment { [ {thing => 'comment'} ] }
       | scope ':' <commit> class_decl(s?)
             {
-          for my $part (@{$item{$Inline::CPP::grammar::class_decl}}) {
+          for my $part (@{$item{$Inline::CPP::Grammar::class_decl}}) {
                   $_->{scope} = $item[1] for @$part;
           }
-          $item{$Inline::CPP::grammar::class_decl}
+          $item{$Inline::CPP::Grammar::class_decl}
         }
       | class_decl(s)
             {
@@ -221,7 +221,7 @@ class_decl: comment { [{thing => 'comment'}] }
           for my $arg (@{$item[1]->{args}}) {
         $arg->{name} = 'dummy' . ++$i unless defined $arg->{name};
           }
-          Inline::CPP::grammar::strip_ellipsis($thisparser,
+          Inline::CPP::Grammar::strip_ellipsis($thisparser,
                            $item[1]->{args});
           [$item[1]];
         }
@@ -373,7 +373,7 @@ type: type2 | type1
 type1: TYPE star(s?)
         {
          $return = $item[1];
-         $return .= join '',' ',@{$item{$Inline::CPP::grammar::star}} if @{$item{$Inline::CPP::grammar::star}};
+         $return .= join '',' ',@{$item{$Inline::CPP::Grammar::star}} if @{$item{$Inline::CPP::Grammar::star}};
 #    print "type1: $return\n";
 #          return undef
 #            unless(defined$thisparser->{data}{typeconv}{valid_types}{$return});
@@ -382,7 +382,7 @@ type2: modifier(s) TYPE star(s?)
     {
          $return = $item{TYPE};
          $return = join ' ',grep{$_}@{$item[1]},$return if @{$item[1]};
-         $return .= join '',' ',@{$item{$Inline::CPP::grammar::star}} if @{$item{$Inline::CPP::grammar::star}};
+         $return .= join '',' ',@{$item{$Inline::CPP::Grammar::star}} if @{$item{$Inline::CPP::Grammar::star}};
 #    print "type2: $return\n";
 #          return undef
 #            unless(defined$thisparser->{data}{typeconv}{valid_types}{$return});
@@ -423,7 +423,7 @@ class: 'class' { $thisparser->{data}{defaultscope} = 'private'; $item[1] }
 
 star: '*' | '&'
 
-code_block: /$Inline::CPP::grammar::code_block/
+code_block: /$Inline::CPP::Grammar::code_block/
 
 # Consume expressions
 expr: <leftop: subexpr OP subexpr> {
@@ -431,9 +431,9 @@ expr: <leftop: subexpr OP subexpr> {
 #   print "expr: $o\n";
     $o;
 }
-subexpr: /$Inline::CPP::grammar::funccall/ # Matches a macro, too
-       | /$Inline::CPP::grammar::string/
-       | /$Inline::CPP::grammar::number/
+subexpr: /$Inline::CPP::Grammar::funccall/ # Matches a macro, too
+       | /$Inline::CPP::Grammar::string/
+       | /$Inline::CPP::Grammar::number/
        | UOP subexpr
 OP: '+' | '-' | '*' | '/' | '^' | '&' | '|' | '%' | '||' | '&&'
 UOP: '~' | '!' | '-' | '*' | '&'
@@ -454,7 +454,7 @@ $TYPEMAP_KIND = 'O_Inline_CPP_Class';
 sub typemap {
     my ( $parser, $typename ) = @_;
 
-#    print "Inline::CPP::grammar::typemap(): typename=$typename\n";
+#    print "Inline::CPP::Grammar::typemap(): typename=$typename\n";
 
     my ($TYPEMAP, $INPUT, $OUTPUT);
     $TYPEMAP = "$typename *\t\t$TYPEMAP_KIND\n";
@@ -511,7 +511,7 @@ sub strip_ellipsis {
 1;
 
 __END__
-=head1 Inline::CPP::grammar
+=head1 Inline::CPP::Grammar
 
 All functions are internal.  No documentation necessary.
 

@@ -6,7 +6,7 @@ use 5.006000;
 use Fcntl qw( :DEFAULT :flock );
 
 require Inline::C;
-require Inline::CPP::grammar;
+require Inline::CPP::Grammar;
 require Inline::CPP::Config;
 
 # Note: Parse::RecDescent 'require'd within get_parser().
@@ -25,7 +25,7 @@ our $VERSION = '0.52';
 my $TYPEMAP_KIND;
 {
     no warnings 'once'; ## no critic (warnings)
-    $TYPEMAP_KIND = $Inline::CPP::grammar::TYPEMAP_KIND;
+    $TYPEMAP_KIND = $Inline::CPP::Grammar::TYPEMAP_KIND;
 }
 
 #============================================================================
@@ -279,7 +279,7 @@ sub info {
 #============================================================================
 sub get_parser {
     my $o       = shift;
-    my $grammar = Inline::CPP::grammar::grammar()
+    my $grammar = Inline::CPP::Grammar::grammar()
         or croak "Can't find C++ grammar\n";
     no warnings qw/ once /; ## no critic (warnings)
     $::RD_HINT = 1; # Turns on Parse::RecDescent's warnings/diagnostics.
