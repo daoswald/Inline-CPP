@@ -11,6 +11,8 @@ use strict;
 ## no critic (bareword file handle)
 ## no critic (two-argument open)
 
+# The next line is verified via t/13version_numbers.t.  Retain single quoting.
+my $DIST_VERSION = '0.54';                        # DRY in Makefile.PL.
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
 my %PREREQ_PM = (
@@ -240,15 +242,15 @@ WriteMakefile(
         provides => {
             'Inline::CPP' => {
                 file    => 'lib/Inline/CPP.pm',
-                version => '0.54',
+                version => $DIST_VERSION,
             },
             'Inline::CPP::Grammar' => {
                 file    => 'lib/Inline/CPP/Grammar.pm',
-                version => '0.54',
+                version => $DIST_VERSION,
             },
             'Inline::CPP::Config' => {
                 file    => 'lib/Inline/CPP/Config.pm',
-                version => '0.54',
+                version => $DIST_VERSION,
             },
         },
     },
