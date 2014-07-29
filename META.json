@@ -45,10 +45,18 @@
    },
    "provides" : {
       "Inline::CPP" : {
-         "file" : "CPP.pm",
-         "version" : "0.51"
+         "file" : "lib/Inline/CPP.pm",
+         "version" : "0.52"
+      },
+      "Inline::CPP::Config" : {
+         "file" : "lib/Inline/CPP/Config.pm",
+         "version" : "0.52"
+      },
+      "Inline::CPP::grammar" : {
+         "file" : "lib/Inline/CPP/grammar.pm",
+         "version" : "0.52"
       }
    },
    "release_status" : "stable",
-   "version" : "0.51"
+   "version" : "0.52"
 }

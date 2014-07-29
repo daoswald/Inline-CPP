@@ -662,7 +662,8 @@ sub typeconv {
         # The conditional avoids uninitialized warnings if user passes
         # a C++ function with 'void' as param.
         if( defined $tkind ) {
-	    no warnings 'uninitialized'; # eval of typemap below gives "Uninit"
+            # eval of typemap gives "Uninit"
+	          no warnings 'uninitialized'; ## no critic (warnings)
             # Even without the conditional this line must remain.
             $ret = eval                                    ## no critic (eval)
                 qq{qq{$o->{ILSM}{typeconv}{$dir}{$tkind}}};
