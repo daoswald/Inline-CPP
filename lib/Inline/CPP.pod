@@ -39,16 +39,14 @@ critical code; but only after that code has been identified>" -- Donald Knuth
 L<Inline::CPP> is about that critical 3%.
 
 Tom "Duff's Device" Duff once wrote the following: "I<The alternative to
-genuflecting before the god of code-bumming is finding a better algorithm.  It
-should be clear that none such was available.  If your code is too slow, you
-must make it faster.  If no better algorithm is available, you must
-trim cycles.>"
+genuflecting before the god of code-bumming is finding a better algorithm...
+...If your code is too slow, you must make it faster.  If no better algorithm
+is available, you must trim cycles.>"
 
-97% of the time Perl is fast enough.  In fact, in many problem domains, 99.7% of
-the time it's fast enough.  But when one comes across a situation where
-performance isn't fast enough, and no better algorithm exists, getting closer
-to the metal is one way to trim cycles, assuming it's done well.  L<Inline::CPP>
-minimizes the pain in binding C++ code to Perl via XS.
+Often, well written Perl is fast enough.  But when one comes across a situation
+where performance isn't fast enough, and no better algorithm exists, getting
+closer to the metal is one way to trim cycles, assuming it's done well.
+L<Inline::CPP> minimizes the pain in binding C++ code to Perl via XS.
 
 Performance can also be evaluated in terms of memory requirements.  Perlish
 datastructures are beautifully simple to use, and quite powerful.  But this
@@ -60,7 +58,7 @@ can be aleviated to some degree by holding the data in a C++ data type.
 This can only go so far.  But the common saying is that if you consider a
 reasonable amount of memory to hold a data structure, double it, and then
 multiply by ten, you'll have a pretty good feel for how much memory Perl needs
-to hold it.  Inline::CPP can facilitate making this transition.
+to hold it.  Inline::CPP can facilitate a leaner alternative.
 
 "I<The standard library saves programmers from having to reinvent the wheel.>"
 -- Bjarne Stroustrup
@@ -86,23 +84,24 @@ take the edge off of it.
 
 =head1 Choosing a C++ Compiler
 
-Inline::CPP just parses your C++ code and creates bindings to it. Like
-Inline::C, you will need a suitable compiler the first time you run the
-script. Choosing a C++ compiler can prove difficult, because Perl is
-written in C, not C++.
+Inline::CPP just parses the subroutine and class signatures within your C++
+code and creates bindings to them. Like Inline::C, you will need a suitable
+compiler the first time you run the script.
 
 If you're one of the fortunate majority, you will accept the defaults as you
-install Inline::CPP.  If you're one of the unfortunate (and shrinking)
-minority, read on.
+install Inline::CPP; the correct C++ compiler and standard libraries will be
+configured for you.  If you're one of the unfortunate (and shrinking) minority,
+read on.
 
-Here's the rule: use any C++ compiler that's compatible with the compiler
+Here's the rule: use a C++ compiler that's compatible with the compiler
 which built C<perl>. For instance, if C<perl> was built with C<gcc>,
 use C<g++>.  If you're on a Sun or an IRIX box and the system C compiler
 C<cc> built C<perl>, then use the system C++ compiler, C<CC>.
 
 Some compilers actually compile both C and C++ with the same compiler.
 Microsoft's C<cl.exe> is one such compiler -- you pass it the <-TP> flag
-to convince it that you want C++ mode.
+to convince it that you want C++ mode.  Hopefully this will be deduced
+by default at install time.
 
 If you're using the GNU C++ compiler, make sure that you have the g++ front
 end installed (some Linux distros don't install it by default, but provide
@@ -111,18 +110,20 @@ it via their package management utilities).
 =head1 Using Inline::CPP
 
 Inline::CPP is very similar to Inline::C, and in most cases can be used in
-place of Inline::C without changing a single line of Perl or C code. It uses a 
-grammar to parse your C++ code, and binds to functions or classes which are
-recognized. If a function is recognized, it will be available from
-Perl space. If the function's signature is not recognized, it will not
-be available from Perl space, but will be available from other
-functions or classes within the C++ code.
+place of Inline::C without changing a single line of Perl or C code. If you
+haven't done so already, you should stop reading right now and read the
+documentation for L<Inline::C>, including the L<Inline::C-Cookbook>.
+
+This module uses a  grammar to parse your C++ code, and binds to functions or
+classes which are recognized. If a function is recognized, it will be available
+from Perl space. If the function's signature is not recognized, it will not
+be available from Perl, but will be available from other functions or classes
+within the C++ code.
 
 For more information about the grammar used to parse C++ code, see the
 section called "Grammar".
 
-The following example shows how C++ snippets map into the Perl
-namespace:
+The following example shows how C++ snippets map to Perl:
 
 Example 1:
 
@@ -148,7 +149,7 @@ Example 1:
 
     END
 
-After running the code above, Perl's namespace would look similar to if
+After running the code above, your Perl runtime would look similar to if
 following code had been run:
 
     sub main::doodle { }
@@ -169,22 +170,15 @@ means that things like this won't work:
     $obj->{extrafield} = 10;
 
 It doesn't work because C<$obj> is not a blessed hash. It's a blessed
-reference to a C++ object (and anyway, C++ wouldn't let you do that either,
-since extrafield wasn't defined).
+reference to a C++ object.
 
 =head1 C++ Compilation Phase
 
 The first time you run a program that uses Inline::CPP, the C++ code will be
 compiled into an C<_Inline/> or C<.Inline/> folder within the working directory.
-The first run will consequently incur a startup penalty.  However, the compiled
-code is cached, and assuming it's not modified, subsequent runs will skip the 
-C++ compilation, and startup time will be fast.
-
-While code is under development the default C<_Inline/> directory arrangement
-is probably fine.  But eventually it's probably best to set up a specific
-C<.Inline> folder.  It's easy to do.  The method is well documented in the 
-L<Inline> POD under the heading 
-L<The Inline DIRECTORY|http://search.cpan.org/perldoc?Inline#The_Inline_DIRECTORY>.
+The first run will incur a startup time penalty associated with compiling C++
+code.  However, the compiled code is cached, and assuming it's not modified,
+subsequent runs will skip the C++ compilation, and startup time will be fast.
 
 =head1 Where to put C++ code
 
@@ -207,8 +201,7 @@ Or....
         // C++ code here.
     END_CPP
     
-Ok, so that takes care of where code can reside within a given file.  But
-structurally where does it belong?  For simple one-off scripts, just put it
+Structurally where does it belong?  For simple one-off scripts, just put it
 anywhere you want.  But in the spirit of code reusability, it's often better to
 simply create a module that houses the functionality build upon C++ code:
 
@@ -226,13 +219,8 @@ Where you place your module's file(s) follows the same rules as plain old Perl,
 which is beyond the scope of this POD, but fortunatly no different from what
 you're used to (assuming you're used to writing Perl modules).
 
-One big advantage to putting the C++ code in a module is that it can be shared
-by multiple scripts while only incurring that compilation startup penalty one
-time, ever.
-
-For this reason, when placing the C++ code in a module, it's usually a good 
-idea to specify where the C<_Inline> directory should reside, and again that's 
-covered in full detail in the L<Inline> POD.
+Of course, modules can be shared by multiple scripts while only incurring that
+compilation startup penalty one time, ever.
 
 =head1 Basing (CPAN) Distributions on Inline::CPP
 
@@ -256,7 +244,12 @@ Perl XS code, fit for distribution without the Inline::CPP dependency.
 L<InlineX::CPP2XS> includes an example/ directory that actually converts
 Math::Prime::FastSieve to pure XS.
 
-=head2 The Perl Namespace Issue
+Some extension authors choose to implement first in Inline::CPP, and then
+manually tweak, then copy and paste the resulting XS file into their own
+distribution, with similar effect (and possibly a little finer-grained control)
+to the CPP2XS approach.
+
+=head2 Perl Namespaces
 
 Let's say you use Inline::CPP like this:
 
@@ -473,9 +466,9 @@ configuration:
     print $b->fetch, "\n"; # 20.
 
 
-Note: Due to an XS implementation detail, C<ref($b)> will return C<main::Foo> if
-the C<NAMESPACE> configuration has been set to an empty string; XS doesn't allow
-for its internal C<PACKAGE> specification to be empty.  From a caller's
+Note: Due to an XS implementation detail, C<ref($b)> will return C<main::Foo>
+if the C<NAMESPACE> configuration has been set to an empty string; XS doesn't
+allow for its internal C<PACKAGE> specification to be empty.  From a caller's
 standpoint this is probably not relevant; A class named C<main::Foo> can be
 referred to as C<Foo>, even from outside of package C<main>.
 
@@ -521,8 +514,8 @@ to maintain backward compatibility with code that used to need it.
 
 Specifies whether to bind C structs into Perl using Inline::Struct.
 NOTE: Support for this option is experimental. Inline::CPP already binds
-to structs defined in your code. Structs and classes are treated as the
-same construct, except that a struct's initial scope is public, not
+to structs defined in your code. As is the case with C++, structs and classes
+are treated the same, except that a struct's initial scope is public, not
 private. Inline::Struct provides autogenerated get/set methods, an
 overloaded constructor, and several other features not available in
 Inline::CPP.
@@ -594,7 +587,7 @@ Inline::Struct does not understand any C++ features, so constructors
 and member functions are not supported. See L<Inline::Struct> for more
 details.
 
-=head1 <iostream>, Standard Headers, Namespaces, and Portability Solutions
+=head1 <iostream>, Standard Headers, C++ Namespaces, and Portability Solutions
 
 Inline::CPP automatically includes <iostream>, or <iostream.h>, depending on the
 preference of the target compiler.  This distinction illustrates a potential
@@ -878,16 +871,7 @@ Here's a benchmark program that tests which is faster:
        return avg;
     }
 
-Comparing the relative speed of the Perl versus the C++ solution, the C++
-solution benchmarks about 10x faster.
-
-Mind you, those both include the time taken to initialize the array with
-random numbers. And by varying the number of elements in the array and the
-number of repetitions of the function, we can change this number a lot.
-
-What's the point? Of B<course> C or C++ is faster than Perl. Well..., actually,
-that wasn't really the point; that was an aside. Look at the function
-declaration:
+Look at the function declaration:
 
     double avg(...)
 
@@ -910,8 +894,8 @@ ellipsis in the code for the compiler to whine about. :)
 
 =head2 Example 4 - Stacks and Queues
 
-Everyone who learns C++ writes a stack and queue class sooner or
-later. I might as well try it from Inline. But why reinvent the wheel?
+Everyone who learns to program with C++ writes a stack and queue class sooner
+or later. I might as well try it from Inline. But why reinvent the wheel?
 Perl has a perfectly good Array type, which can easily implement both
 a Queue and a Stack.
 
@@ -1040,24 +1024,24 @@ version is appropriate for your pre-5.6.0 Perl.
 
 =head1 C++11 Standard
 
-Occasionally I'm asked if Inline::CPP is ready for the C++11 standard.  The
-short answer is mostly, to the extent that your compiler is C++11 standard
-compliant.  There are two issues to consider.  First, what is your compiler
-capable of (and how to you enable those capabilities), and second, what does
-Perl need to care about.
+Is Inline::CPP is ready for the C++11 standard?  The
+short answer to that question is "Mostly, to the extent that your compiler is
+C++11 standard compliant."  There are two issues to consider.  First, what is
+your compiler capable of (and how to you enable those capabilities), and
+second, what does Perl need to care about.
 
 Taking the first question first (because it's the easiest): Use the CCFLAGS
 option shown above to pass the proper flag to your compiler to enable C++11
 features.  Most of what your compiler will support, Inline::CPP will deal with.
 
-You may also need to use the CC flag to specify a newer version of the compiler,
-if you happen to have more than one installed -- one that handles C++11 and one
-that doesn't.
+You also may need to use the CC flag to specify a newer version of the
+compiler, if you happen to have more than one installed -- one that handles
+C++11 and one that doesn't.
 
-Now for the question of what Perl needs to care about:  Inline::CPP doesn't look
-inside of functions or methods.  That code is treated as a black box that passes
-directly through to your compiler.  So inside of your functions and methods,
-feel free to use whatever C++11 features you want.
+Now for the question of what Perl needs to care about:  Inline::CPP doesn't
+look inside of functions or methods.  That code is treated as a black box that
+passes directly through to your compiler.  So inside of your functions and
+methods, feel free to use whatever C++11 features you want.
 
 The critical areas are function headers, class definitions, and code that falls
 outside of functions or classes.  Take Enums for example:
@@ -1085,13 +1069,13 @@ syntax:
 This omission is only going to be a factor for functions that you want to bind
 to Perl.  If you don't need the function to bind to Perl, the syntax is fine;
 Inline::CPP just ignores the function.  It's important to note that the most
-common uses of this syntax involve templates (don't make sense to Inline::CPP
-anyway), and lambdas (which are still fine, because they take place inside
-of functions, so Inline::CPP doesn't see them anyway).  For now, just don't use
-it in the header of functions that need to bind to Perl.  This may get fixed
-in the future.
+common uses of this syntax involve templates and lambdas.  Templates don't make
+sense to Inline::CPP anyway. And lambdas are still fine, because they take
+place inside of functions, so Inline::CPP doesn't see them anyway.  For now,
+just don't use the late return type syntax in the header of functions that need
+to bind to Perl.  This may get fixed in future revisions to the grammar.
 
-Now for another, C<constexpr>:
+Another issue is C<constexpr>:
 
     constexpr int multiply ( int x, int y ) { return x * y; }
 
@@ -1134,15 +1118,16 @@ will "just work", assuming your C++ compiler understands them.
 
 =head1 BUGS AND DEFICIENCIES
 
-There are bound to be other bugs in code this uncivilized.  If you find one,
-please file a bug report.
+There are bound to be bugs in code this uncivilized.  If you find one, please
+file a bug report.  Patches are even better.  Patches accompanied by tests are
+like the holy grail.
 
 When reporting a bug, please do the following:
 
  - If possible, create a brief stand-alone snippet of code that
    demonstrates the issue.
- - Use rt.cpan.org's bug reporting facility:
-   L<https://rt.cpan.org/Public/Dist/Display.html?Name=Inline-CPP>
+ - Use  L<Github Issues|https://github.com/daoswald/Inline-CPP/issues> to file
+   your bug report.
  - Patches are always welcome, as are tests that tickle a newfound bug.
 
 ...or...
@@ -1155,18 +1140,18 @@ When reporting a bug, please do the following:
 B<Get involved!>  Module development is being tracked on a github
 repository: L<https://github.com/daoswald/Inline-CPP>
 
-The master branch will always hold the latest stable CPAN release.
-(Stable releases have version numbers in the following format: 'x.xx'.)
+The master branch should always be buildable and usable.
 
-The dev branch will hold a combination of minor commits and CPAN
-"Developer" releases (these will have a version number formatted as:
-'x.xx_xxx').
+Official releases have version numbers in the following format: 'x.xx', and
+are usually tagged with the CPAN release number.
 
-Other 'topic' branches will come and go as needed.
+Various development branches will hold a combination of minor commits and CPAN
+"Developer" releases (these may have a version number formatted as:
+'x.xx_xxx' to designate a developer-only CPAN release).
 
 Most discussion relating to this module (user or developer) occurs on
-the Inline mailing list, inline.perl.org.  See
-L<http://lists.perl.org/list/inline.html> for details on subscribing.
+the Inline mailing list, inline.perl.org, and in C<#inline> on C<irc.perl.org>.
+See L<http://lists.perl.org/list/inline.html> for details on subscribing.
 
 Here are some things to watch out for:
 
@@ -1224,14 +1209,9 @@ with gracefully, re-throw back to Perl using C<croak>.
 
 =back
 
-Other grammar problems will probably be noticed quickly.  This is Perl, C++, and
+Other grammar problems will probably be discovered.  This is Perl, C++, and
 XS all sealed into one can of worms.  But it can be fun, which is a description
-never applied to raw XS.
-
-There are a number of smoke test FAILS that will only reasonably occur in a
-testing environment.  Most of these are a result of the module being tested
-in parallel.  It is unlikely that in a real-world environment compilation will
-ever take place in parallel.
+never applicable to raw XS.
 
 =head1 SEE ALSO
 
