@@ -37,7 +37,7 @@ my $cpp_compiler
 my $libs
   = prompt( "What default libraries would you like to include?", $libs_guess );
 
-configure_header_style ( $test_cpp_filename, $cpp_compiler );
+configure_distribution( $test_cpp_filename, $cpp_compiler, $libs );
 
 WriteMakefile(
   NAME           => 'Inline::CPP',
@@ -185,12 +185,13 @@ sub guess_compiler {
 }
 
 
-#============================================================================
-# Test whether the compiler prefers <iostream> or <iostream.h>.
-#============================================================================
+###############################################################################
+# Test for appropriate header style.
+# Configure distribution defaults in Inline::CPP::Config.pm.
+###############################################################################
 
-sub configure_header_style {
-  my( $test_cpp_filename, $cpp_compiler ) = @_;
+sub configure_distribution {
+  my( $test_cpp_filename, $cpp_compiler, $libs ) = @_;
   
   # Obtain a sentinel lock. Hold it until file work is done.
 
@@ -200,6 +201,8 @@ sub configure_header_style {
   flock TESTCPP_LOCK, LOCK_EX
     or die "Makefile.PL: Couldn't flock $test_cpp_filename.cpp.lock:\n$!\n";
     
+  # Test whether the compiler prefers <iostream> or <iostream.h>.
+
   sysopen TESTCPP, "$test_cpp_filename.cpp", O_WRONLY | O_CREAT
     or die "Makefile.PL: Couldn't open $test_cpp_filename.cpp"
          . " for output:\n$!\n";
@@ -240,7 +243,7 @@ sub configure_header_style {
 
   unlink "$test_cpp_filename.cpp" or warn $!;         # Unlink the test source.
 
-  # Apply the defaults:
+  # Apply the distribution defaults:
 
   open CPP_Config, $CPP_Config_path
     or die "Makefile.PL: Can't read from $CPP_Config_path"
