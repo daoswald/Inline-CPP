@@ -20,9 +20,11 @@
 
 # Custom skips.
 ^_Inline/\b
+^_Inline/
 ^pm_to_blib
 ^t/_Inline/
 ^t/grammar/_Inline/
 ^t/namespace/_Inline/
 \.gz$
 MYMETA\b
+^Inline-CPP-\d+\.\d+/
