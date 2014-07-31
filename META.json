@@ -58,5 +58,15 @@
       }
    },
    "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/artistic.html"
+      ],
+      "repository" : {
+         "type" : "git",
+         "url" : "http://github.com/daoswald/Inline-CPP.git",
+         "web" : "http://github.com/daoswald/Inline-CPP"
+      }
+   },
    "version" : "0.54"
 }

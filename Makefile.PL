@@ -56,18 +56,28 @@ WriteMakefile(
     'Config'              => '0',       # Core.
   },
   META_MERGE => {
+    'meta-spec' => { version => 2 },
+    resources   => {
+      license    => 'http://dev.perl.org/licenses/artistic.html',
+      bugtracker => 'http://github.com/daoswald/Inline-CPP/issues',
+      repository => {
+        type => 'git',
+        url  => 'http://github.com/daoswald/Inline-CPP.git',
+        web  => 'http://github.com/daoswald/Inline-CPP',
+      },
+    },
     provides   => {
       'Inline::CPP' => {
         file    => 'lib/Inline/CPP.pm',
-        version => '0.53',
+        version => $DIST_VERSION,
       },
       'Inline::CPP::Grammar' => {
         file    => 'lib/Inline/CPP/Grammar.pm',
-        version => '0.53',
+        version => $DIST_VERSION,
       },
       'Inline::CPP::Config' => {
         file    => 'lib/Inline/CPP/Config.pm',
-        version => '0.53',
+        version => $DIST_VERSION,
       },
     },
   },

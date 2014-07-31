@@ -36,4 +36,7 @@ requires:
   Inline::C: '0.62'
   Parse::RecDescent: '0'
   perl: '5.006001'
+resources:
+  license: http://dev.perl.org/licenses/artistic.html
+  repository: http://github.com/daoswald/Inline-CPP.git
 version: '0.54'
