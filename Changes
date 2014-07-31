@@ -5,6 +5,9 @@ Revision history for Perl extension Inline::CPP.
   - Improved distribution version number consistency test.
   - Require a modern Inline and Inline::C (>= 0.64, 0.62, respectively).
   - Minor POD revisions and modernizations.
+  - Refactoring of Makefile.PL
+  - META information updated: GitHub repo, no more RT.
+  - Bug tracking now on GitHub Issues.
 
 0.53 2014-07-29
   - lib/Inline/CPP/grammar.pm renamed to Grammar.pm.
