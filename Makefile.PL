@@ -83,9 +83,8 @@ WriteMakefile(
   },
   MIN_PERL_VERSION => '5.006001',
   test  => { RECURSIVE_TEST_FILES => 1 },
-  clean => { FILES => '_Inline/' }, # Paths can be space delimited.
+  clean => { FILES => '_Inline/ Inline-CPP-*/' }, # Paths can be space delimited.
 );
-
 
 #============================================================================
 # We'll do our own prerequisite checking, since MakeMaker does it
