@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use Test::More;
 
+# Test implementation of C++ namespaces.
+
 my $rv = eval <<'EOILCPP';
   use Inline CPP => q[
     namespace Bar {

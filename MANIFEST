@@ -42,6 +42,8 @@ t/grammar/14const.t
 t/grammar/15stvar.t
 t/grammar/16varlst.t
 t/grammar/17memberarray.t
+t/grammar/18namespace.t
+t/grammar/19multidimarray.t
 t/namespace/01empty_ns_is_main.t
 t/namespace/02main_ns_is_main.t
 t/namespace/03baz_ns_is_baz.t
