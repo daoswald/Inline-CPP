@@ -1,8 +1,8 @@
-#!/usr/bin/perl
-
 use strict;
 use warnings;
 use Test::More;
+
+## no critic (eval)
 
 # Test implementation of C++ namespaces.
 
