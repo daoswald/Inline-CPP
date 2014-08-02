@@ -25,7 +25,7 @@ my $trustme = {
     ]
 };
 
-pod_coverage_ok( 'Inline::CPP::grammar', $trustme );
+pod_coverage_ok( 'Inline::CPP::Grammar', $trustme );
 
 
 done_testing();
