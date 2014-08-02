@@ -33,17 +33,3 @@ TODO: {
 };
 
 done_testing();
-
-
-__DATA__
-__CPP__
-
-namespace Bar {
-  class Foo {
-    public:
-      Foo() : a(10) { }
-      int fetch() { return a; }
-    private:
-      int a;
-  };
-}
