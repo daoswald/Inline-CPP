@@ -32,7 +32,7 @@ rtype2: / modifier+ STAR*/
 
 arg: /(: type - ( identifier)|( DOT DOT DOT ))/
 
-arg_decl: /( type WS* identifier*| DOT DOT DOT )/
+arg_decl: /(: type WS* identifier*| DOT DOT DOT )/
 
 type: / WS*(: type1 | type2 ) WS* /
 

@@ -18,7 +18,7 @@ our @EXPORT = qw(test);
 use XXX;
 
 sub test {
-    my ($input) = @_;
+    my ($input, $label) = @_;
     my $prd_data = prd_parse($input);
     my $parser = Pegex::Parser->new(
         grammar => Inline::CPP::Parser::Pegex::Grammar->new,
@@ -29,11 +29,12 @@ sub test {
     my $prd_dump = Dump $prd_data;
     my $pegex_dump = Dump $pegex_data;
 
+    $label = "Pegex matches PRD: $label";
     if ($pegex_dump eq $prd_dump) {
-        Test::More::pass "pegex matches prd";
+        Test::More::pass $label;
     }
     else {
-        Test::More::fail "pegex matches prd";
+        Test::More::fail $label;
         io->file('got')->print($pegex_dump);
         io->file('want')->print($prd_dump);
         Test::More::diag(`diff -u want got`);

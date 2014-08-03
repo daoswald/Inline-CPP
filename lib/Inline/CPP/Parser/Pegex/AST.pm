@@ -36,4 +36,27 @@ sub got_function_definition {
     push @{$self->{data}{functions}}, $name;
 }
 
+sub got_function_declaration {
+    my ($self, $got) = @_;
+    my ($type, $name, $args) = @$got;
+    my $rtype = $type->[0];
+    my $i = 0;
+    $args = [
+        map {
+            my ($type, $d1, $name) = @$_;
+            $name ||= 'dummy' . ++$i;
+            {
+                name => $name,
+                type => $type,
+            };
+        } @$args
+    ];
+    $self->{data}{function}{$name} = {
+        name => $name,
+        rtype => $rtype,
+        args => $args,
+    };
+    push @{$self->{data}{functions}}, $name;
+}
+
 1;
