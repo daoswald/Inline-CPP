@@ -7,9 +7,12 @@ test <<'...', 'Function definition';
 int foo ( int a ) { return a; }
 ...
 
-test <<'...', 'Function declaration';
+test <<'...', 'Function declaration (type-only param)';
 int add ( int, int );
-/* int foo ( int a ); */
+...
+
+test <<'...', 'Function declaration (named param)'
+int foo ( int a );
 ...
 
 done_testing;
