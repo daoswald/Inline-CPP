@@ -4,7 +4,8 @@ use lib 't';
 use TestInlineCPP;
 
 test <<'...';
-int foo ( int a ) { return a }
+int add ( int, int );
+int foo ( int a );
 ...
 
 done_testing;
