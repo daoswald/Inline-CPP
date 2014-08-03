@@ -2,7 +2,7 @@ use strict; use warnings;
 package TestInlineCPP;
 
 BEGIN {
-    $ENV{PERL_PEGEX_AUTO_COMPILE} = 1;
+    $ENV{PERL_PEGEX_AUTO_COMPILE} = 'Inline::CPP::Parser::Pegex::Grammar';
 }
 
 use Test::More();
