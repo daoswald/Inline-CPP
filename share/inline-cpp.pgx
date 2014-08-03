@@ -21,8 +21,10 @@ function_definition:
   LPAREN arg* % COMMA /- RPAREN - LCURLY -/
 
 function_declaration:
-  rtype /( identifier )/ -
-  LPAREN arg_decl* % COMMA /- RPAREN - SEMI -/
+  rtype /( identifier ) -/
+  LPAREN
+  arg_decl* % COMMA
+  /- RPAREN - SEMI -/
 
 rtype: /- (: rtype1 | rtype2 ) -/
 
@@ -32,7 +34,7 @@ rtype2: / modifier+ STAR*/
 
 arg: /(: type - ( identifier)|( DOT DOT DOT ))/
 
-arg_decl: /(: type WS* identifier*| DOT DOT DOT )/
+arg_decl: /(: type WS* ( identifier* )| DOT DOT DOT )/
 
 type: / WS*(: type1 | type2 ) WS* /
 

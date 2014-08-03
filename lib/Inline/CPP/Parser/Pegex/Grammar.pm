@@ -31,7 +31,7 @@ sub make_tree {   # Generated/Inlined by Pegex::Grammar (0.44)
       '.rgx' => qr/\G(?:\s*(?:(?:(?:unsigned|long|extern|const)\b\s*)*((?:\w+))\s*(\**)|(?:(?:unsigned|long|extern|const)\b\s*)*\**)\s*\s*((?:\w+))|(\.\.\.))/
     },
     'arg_decl' => {
-      '.rgx' => qr/\G(?:\s*(?:(?:(?:unsigned|long|extern|const)\b\s*)*((?:\w+))\s*(\**)|(?:(?:unsigned|long|extern|const)\b\s*)*\**)\s*\s*(?:\w+)*|\.\.\.)/
+      '.rgx' => qr/\G(?:\s*(?:(?:(?:unsigned|long|extern|const)\b\s*)*((?:\w+))\s*(\**)|(?:(?:unsigned|long|extern|const)\b\s*)*\**)\s*\s*((?:\w+)*)|\.\.\.)/
     },
     'code' => {
       '+min' => 1,
@@ -53,10 +53,7 @@ sub make_tree {   # Generated/Inlined by Pegex::Grammar (0.44)
           '.ref' => 'rtype'
         },
         {
-          '.rgx' => qr/\G((?:\w+))/
-        },
-        {
-          '.ref' => '_'
+          '.rgx' => qr/\G((?:\w+))\s*/
         },
         {
           '.ref' => 'LPAREN'
