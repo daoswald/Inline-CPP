@@ -18,11 +18,23 @@ int foo ( int a );
 test <<'...', 'Simple class.';
 class Foo {
   public:
-    Foo() :a(10) { }
-    int fetch() { return a }
+    Foo() { a = 10; }
+    int fetch() { return a; }
+  private:
+    int a;
+};
+...
+
+test <<'...', 'Default-initialized class w/destructor.';
+class Foo {
+  public:
+    Foo() :a(10), b(5) { }
+    int fetcha() { return a; }
+    int fetchb() { return b; }
     ~Foo() {}
   private:
     int a;
+    int b;
 };
 ...
 
