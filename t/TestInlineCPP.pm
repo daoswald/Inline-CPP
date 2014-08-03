@@ -1,6 +1,10 @@
 use strict; use warnings;
 package TestInlineCPP;
 
+BEGIN {
+    $ENV{PERL_PEGEX_AUTO_COMPILE} = 1;
+}
+
 use Test::More();
 use YAML::XS;
 use IO::All;
