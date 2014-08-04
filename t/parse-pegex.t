@@ -27,6 +27,7 @@ test <<'...', 'Various comments';
 // comment /* not started
 /*
 // */ int foo ( int a );
+/* comment // comment should end here --> */
 ...
 
 # test <<'...', 'Simplest class.';
