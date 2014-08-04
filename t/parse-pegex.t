@@ -19,6 +19,22 @@ double foo_bar( char a, double b, int c ) { return b; }
 # char* foo( char* a ) { return a; }
 # ...
 
+# test <<'...', 'Function definition accepting a const param.';
+# int foo( const int a ) { return a; }
+# ...
+
+# test <<'...', 'Function definition returning a const.';
+# const int foo ( int a ) { return a; }
+# ...
+
+# test <<'...', 'Function definition accepting a ptr to const param.';
+# char foo ( char * const a ) { return a[0] }
+# ...
+
+# test <<'...', 'Function definition returning a ptr to const.';
+# char * const foo ( char * a ) { return static_cast<char * const>(a); }
+# ...
+
 # test <<'...', 'Member function definition.';
 # int Bar::foo( int a ) { return a; }
 # ...
@@ -78,6 +94,22 @@ int foo ( int a );
 
 # test <<'...', 'Function declaration retuning ptr.';
 # char* foo( char* );
+# ...
+
+# test <<'...', 'Function declaration accepting a const param.';
+# int foo( const int a );
+# ...
+
+# test <<'...', 'Function declaration returning a const.';
+# const int foo ( int a );
+# ...
+
+# test <<'...', 'Function declaration accepting a ptr to const param.';
+# char foo ( char * const a );
+# ...
+
+# test <<'...', 'Function declaration returning a ptr to const.';
+# char * const foo ( char * a );
 # ...
 
 # test <<'...', 'Member function declaration.';
