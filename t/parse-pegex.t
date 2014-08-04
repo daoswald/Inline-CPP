@@ -27,6 +27,10 @@ double foo_bar( char a, double b, int c ) { return b; }
 # int Bar::Baz::foo( int a ) { return a; }
 # ...
 
+# test <<'...', 'Function definition with C++11 return value syntax.';
+# auto foo ( int a ) -> int { return a; }
+# ...
+
 # test <<'...', 'Function definition with exception specification.';
 # int must_not_throw ( int a ) noexcept { return a; }
 # ...
@@ -66,6 +70,10 @@ int foo ( int a );
 
 # test <<'...', 'Multi-level namespace function declaration.';
 # int Bar::Baz::foo( int a );
+# ...
+
+# test <<'...', 'Function declaration with C++11 return value syntax.';
+# auto foo ( int a ) -> int;
 # ...
 
 # test <<'...', 'Function declaration with exception specification.';
