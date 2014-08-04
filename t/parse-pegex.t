@@ -31,6 +31,22 @@ double foo_bar( char a, double b, int c ) { return b; }
 # auto foo ( int a ) -> int { return a; }
 # ...
 
+# test <<'...', 'Function definition accepting a templated container param.';
+# int fetch( std::vector<int> a ) { return a.at(0); }
+# ...
+
+# test <<'...', 'Function definition returning a templated container param.';
+# std::vector<int> fetch( std::vector<int> a ) { return a; }
+# ...
+
+# test <<'...', 'Function definition accepting/returning ptr to STL.';
+# std::vector<int>* fetch( std::vector<int>* a ) { return a; }
+# ...
+
+# test <<'...', 'function definition accepting/returning template of ptrs.';
+# std::vector<int*> fetch( std::vector<int*> a ) { return a; }
+# ...
+
 # test <<'...', 'Function definition with exception specification.';
 # int must_not_throw ( int a ) noexcept { return a; }
 # ...
@@ -74,6 +90,22 @@ int foo ( int a );
 
 # test <<'...', 'Function declaration with C++11 return value syntax.';
 # auto foo ( int a ) -> int;
+# ...
+
+# test <<'...', 'Function declaration accepting a templated container param.';
+# int fetch( std::vector<int> a );
+# ...
+
+# test <<'...', 'Function declaration returning a templated container param.';
+# std::vector<int> fetch( std::vector<int> a )
+# ...
+
+# test <<'...', 'Function declaration accepting/returning ptr to STL.';
+# std::vector<int>* fetch( std::vector<int>* a );
+# ...
+
+# test <<'...', 'function declaration accepting/returning template of ptrs.';
+# std::vector<int*> fetch( std::vector<int*> a );
 # ...
 
 # test <<'...', 'Function declaration with exception specification.';
