@@ -11,10 +11,6 @@ test <<'...', 'Function definition with multiple params.';
 double foo_bar( char a, double b, int c ) { return b; }
 ...
 
-# test <<'...', 'Function definition with exception specification.';
-# int must_not_throw ( int a ) noexcept { return a; }
-# ...
-
 # test <<'...', 'Funcition definition with ptr param.';
 # int foo( char* a ) { return strlen(a); }
 # ...
@@ -31,6 +27,18 @@ double foo_bar( char a, double b, int c ) { return b; }
 # int Bar::Baz::foo( int a ) { return a; }
 # ...
 
+# test <<'...', 'Function definition with exception specification.';
+# int must_not_throw ( int a ) noexcept { return a; }
+# ...
+
+# test <<'...', 'Function definition with affirmitive exception spec.';
+# int may_throw ( int a ) throw(int, std::bad_exception) { return a; }
+# ...
+
+# test <<'...', 'Function definition with affirmitive empty exception spec.';
+# int old_nothrow ( int a ) throw() { return a; }
+# ...
+
 test <<'...', 'Function declaration (type-only param)';
 int add ( int, int );
 ...
@@ -39,9 +47,6 @@ test <<'...', 'Function declaration (named param)';
 int foo ( int a );
 ...
 
-# test <<'...', 'Function declaration with exception specification.';
-# int must_not_throw ( int a ) noexcept;
-# ...
 
 # test <<'...', 'Function declaration (named ptr param)';
 # char foo ( char* abc );
@@ -61,6 +66,18 @@ int foo ( int a );
 
 # test <<'...', 'Multi-level namespace function declaration.';
 # int Bar::Baz::foo( int a );
+# ...
+
+# test <<'...', 'Function declaration with exception specification.';
+# int must_not_throw ( int a ) noexcept;
+# ...
+
+# test <<'...', 'Function declaration with affirmitive exception spec.';
+# int may_throw ( int a ) throw(int, std::bad_exception);
+# ...
+
+# test <<'...', 'Function declaration with affirmitive empty exception spec.';
+# int old_nothrow ( int a ) throw();
 # ...
 
 
