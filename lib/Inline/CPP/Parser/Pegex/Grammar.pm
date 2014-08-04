@@ -40,10 +40,10 @@ sub make_tree {   # Generated/Inlined by Pegex::Grammar (0.44)
     'comment' => {
       '.any' => [
         {
-          '.rgx' => qr/\G\s*\/\/[^\n]*\n/
+          '.rgx' => qr/\G\/\/.*\n/
         },
         {
-          '.rgx' => qr/\G\s*\/\*(?:[^\*]+|\*(?!\/))*\*\/([\t]*)?/
+          '.rgx' => qr/\G\/\*(?:[^\*]+|\*(?!\/))*\*\/([\t]*)?/
         }
       ]
     },

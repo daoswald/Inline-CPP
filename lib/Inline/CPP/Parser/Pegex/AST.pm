@@ -4,10 +4,7 @@ extends 'Pegex::Tree';
 
 sub initial {
     my ($self) = @_;
-    $self->{data} = {
-        function => {},
-        functions => [],
-    };
+    $self->{data} = {};
 }
 
 sub final {
@@ -57,6 +54,18 @@ sub got_function_declaration {
         args => $args,
     };
     push @{$self->{data}{functions}}, $name;
+}
+
+sub handle_class_definition {
+    my ($self, $got) = @_;
+    my $class = $got->[0];
+    my @parts;
+    for my $part (@{$got->[1]}) { push @parts, @$_ for @$part }
+    push @{$self->{data}{classes}}, $class
+        unless defined $self->{data}{class}{$class};
+    $self->{data}{class}{$class} = \@parts;
+    Inline::CPP::Grammar::typemap($self, $class);
+    [$class, \@parts];
 }
 
 1;

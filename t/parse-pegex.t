@@ -15,6 +15,20 @@ test <<'...', 'Function declaration (named param)';
 int foo ( int a );
 ...
 
+test <<'...', 'Comment hides function';
+int foo ( int a );
+/* int bar ( int a ); */
+...
+
+test <<'...', 'Various comments';
+// int foo ( int a );
+/* int bar ( int a ); */
+// comment */ not ended
+// comment /* not started
+/*
+// */ int foo ( int a );
+...
+
 # test <<'...', 'Simplest class.';
 # class Foo {
 # };
