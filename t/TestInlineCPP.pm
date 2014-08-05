@@ -37,8 +37,8 @@ sub test {
 
     # Carry over TODO from caller.
     local $TestInlineCPP::TODO = do {
-        no strict 'refs';
-        defined ${ caller . '::TODO' } ? ${ caller . '::TODO' } : undef;
+      no strict 'refs';
+      ${ caller . '::TODO' };
     };
 
     if ($pegex_dump eq $prd_dump) {
