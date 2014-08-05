@@ -11,7 +11,7 @@ test <<'...', 'Function definition with multiple params.';
 double foo_bar( char a, double b, int c ) { return b; }
 ...
 
-# test <<'...', 'Funcition definition with ptr param.';
+# test <<'...', 'Function definition with ptr param.';
 # int foo( char* a ) { return strlen(a); }
 # ...
 

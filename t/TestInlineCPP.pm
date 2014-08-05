@@ -34,6 +34,13 @@ sub test {
     my $pegex_dump = Dump $pegex_data;
 
     $label = "Pegex matches PRD: $label";
+
+    # Carry over TODO from caller.
+    local $TestInlineCPP::TODO = do {
+        no strict 'refs';
+        defined ${ caller . '::TODO' } ? ${ caller . '::TODO' } : undef;
+    };
+
     if ($pegex_dump eq $prd_dump) {
         Test::More::pass $label;
     }
