@@ -16,6 +16,7 @@
    "no_index" : {
       "directory" : [
          "t",
+         "inc",
          "inc"
       ]
    },
@@ -30,7 +31,9 @@
       "configure" : {
          "requires" : {
             "Config" : "0",
-            "ExtUtils::MakeMaker" : "6.56"
+            "ExtUtils::CppGuess" : "0.07",
+            "ExtUtils::MakeMaker" : "6.56",
+            "FindBin" : "0"
          }
       },
       "runtime" : {
@@ -46,19 +49,20 @@
    "provides" : {
       "Inline::CPP" : {
          "file" : "lib/Inline/CPP.pm",
-         "version" : "0.54"
+         "version" : "0.54_001"
       },
       "Inline::CPP::Config" : {
          "file" : "lib/Inline/CPP/Config.pm",
-         "version" : "0.54"
+         "version" : "0.54_001"
       },
       "Inline::CPP::Grammar" : {
          "file" : "lib/Inline/CPP/Grammar.pm",
-         "version" : "0.54"
+         "version" : "0.54_001"
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
+      "homepage" : "http://github.com/daoswald/Inline-CPP",
       "license" : [
          "http://dev.perl.org/licenses/artistic.html"
       ],
@@ -68,5 +72,5 @@
          "web" : "http://github.com/daoswald/Inline-CPP"
       }
    },
-   "version" : "0.54"
+   "version" : "0.54_001"
 }

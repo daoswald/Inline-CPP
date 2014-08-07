@@ -8,7 +8,9 @@ build_requires:
   Test::More: '0.98'
 configure_requires:
   Config: '0'
+  ExtUtils::CppGuess: '0.07'
   ExtUtils::MakeMaker: '6.56'
+  FindBin: '0'
 dynamic_config: 1
 generated_by: 'ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.140640'
 license: artistic
@@ -20,16 +22,17 @@ no_index:
   directory:
     - t
     - inc
+    - inc
 provides:
   Inline::CPP:
     file: lib/Inline/CPP.pm
-    version: '0.54'
+    version: 0.54_001
   Inline::CPP::Config:
     file: lib/Inline/CPP/Config.pm
-    version: '0.54'
+    version: 0.54_001
   Inline::CPP::Grammar:
     file: lib/Inline/CPP/Grammar.pm
-    version: '0.54'
+    version: 0.54_001
 requires:
   Carp: '0'
   Inline: '0.64'
@@ -37,6 +40,7 @@ requires:
   Parse::RecDescent: '0'
   perl: '5.006001'
 resources:
+  homepage: http://github.com/daoswald/Inline-CPP
   license: http://dev.perl.org/licenses/artistic.html
   repository: http://github.com/daoswald/Inline-CPP.git
-version: '0.54'
+version: 0.54_001
