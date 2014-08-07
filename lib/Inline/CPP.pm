@@ -19,8 +19,8 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.54';
-#$VERSION = eval $VERSION; ## no critic (eval)
+our $VERSION = '0.54_001';
+$VERSION = eval $VERSION; ## no critic (eval)
 
 my $TYPEMAP_KIND;
 {
