@@ -56,7 +56,10 @@ WriteMakefile(
     'Config'              => '0',       # Core.
   },
   META_MERGE => {
-    'meta-spec' => { version => 2 },
+    'meta-spec' => {
+      version => 2,
+      url     => 'http://search.cpan.org/perldoc?CPAN::Meta::Spec',
+     },
     resources   => {
       license    => 'http://dev.perl.org/licenses/artistic.html',
       bugtracker => 'http://github.com/daoswald/Inline-CPP/issues',
