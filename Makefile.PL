@@ -1,5 +1,6 @@
 use ExtUtils::MakeMaker;
-use lib 'inc';
+use FindBin;
+use lib "$FindBin::Bin/inc";
 use ILCPPConfig::CompilerGuess 'guess_compiler';
 use Fcntl qw( :DEFAULT :flock );
 use strict;
@@ -53,8 +54,9 @@ WriteMakefile(
     'English'    => '0',       # Core.
   },
   CONFIGURE_REQUIRES => {
-    'ExtUtils::CppGuess'  => '0.07',
+    'ExtUtils::CppGuess'  => '0.07',    # Beginning IL::CPP 0.54_001.
     'ExtUtils::MakeMaker' => '6.56',    # Minimum version.
+    'FindBin'             => '0',       # Core.
     'Config'              => '0',       # Core.
   },
   META_MERGE => {
