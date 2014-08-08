@@ -35,7 +35,7 @@ open( $FILEHANDLE, '>', '/tmp/Foo__Qux__MyClass.c' )
 print $FILEHANDLE $foo__qux__myclass;
 close $FILEHANDLE;
 
-eval(q[use Inline CPP => '/tmp/Foo__Qux__MyClass.c' => FILTERS => 'Preprocess' => NAMESPACE => 'Foo' => CLASSES => { 'Foo__Bar__MyClass' => 'Bar::MyClass', 'Foo__Qux__MyClass' => 'Qux::MyClass' };]);
+eval(q[use Inline CPP => '/tmp/Foo__Qux__MyClass.c' => filters => 'Preprocess' => namespace => 'Foo' => classes => { 'Foo__Bar__MyClass' => 'Bar::MyClass', 'Foo__Qux__MyClass' => 'Qux::MyClass' };]);
 
 
 package main;

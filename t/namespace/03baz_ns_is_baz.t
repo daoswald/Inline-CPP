@@ -3,7 +3,7 @@ package Ball; ## no critic (package)
 use strict;
 use warnings;
 
-use Inline CPP => Config => namespace         => 'Baz';
+use Inline CPP => config => namespace         => 'Baz';
 
 use Inline CPP => <<'EOCPP';
 

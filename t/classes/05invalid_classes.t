@@ -21,7 +21,7 @@ EOCPP
   1;
 ];
 
-ok !$res0, 'Invalid CLASSES croaks.';
+ok !$res0, 'Invalid classes croaks.';
 like $@, qr/is not a valid hash of class mappings\./, 'Correct message.';
 
 my $res1 = eval q[

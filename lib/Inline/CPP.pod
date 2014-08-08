@@ -570,7 +570,7 @@ configuration:
 
 
 Note: Due to an XS implementation detail, C<ref($b)> will return C<main::Foo>
-if the C<NAMESPACE> configuration has been set to an empty string; XS doesn't
+if the C<namespace> configuration has been set to an empty string; XS doesn't
 allow for its internal C<PACKAGE> specification to be empty.  From a caller's
 standpoint this is probably not relevant; A class named C<main::Foo> can be
 referred to as C<Foo>, even from outside of package C<main>.
