@@ -1130,6 +1130,9 @@ When reporting a bug, please do the following:
    your bug report.
  - Patches are always welcome, as are tests that tickle a newfound bug.
 
+ - Pull requests should avoid touching irrelevant sections of code/POD, and 
+   tests are required before they can be considered for merge.
+
 ...or...
 
  - Put "use Inline REPORTBUG;" at the top of your code, or
@@ -1138,7 +1141,7 @@ When reporting a bug, please do the following:
  - Follow the printed instructions.
 
 B<Get involved!>  Module development is being tracked on a github
-repository: L<https://github.com/daoswald/Inline-CPP>
+repository: L<https://github.com/daoswald/Inline-CPP>.
 
 The master branch should always be buildable and usable.
 
@@ -1249,7 +1252,7 @@ helpful, although its discussion is focused on Inline::C.
 Neil Watkiss <NEILW@cpan.org> was the original author.
 
 David Oswald <DAVIDO@cpan.org> is the current maintainer.
-David Oswald's Inline::CPP githug repo is:
+David Oswald's Inline::CPP GitHub repo is:
 L<https://github.com/daoswald/Inline-CPP>
 
 Ingy döt Net <INGY@cpan.org> is the author of C<Inline>, and C<Inline::C>.
