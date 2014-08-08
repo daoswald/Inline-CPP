@@ -10,7 +10,7 @@ use strict;
 ## no critic (two-argument open)
 
 # The next line is verified via t/13version_numbers.t. Retain single quoting.
-my $DIST_VERSION = '0.54';                        # DRY in Makefile.PL.
+my $DIST_VERSION = '0.55';                        # DRY in Makefile.PL.
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
 my $test_cpp_filename = 'ilcpptest';        # '.cpp' appended via open.
@@ -20,7 +20,7 @@ int main(){ return 0; }
 END_TEST_CPP
 
 my %PREREQ_PM = (
-  'Inline'            => '0.64',
+  'Inline'            => '0.67', # Case insensitivity.
   'Inline::C'         => '0.62',
   'Parse::RecDescent' => '0',
   'Carp'              => '0',
