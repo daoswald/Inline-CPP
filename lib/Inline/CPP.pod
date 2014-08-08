@@ -273,10 +273,10 @@ Let's say you use Inline::CPP like this:
 The issue is that the C++ class, "C<Foo>" will be mapped to Perl below the 
 C<Some::Foo> namespace, as C<Some::Foo::Foo>, and would need to be instantiated 
 like this: C<< my $foo = Some::Foo::Foo->new() >>.  This probably isn't what 
-the user intended. Use the L<NAMESPACE> configuration option to set your base
+the user intended. Use the L<namespace> configuration option to set your base
 namespace:
 
-    use Inline CPP => NAMESPACE => 'Some';
+    use Inline CPP => config => namespace => 'Some';
 
 Now, C<Foo> falls under the C<Some> heirarchy: C<Some::Foo>, and can be
 instantiated as C<< my $foo = Some::Foo->new() >>.  This probably I<is> what the
@@ -290,67 +290,72 @@ available for C/C++. Most of the options correspond either to the MakeMaker
 or XS options of the same name. See L<ExtUtils::MakeMaker> and
 L<perlxs>.
 
-=head2 ALTLIBS
+All configuration options, including the word C<config> are case insensitive.
+C<CPP>, and C<DATA> are not configuration options, and are not insensitive to
+case.
+
+=head2 altlibs
 
 Adds a new entry to the end of the list of alternative libraries to
 bind with. MakeMaker will search through this list and use the first
 entry where all the libraries are found.
 
-    use Inline CPP => Config => ALTLIBS => '-L/my/other/lib -lfoo';
+    use Inline CPP => config => altlibs => '-L/my/other/lib -lfoo';
 
-See also the LIBS config option, which appends to the last entry in
+See also the C<libs> config option, which appends to the last entry in
 the list.
 
-=head2 AUTO_INCLUDE
+=head2 auto_include
 
 Specifies extra statements to be automatically included. They will be
 added on to the defaults. A newline char will automatically be added.
 
-    use Inline CPP => Config => AUTO_INCLUDE => '#include "something.h"';
+    use Inline CPP => config => auto_include => '#include "something.h"';
 
-=head2 BOOT
+=head2 boot
 
 Specifies code to be run when your code is loaded. May not contain any
 blank lines. See L<perlxs> for more information.
 
-    use Inline CPP => Config => BOOT => 'foo();';
+    use Inline CPP => config => boot => 'foo();';
 
-=head2 CC
+=head2 cc
 
-Specifies which compiler to use.
+Specifies which compiler to use.  In most cases the configuration default is
+adequate.
 
-    use Inline CPP => Config => CC => '/usr/bin/g++-4.6';
+    use Inline CPP => config => cc => '/usr/bin/g++-4.6';
 
-=head2 CCFLAGS
+=head2 ccflags
 
 Specifies extra compiler flags. Corresponds to the MakeMaker option.
 
-    use Inline CPP => Config => CCFLAGS => '-std=gnu++0x';
+    use Inline CPP => config => ccflags => '-std=c++11';
 
-=head2 FILTERS
+=head2 filters
 
 Specifies one (or more, in an array ref) filter which is to be applied to
 the code just prior to parsing. The filters are executed one after another,
 each operating on the output of the previous one. You can pass in a code
 reference or the name of a prepackaged filter.
 
-    use Inline CPP => Config => FILTERS => [Strip_POD => \&myfilter];
+    use Inline CPP => config => filters => [Strip_POD => \&myfilter];
 
 The filter may do anything. The code is passed as the first argument, and
 it returns the filtered code.
 
-=head2 INC
+=head2 inc
 
 Specifies extra include directories. Corresponds to the MakeMaker
 parameter.
 
-    use Inline CPP => Config => INC => '-I/my/path';
+    use Inline CPP => config => inc => '-I/my/path';
 
-=head2 LD
+=head2 ld
 
 Specifies the linker to use.
 
-=head2 LDDLFLAGS
+=head2 lddlflags
 
 Specifies which linker flags to use.
 
@@ -358,37 +363,38 @@ NOTE: These flags will completely override the existing flags, instead
 of just adding to them. So if you need to use those too, you must
 respecify them here.
 
-=head2 LIBS
+=head2 libs
 
 Specifies external libraries that should be linked into your
 code. Corresponds to the MakeMaker parameter.
 
-    use Inline CPP => Config => LIBS => '-L/your/path -lyourlib';
+    use Inline CPP => config => libs => '-L/your/path -lyourlib';
 
-Unlike the LIBS configuration parameter used in Inline::C, successive
-calls to LIBS append to the previous calls. For example,
+Unlike the C<libs> configuration parameter used in Inline::C, successive
+calls to C<libs> append to the previous calls. For example,
 
-    use Inline CPP => Config => LIBS => '-L/my/path', LIBS => '-lyourlib';
+    use Inline CPP => config => libs => '-L/my/path', libs => '-lyourlib';
 
-will work correctly. If you want to add a new element to the list of
-possible libraries to link with, use the Inline::CPP configuration ALTLIBS.
+will work correctly, if correct is for both C<libs> to be in effect. If you
+want to add a new element to the list of possible libraries to link with, use
+the Inline::CPP configuration C<altlibs>.
 
-=head2 MAKE
+=head2 make
 
-Specifies the name of the 'make' utility to use.
+Specifies the name of the 'C<make>' utility to use.
 
-=head2 MYEXTLIB
+=head2 myextlib
 
 Specifies a user compiled object that should be linked in. Corresponds
 to the MakeMaker parameter.
 
-    use Inline CPP => Config => MYEXTLIB => '/your/path/something.o';
+    use Inline CPP => config => myextlib => '/your/path/something.o';
 
-=head2 NAMESPACE
+=head2 namespace
 
-    use Inline CPP => Config => NAMESPACE => 'Foo';
-    use Inline CPP => Config => NAMESPACE => 'main';
-    use Inline CPP => Config => NAMESPACE => q{};
+    use Inline CPP => config => namespace => 'Foo';
+    use Inline CPP => config => namespace => 'main';
+    use Inline CPP => config => namespace => q{};
 
 Override default base namespace.
 
@@ -400,11 +406,11 @@ class while invoking Inline::CPP from package C<Foo>.  The resulting class will
 bind to Perl as C<Foo::Foo>, which is probably not what was intended.
 
 This default behavior can be overridden by specifying an alternate base
-C<NAMESPACE>.  Examples are probably the best way to explain this:
+C<namespace>.  Examples are probably the best way to explain this:
 
 
     package Foo;
-    use Inline CPP => Config => NAMESPACE => 'Bar';
+    use Inline CPP => config => namespace => 'Bar';
     use Inline CPP => <<'EOCPP';
 
     class Baz {
@@ -422,8 +428,8 @@ C<NAMESPACE>.  Examples are probably the best way to explain this:
 
 
 As demonstrated here, the namespace in which "Baz" resides can now be made
-independent of the package from which Inline::CPP has been invoked.  Consider
-instead the default behavior:
+independent of the package from which L<Inline::CPP> has been invoked.
+Consider instead the default behavior:
 
 
     package Foo;
@@ -448,7 +454,7 @@ configuration:
 
 
     package Foo;
-    use Inline CPP => Config => NAMESPACE => q{};  # Disassociate from
+    use Inline CPP => config => namespace => q{};  # Disassociate from
                                                    # calling package.
     use Inline CPP => <<'EOCPP';
 
@@ -472,85 +478,85 @@ allow for its internal C<PACKAGE> specification to be empty.  From a caller's
 standpoint this is probably not relevant; A class named C<main::Foo> can be
 referred to as C<Foo>, even from outside of package C<main>.
 
-=head2 PREFIX
+=head2 prefix
 
 Specifies a prefix that will automatically be stripped from C++
 functions when they are bound to Perl. Less useful than in C, because
 C++ mangles its function names to facilitate function overloading.
 
-    use Inline CPP Config => PREFIX => 'ZLIB_';
+    use Inline CPP config => prefix => 'ZLIB_';
 
 This only affects C++ function names, not C++ class names or methods.
 
-=head2 PRESERVE_ELLIPSIS
+=head2 preserve_ellipsis
 
 By default, Inline::CPP replaces C<...> in bound functions with three
 spaces, since the arguments are always passed on the Perl Stack, not on
 the C stack. This is usually desired, since it allows functions with
 no fixed arguments (most compilers require at least one fixed argument).
 
-    use Inline CPP Config => PRESERVE_ELLIPSIS => 1;
+    use Inline CPP config => preserve_ellipsis => 1;
 or
-    use Inline CPP Config => ENABLE => PRESERVE_ELLIPSIS;
+    use Inline CPP config => enable => 'preserve_ellipsis';
 
-For an example of why PRESERVE_ELLIPSIS is normally not needed, see the
+For an example of why C<preserve_ellipsis> is normally not needed, see the
 examples section, below.
 
-=head2 STD_IOSTREAM
+=head2 std_iostream
 
 By default, Inline::CPP includes the standard iostream header at the top
 of your code.  Inline::CPP will try to make the proper selection between
 C<iostream.h> (for older compilers) and C<iostream> (for newer "Standard
 compliant" compilers).
 
-This option assures that it include C<iostream>, which is the
+This option assures that C<iostream> (with no C<.h>) is included, which is the
 ANSI-compliant version of the header. For most compilers the use of this
-configuration option should no longer be necessary.  It is still included
-to maintain backward compatibility with code that used to need it.
+configuration option should no longer be necessary, as detection is done at
+module install time.  The configuration option is still included only to
+maintain backward compatibility with code that used to need it.
 
-    use Inline CPP => Config => ENABLE => STD_IOSTREAM;
+    use Inline CPP => config => enable => 'std_iostream';
 
-=head2 STRUCTS
+=head2 structs
 
-Specifies whether to bind C structs into Perl using Inline::Struct.
-NOTE: Support for this option is experimental. Inline::CPP already binds
-to structs defined in your code. As is the case with C++, structs and classes
-are treated the same, except that a struct's initial scope is public, not
-private. Inline::Struct provides autogenerated get/set methods, an
-overloaded constructor, and several other features not available in
-Inline::CPP.
+Specifies whether to bind C structs into Perl using L<Inline::Struct>.
+NOTE: Support for this option is experimental. L<Inline::CPP> already binds
+to structs defined in your code. In C++, structs and classes are treated the
+same, except that a struct's initial scope is public, not private.
+L<Inline::Struct> provides autogenerated get/set methods, an overloaded
+constructor, and several other features not available in L<Inline::CPP>.
 
-You can invoke STRUCTS in several ways:
+You can invoke C<structs> in several ways:
 
-    use Inline CPP Config => STRUCTS => 'Foo';
+    use Inline CPP config => structs => 'Foo';
 or
-    use Inline CPP Config => STRUCTS => ['Bar', 'Baz'];
+    use Inline CPP config => structs => ['Bar', 'Baz'];
 
 Binds the named structs to Perl. Emits warnings if a struct was requested
 but could not be bound for some reason.
 
-    use Inline CPP Config => ENABLE => 'STRUCTS';
+    use Inline CPP config => enable => 'structs';
 or
-    use Inline CPP Config => STRUCTS => 1;
+    use Inline CPP config => structs => 1;
 
 Enables binding structs to Perl. All structs which can be bound, will. This
 parameter overrides all requests for particular structs.
 
-    use Inline CPP Config => DISABLE => 'STRUCTS';
+    use Inline CPP config => disable => 'structs';
 or
-    use Inline CPP Config => STRUCTS => 0;
+    use Inline CPP config => structs => 0;
 
 Disables binding structs to Perl. Overrides any other settings.
 
 See L<Inline::Struct> for more details about how C<Inline::Struct>
 binds C structs to Perl.
 
-=head2 TYPEMAPS
+=head2 typemaps
 
 Specifies extra typemap files to use. These types will modify the
 behaviour of C++ parsing. Corresponds to the MakeMaker parameter.
 
-    use Inline CPP Config => TYPEMAPS => '/your/path/typemap';
+    use Inline CPP config => typemaps => '/your/path/typemap';
 
 =head1 C++-Perl Bindings
 
@@ -683,8 +689,8 @@ But if you do care (maybe you're basing a CPAN module on Inline::CPP), use these
 preprocessor definitions as a tool in building a widely portable solution.
 
 If you wish, you may C<#undef> either of those defs.  The definitions are
-defined before any C<AUTO_INCLUDE>s -- even <iostream>.  Consequently, you may
-even list C<#undef __INLINE_CPP_....> within an C<AUTO_INCLUDE> configuration
+defined before any C<auto_include>s -- even <iostream>.  Consequently, you may
+even list C<#undef __INLINE_CPP_....> within an C<auto_include> configuration
 directive.  I'm not sure why it would be necessary, but could be useful in
 testing.
 
@@ -762,7 +768,7 @@ destructor, meaning you cannot instantiate an C<Object>.
 The C<Airplane> is a fully-bound class which can be created and
 manipulated from Perl.
 
-   use Inline CPP;
+   use Inline 'CPP';
 
    my $plane = new Airplane;
    $plane->print;
@@ -835,7 +841,7 @@ Here's the same function written in C:
 
 Here's a benchmark program that tests which is faster:
 
-    use Inline CPP;
+    use Inline 'CPP';
     my @numbers = map { rand } (1 .. 10000);
     my ($a, $stop);
     $stop = 200;
@@ -902,7 +908,7 @@ a Queue and a Stack.
 This example implements a Queue and a Stack class, and shows off just
 a few more new features of Inline::CPP: default values to arguments,
 
-    use Inline CPP;
+    use Inline 'CPP';
 
     my $q = new Queue;
     $q->q(50);
@@ -1024,21 +1030,22 @@ version is appropriate for your pre-5.6.0 Perl.
 
 =head1 C++11 Standard
 
-Is Inline::CPP is ready for the C++11 standard?  The
-short answer to that question is "Mostly, to the extent that your compiler is
-C++11 standard compliant."  There are two issues to consider.  First, what is
-your compiler capable of (and how to you enable those capabilities), and
-second, what does Perl need to care about.
+Is Inline::CPP is ready for the C++11 standard?  The short answer to that
+question is "Mostly, to the extent that your compiler is C++11 standard
+compliant."  There are two issues to consider.  First, what is your compiler
+capable of (and how to you enable those capabilities), and second, what does
+Perl need to care about.
 
-Taking the first question first (because it's the easiest): Use the CCFLAGS
+Taking the first question first (because it's the easiest): Use the C<ccflags>
 option shown above to pass the proper flag to your compiler to enable C++11
-features.  Most of what your compiler will support, Inline::CPP will deal with.
+features.  Most of what your compiler will support, C<Inline::CPP> will deal
+with.
 
-You also may need to use the CC flag to specify a newer version of the
+You also may need to use the C<cc> flag to specify a newer version of the
 compiler, if you happen to have more than one installed -- one that handles
 C++11 and one that doesn't.
 
-Now for the question of what Perl needs to care about:  Inline::CPP doesn't
+Now for the question of what Perl needs to care about:  L<Inline::CPP> doesn't
 look inside of functions or methods.  That code is treated as a black box that
 passes directly through to your compiler.  So inside of your functions and
 methods, feel free to use whatever C++11 features you want.
@@ -1054,24 +1061,24 @@ of scope to enums:
     enum class Colors { RED, GREEN, BLUE };
 
 How this should bind to Perl becomes even more difficult.  The fact is that
-Inline::CPP won't bind either to Perl.  And you're probably better off with that
-approach than suddenly having $Colors::RED = 0; showing up in your Perl code.
-Do keep in mind, however, the construct is passed directly through to your
-C++ compiler, so feel free to use it within the C++ code.  It just won't leak
-out into your Perl namespaces.
+L<Inline::CPP> won't bind either to Perl.  And you're probably better off with
+that approach than suddenly having $Colors::RED = 0; showing up in your Perl
+code. Do keep in mind, however, the construct is passed directly through to
+your C++ compiler, so feel free to use it within the C++ code.  It just won't
+leak out into your Perl namespaces.
 
-At the moment the most glaring omission from Inline::CPP of valid C++11 syntax
-is the new "late return type" syntax.  C++11 introduced the following legal
-syntax:
+At the moment the most glaring omission from L<Inline::CPP> of valid C++11
+syntax is the new "late return type" syntax.  C++11 introduced the following
+legal syntax:
 
     auto add ( int x, int y ) -> int { return x + y; }
 
 This omission is only going to be a factor for functions that you want to bind
 to Perl.  If you don't need the function to bind to Perl, the syntax is fine;
-Inline::CPP just ignores the function.  It's important to note that the most
+L<Inline::CPP> just ignores the function.  It's important to note that the most
 common uses of this syntax involve templates and lambdas.  Templates don't make
-sense to Inline::CPP anyway. And lambdas are still fine, because they take
-place inside of functions, so Inline::CPP doesn't see them anyway.  For now,
+sense to L<Inline::CPP> anyway. And lambdas are still fine, because they take
+place inside of functions, so L<Inline::CPP> doesn't see them anyway.  For now,
 just don't use the late return type syntax in the header of functions that need
 to bind to Perl.  This may get fixed in future revisions to the grammar.
 
@@ -1088,7 +1095,7 @@ to your compiler, so they I<will> work I<within> your C++ code).
 
 And finally, I<Rvalue references>:
 
-Inline::CPP doesn't (yet) understand this:
+L<Inline::CPP> doesn't (yet) understand this:
 
     int x = 100;
      
