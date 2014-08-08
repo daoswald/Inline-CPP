@@ -332,6 +332,103 @@ Specifies extra compiler flags. Corresponds to the MakeMaker option.
 
     use Inline CPP => config => ccflags => '-std=c++11';
 
+=head2 classes 
+
+    use Inline CPP => config => classes => { 'Foo' => 'PerlFoo', 'Bar' => 'PerlBar' };
+    use Inline CPP => config => namespace => 'Qux' => classes => { 'Foo' => 'PerlFoo', 'Bar' => 'PerlBar' };
+
+Override C++ class name.
+
+Under default behavior, a C++ class naming conflict will arise by attempting
+to implement the C++ classes C<Foo::Bar::MyClass> and C<Foo::Qux::MyClass>
+which depend upon one another in some way, because C++ sees both classes as 
+named only C<MyClass>.  We are unable to solve this C++ conflict by using just 
+the C<namespace> config option, because C<namespace> is only applied to the 
+Perl package name, not the C++ class name.
+
+In the future, this issue may be solved via Inline::CPP suport for the native 
+C++ C<namespace> operator and/or C++ class names which contain the C<::>
+double-colon scope token.
+
+For now, this issue is solved by using the C<classes> config option, which 
+accepts a hash reference wherein each hash key is a C++ class name, and each 
+hash value is a corresponding Perl class name.  This hash reference serves
+as a C++-to-Perl class name mapping mechanism, and may be used in combination
+with the C<namespace> config option to exercise full control over class and
+package naming.
+
+Example file C</tmp/Foo__Bar__MyClass.c>:
+
+    class MyClass {
+      private:
+        int a;
+      public:
+        MyClass() :a(10) {}
+        int fetch () { return a; }
+    };
+
+Example file C</tmp/Foo__Qux__MyClass.c>:
+
+    #include "/tmp/Foo__Bar__MyClass.c"
+    class MyClass {
+      private:
+        int a;
+      public:
+        MyClass() :a(20) {}
+        int fetch () { return a; }
+        int other_fetch () { MyClass mybar; return mybar.fetch(); }
+    };
+
+We encounter the C++ class naming conflict when we
+
+    use Inline CPP => '/tmp/Foo__Qux__MyClass.c' => namespace => 'Foo::Qux';
+
+The C++ compiler sees two C<MyClass> classes and gives a redefinition error:
+
+    _08conflict_encounter_t_9d68.xs:25:7: error: redefinition of ‘class MyClass’
+     class MyClass {
+           ^
+    In file included from _08conflict_encounter_t_9d68.xs:24:0:
+    /tmp/Foo__Bar__MyClass.c:1:7: error: previous definition of ‘class MyClass’
+     class MyClass {
+           ^
+
+The solution is to rename each C<MyClass> to utilize unique class names, such as
+C<Foo__Bar__MyClass> and C<Foo__Qux__MyClass>, and use the C<classes> config option.
+
+Updated example file C</tmp/Foo__Bar__MyClass.c>:
+
+    class Foo__Bar__MyClass {
+      private:
+        int a;
+      public:
+        Foo__Bar__MyClass() :a(10) {}
+        int fetch () { return a; }
+    };
+
+Updated example file C</tmp/Foo__Qux__MyClass.c>:
+
+    #include "/tmp/Foo__Bar__MyClass.c"
+    class Foo__Qux__MyClass {
+      private:
+        int a;
+      public:
+        Foo__Qux__MyClass() :a(20) {}
+        int fetch () { return a; }
+        int other_fetch () { Foo__Bar__MyClass mybar; return mybar.fetch(); }
+    };
+
+The updated call to Inline does not give any C++ errors, and runs correctly
+in both C++ and Perl:
+
+    use Inline  CPP => '/tmp/Foo__Qux__MyClass.c' => 
+                namespace => 'Foo' => 
+                classes => { 'Foo__Bar__MyClass' => 'Bar::MyClass', 
+                             'Foo__Qux__MyClass' => 'Qux::MyClass' };
+
+For more information, please see the runnable examples in
+C<t/classes/07conflict_avoid.t> and C<t/classes/08conflict_encounter.t>.
+
 =head2 filters
 
 Specifies one (or more, in an array ref) filter which is to be applied to
