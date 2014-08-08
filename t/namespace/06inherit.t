@@ -5,6 +5,8 @@ package Foo;
 use strict;
 use warnings;
 
+# Notice, case insensitive 'config'. Let's keep it that way in support of
+# t/15config_case.t
 use Inline CPP => config => namespace => '';
 
 use Inline CPP => <<'EOCPP';

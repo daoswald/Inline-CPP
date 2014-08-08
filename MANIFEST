@@ -24,6 +24,7 @@ t/11rewrite_config.t
 t/12custom_libs.t
 t/13version_numbers.t
 t/14changes.t
+t/15config_case.t
 t/grammar/00pod_coverage.t
 t/grammar/01nherit.t
 t/grammar/02scope.t
