@@ -11,7 +11,7 @@ BEGIN {
     use Test::More;
     if ( $ENV{RELEASE_TESTING} ) {
         # Set up release testing environment.
-        use Inline CPP => Config => REWRITE_CONFIG_FILE => 1;
+        use Inline CPP => config => rewrite_config_file => 1;
     }
     else {
         my $msg =

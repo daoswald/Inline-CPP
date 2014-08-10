@@ -7,7 +7,7 @@ use Test::More;
 use strict;
 use warnings;
 
-use Inline CPP => Config => NAMESPACE => '!@#$';
+use Inline CPP => config => namespace => '!@#$';
 my $res = eval q[
   use Inline CPP => <<'EOCPP';
   class Foo {

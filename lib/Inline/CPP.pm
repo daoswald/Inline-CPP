@@ -19,7 +19,7 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.55';
+our $VERSION = '0.55_002';
 #$VERSION = eval $VERSION; ## no critic (eval)
 
 my $TYPEMAP_KIND;
@@ -123,6 +123,9 @@ sub _handle_config_options {
         if( $key eq 'NAMESPACE' ) {
             _handle_namespace_cfg_option( $o, $value );
         }
+        elsif ( $key eq 'CLASSES' ) {
+            _handle_classes_cfg_option( $o, $value );
+        }
         elsif ( $key eq 'LIBS' ) {
             _handle_libs_cfg_option( $o, $value );
         }
@@ -158,6 +161,31 @@ sub _handle_namespace_cfg_option {
                     /x;
   $value ||= 'main';
   $o->{API}{pkg} = $value;
+  return;
+}
+
+
+sub _handle_classes_cfg_option {
+  my ( $o, $value ) = @_;
+  my $ref_value = ref($value);
+  use Data::Dumper;
+  croak "CLASSES config option is not a valid code reference or hash reference of class mappings."
+    unless (($ref_value eq 'CODE') or ($ref_value eq 'HASH'));
+    
+  if ($ref_value eq 'HASH') {
+    foreach my $cpp_class (keys %{$value}) {
+      croak "$cpp_class is not a supported C++ class." unless 
+        defined $value->{$cpp_class}
+        && length $cpp_class != 0
+        && $cpp_class =~ m/[a-zA-Z]\w*/x;
+      my $perl_class = $value->{$cpp_class};
+      croak "$perl_class is not a supported Perl class." unless 
+        length $perl_class != 0
+        && $perl_class =~ m/[a-zA-Z]\w*/x;
+    }
+  }
+  
+  $o->{API}{classes_override} = $value;
   return;
 }
 
@@ -318,7 +346,29 @@ sub xs_bindings {
         );
 
     for my $class ( @{ $data->{classes} } ) {
-        my $proper_pkg = $pkg . "::$class";
+        my $proper_pkg;
+        # Possibly override package and class names
+        if (exists $o->{API}{classes_override}) {
+            my $ref_classes_override = ref($o->{API}{classes_override});
+            if ($ref_classes_override eq 'HASH') {
+                if (exists $o->{API}{classes_override}->{$class}) {  # Override class name only
+                    $proper_pkg = $pkg . '::' . $o->{API}{classes_override}->{$class};
+                }
+                else {  # Do not override package or class names
+                    $proper_pkg = $pkg . '::' . $class;
+                }
+            }
+            elsif ($ref_classes_override eq 'CODE') {  # Override both package and class names
+                (my $class_auto, my $pkg_auto) = &{$o->{API}{classes_override}}($class);
+                if ($pkg_auto eq '') { $pkg = 'main'; }
+                else { $pkg = $pkg_auto; }
+                $proper_pkg = $pkg . '::' . $class_auto;
+            }
+        }    
+        else {  # Do not override package or class names
+            $proper_pkg = $pkg . '::' . $class;
+        }
+ 
         # Set up the proper namespace
         push @XS, _build_namespace( $module, $proper_pkg );
         push @XS,

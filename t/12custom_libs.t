@@ -9,7 +9,7 @@ use Inline CPP => 'DATA';
 
 # We're verifying that libs are getting wrapped in an array ref as required.
 
-use Inline CPP => Config => LIBS => '-lstdc++';
+use Inline CPP => config => libs => '-lstdc++';
 
 is( add( 1, 1, 1 ), 3, 'LIBS directive is OK.' );
 
