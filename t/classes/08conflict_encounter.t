@@ -35,22 +35,14 @@ open( $FILEHANDLE, '>', '/tmp/Foo__Qux__MyClass.c' )
 print $FILEHANDLE $foo__qux__myclass;
 close $FILEHANDLE;
 
-eval(q[use Inline CPP => '/tmp/Foo__Qux__MyClass.c' => namespace => 'Foo::Qux';]);
-
+# C++ class conflict modes; run in order 1, 2, 3
+# 1. disabled test mode: comment use, comment __DATA__
+# 2. enabled init mode: comment use, uncomment __DATA__
+# 3. enabled run mode: uncomment use, uncomment __DATA__
+#use Inline CPP => '/tmp/Foo__Qux__MyClass.c' => namespace => 'Foo::Qux';
+#__DATA__
 
 package main;
-use Test::More skip_all => "Tests purposefully disabled, enable to see C++ class conflict error encountered";
-
-can_ok 'Foo::Bar::MyClass', 'new';
-my $fb = new_ok 'Foo::Bar::MyClass';
-is ref($fb), 'Foo::Bar::MyClass', 'Our "MyClass" is a "Foo::Bar::MyClass"';
-
-can_ok 'Foo::Qux::MyClass', 'new';
-my $fq = new_ok 'Foo::Qux::MyClass';
-is ref($fq), 'Foo::Qux::MyClass', 'Our "MyClass" is a "Foo::Qux::MyClass"';
-
-is $fb->fetch,  10, 'Proper object method association from Foo::Bar::MyClass.';
-is $fq->fetch, 20, 'Proper object method association from Foo::Qux::MyClass.';
-is $fq->other_fetch, 10, 'Proper cross-class method association from Foo::Qux::MyClass.';
+use Test::More skip_all => "Tests disabled to avoid saving files to /tmp, and compiler errors causing test failure";
 
 done_testing();

@@ -22,7 +22,7 @@ EOCPP
 ];
 
 ok !$res0, 'Invalid classes croaks.';
-like $@, qr/is not a valid hash of class mappings\./, 'Correct message.';
+like $@, qr/is not a valid code reference or hash reference of class mappings\./, 'Correct message.';
 
 my $res1 = eval q[
 use Inline CPP => config => namespace => 'BurBat' => classes => { '!@#$' => 'MyFuu'};

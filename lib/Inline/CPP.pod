@@ -334,8 +334,19 @@ Specifies extra compiler flags. Corresponds to the MakeMaker option.
 
 =head2 classes 
 
-    use Inline CPP => config => classes => { 'Foo' => 'PerlFoo', 'Bar' => 'PerlBar' };
-    use Inline CPP => config => namespace => 'Qux' => classes => { 'Foo' => 'PerlFoo', 'Bar' => 'PerlBar' };
+    use Inline CPP => config => 
+        classes => { 'CPPFoo' => 'PerlFoo', 'CPPBar' => 'PerlBar' };
+
+    use Inline CPP => config => 
+        namespace => 'Qux' => 
+        classes => { 'CPPFoo' => 'PerlFoo', 'CPPBar' => 'PerlBar' };
+
+    use Inline CPP => config => 
+        classes => sub { 
+            my $cpp_class = shift; 
+            ... 
+            return($perl_class, $perl_namespace); 
+        };
 
 Override C++ class name.
 
@@ -350,12 +361,23 @@ In the future, this issue may be solved via Inline::CPP suport for the native
 C++ C<namespace> operator and/or C++ class names which contain the C<::>
 double-colon scope token.
 
-For now, this issue is solved by using the C<classes> config option, which 
-accepts a hash reference wherein each hash key is a C++ class name, and each 
-hash value is a corresponding Perl class name.  This hash reference serves
-as a C++-to-Perl class name mapping mechanism, and may be used in combination
-with the C<namespace> config option to exercise full control over class and
-package naming.
+For now, this issue is solved by using the C<classes> config option, which
+accepts either a hash reference or a code reference.  When a hash reference
+is provided, each hash key is a C++ class name, and each hash value is a 
+corresponding Perl class name.  This hash reference serves as a C++-to-Perl 
+class name mapping mechanism, and may be used in combination with the 
+C<namespace> config option to exercise full control over class and package 
+naming.
+
+When a code reference is provided, it must accept as its sole argument the C++ 
+class name, and return a list containing the generated Perl class name and Perl 
+namespace.  The Perl namespace is joined to the Perl class name using the '::' 
+double-colon scope token, and this is used as the Perl package name.  When a 
+code reference is provided for the C<classes> config option, the value of the 
+C<namespace> config option is ignored.
+
+The hash reference may be considered a manual mapping method, and the code 
+reference an automatic mapping method.
 
 Example file C</tmp/Foo__Bar__MyClass.c>:
 
@@ -418,16 +440,27 @@ Updated example file C</tmp/Foo__Qux__MyClass.c>:
         int other_fetch () { Foo__Bar__MyClass mybar; return mybar.fetch(); }
     };
 
-The updated call to Inline does not give any C++ errors, and runs correctly
-in both C++ and Perl:
+First, consider the following updated call to Inline using the hash reference
+method to manually map the namespace and class names.  This example does not 
+give any C++ errors, and runs correctly in both C++ and Perl:
 
     use Inline  CPP => '/tmp/Foo__Qux__MyClass.c' => 
                 namespace => 'Foo' => 
                 classes => { 'Foo__Bar__MyClass' => 'Bar::MyClass', 
                              'Foo__Qux__MyClass' => 'Qux::MyClass' };
 
-For more information, please see the runnable examples in
-C<t/classes/07conflict_avoid.t> and C<t/classes/08conflict_encounter.t>.
+Next, consider another updated call to Inline using the code reference method
+to automatically map the namespace and class names, which may be deployed across
+more complex codebases.  This example automates the mapping of the '__' double-
+underscore to the '::' double-colon scope token.
+
+    use Inline CPP => config => 
+        classes => sub { @_ = split('__', shift); (pop, join('::', @_)); };
+
+For more information, please see the runnable examples:
+C<t/classes/07conflict_avoid.t>
+C<t/classes/08conflict_encounter.t>
+C<t/classes/09auto.t>
 
 =head2 filters
 

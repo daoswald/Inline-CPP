@@ -37,9 +37,8 @@ close $FILEHANDLE;
 
 eval(q[use Inline CPP => '/tmp/Foo__Qux__MyClass.c' => filters => 'Preprocess' => namespace => 'Foo' => classes => { 'Foo__Bar__MyClass' => 'Bar::MyClass', 'Foo__Qux__MyClass' => 'Qux::MyClass' };]);
 
-
 package main;
-use Test::More skip_all => "Tests purposefully disabled, enable to see C++ class conflict error avoided";
+use Test::More skip_all => "Tests disabled to avoid saving files to /tmp";
 
 can_ok 'Foo::Bar::MyClass', 'new';
 my $fb = new_ok 'Foo::Bar::MyClass';
