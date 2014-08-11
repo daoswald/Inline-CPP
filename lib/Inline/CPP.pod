@@ -1148,14 +1148,14 @@ applied to calling template-generated code as well.
 
 =head1 Minimum Perl version requirements
 
-As L<Inline> currently requires Perl 5.6.0 or later. Since L<Inline::CPP>
-depends on L<Inline>, Perl 5.6.0 is also required for L<Inline::CPP>.  It's
-hard to imagine anyone still using a Perl older than 5.6.0 wanting to
+As L<Inline> currently requires Perl 5.8.1 or later. Since L<Inline::CPP>
+depends on L<Inline>, Perl 5.8.1 is also required for L<Inline::CPP>.  It's
+hard to imagine anyone still using a Perl older than 5.8.1 wanting to
 interface with C++, but if you're in that camp, you'll need to roll back
 L<Inline> and L<Inline::CPP> to older versions through the magic of backpan.
 L<Inline::CPP> version 0.25 was still compatible with Perl 5.005_03.  Review
 the Changes file from the L<Inline> distribution to decide which L<Inline>
-version is appropriate for your pre-5.6.0 Perl.
+version is appropriate for your pre-5.8.1 Perl.
 
 
 =head1 C++11 Standard

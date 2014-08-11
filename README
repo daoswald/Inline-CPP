@@ -52,10 +52,8 @@ Also, some smoke testers run their testing in parallel, which may also be
 problematic, and may result in FAIL reports for reasons that will never
 occur in the real world.
 
-This module requires Inline::C.pm version 0.62 or newer, and
-Inline v0.64 or newer.
-
-It also uses Parse::RecDescent, and a new-ish version of ExtUtils::MakeMaker.
+See Makefile.PL, or the META.* files for lists of dependencies and minimum
+dependency version numbers.  Minimum Perl version is now 5.8.1, same as Inline.
 
 To install Inline::CPP do this:
 
