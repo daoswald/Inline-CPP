@@ -168,7 +168,6 @@ sub _handle_namespace_cfg_option {
 sub _handle_classes_cfg_option {
   my ( $o, $value ) = @_;
   my $ref_value = ref($value);
-  use Data::Dumper;
   croak 'CLASSES config option is not a valid code reference or hash '
         . 'reference of class mappings.'
     unless (($ref_value eq 'CODE') or ($ref_value eq 'HASH'));
