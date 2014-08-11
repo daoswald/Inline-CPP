@@ -3,7 +3,7 @@ package main; ## no critic (package)
 use strict;
 use warnings;
 
-use Inline CPP => Config => namespace => 'main';
+use Inline CPP => config => namespace => 'main';
 
 use Inline CPP => <<'EOCPP';
 

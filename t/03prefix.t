@@ -7,12 +7,12 @@ use Test::More tests => 4;
 
 ok(1);
 
-use Inline CPP => DATA => PREFIX => 'Foo_';
+use Inline CPP => DATA => prefix => 'Foo_';
 
-is(identity( 100 ), 100, "PREFIX resolved." );
-is(identity(identity( 200 )), 200, "PREFIX resolved in nested calls." );
+is(identity( 100 ), 100, "prefix resolved." );
+is(identity(identity( 200 )), 200, "prefix resolved in nested calls." );
 
-is(Foo->new->dummy, "10", "PREFIXed object resolves." );
+is(Foo->new->dummy, "10", "prefixed object resolves." );
 
 done_testing();
 
