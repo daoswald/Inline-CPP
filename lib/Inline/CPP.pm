@@ -19,8 +19,8 @@ our @ISA = qw( Inline::C ); ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.55_002';
-$VERSION = eval $VERSION; ## no critic (eval)
+our $VERSION = '0.57';
+# $VERSION = eval $VERSION; ## no critic (eval)
 
 my $TYPEMAP_KIND;
 {
@@ -168,7 +168,6 @@ sub _handle_namespace_cfg_option {
 sub _handle_classes_cfg_option {
   my ( $o, $value ) = @_;
   my $ref_value = ref($value);
-  use Data::Dumper;
   croak 'CLASSES config option is not a valid code reference or hash '
         . 'reference of class mappings.'
     unless (($ref_value eq 'CODE') or ($ref_value eq 'HASH'));

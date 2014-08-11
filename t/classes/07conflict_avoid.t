@@ -1,3 +1,4 @@
+## no critic (eval)
 package Ball;    ## no critic (package)
 
 use strict;

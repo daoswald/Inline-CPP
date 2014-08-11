@@ -1,5 +1,10 @@
 Revision history for Perl extension Inline::CPP.
 
+0.57 2014-08-11
+  - Adapt and apply patches from William Braswell (wbraswell) implementing,
+    documenting, and testing new "classes" configuration option for control over
+    C++ => Perl class name mappings.
+
 0.56 2014-08-11
   - Merge 0.54_001 changes into stable.
 

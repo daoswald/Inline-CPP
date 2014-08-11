@@ -12,7 +12,7 @@ use strict;
 ## no critic (two-argument open)
 
 # The next line is verified via t/13version_numbers.t. Retain single quoting.
-my $DIST_VERSION    = '0.56';                        # DRY in Makefile.PL.
+my $DIST_VERSION    = '0.57';                        # DRY in Makefile.PL.
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
 my $test_cpp_filename = 'ilcpptest';        # '.cpp' appended via open.
@@ -52,6 +52,7 @@ WriteMakefile(
     'Test::More' => '0.98',    # Core. Minimum version.
     'Config'     => '0',       # Core.
     'English'    => '0',       # Core.
+    'File::Temp' => '0',       # Core.
   },
   CONFIGURE_REQUIRES => {
     'ExtUtils::CppGuess'  => '0.07',    # Beginning IL::CPP 0.54_001.

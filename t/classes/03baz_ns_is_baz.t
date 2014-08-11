@@ -3,28 +3,30 @@ package Ball; ## no critic (package)
 use strict;
 use warnings;
 
-use Inline CPP => config => namespace => 'Buz' => classes => { 'Fuu' => 'MyFuu', 'Bur' => 'MyBur'};
+use Inline CPP => config =>
+  namespace => 'Buz',
+  classes   => { 'Fuu' => 'MyFuu', 'Bur' => 'MyBur'};
 
 use Inline CPP => <<'EOCPP';
 
-class Fuu {
-  private:
-    int a;
-  public:
-    Fuu() :a(10) {}
-    int fetch () { return a; }
-};
+  class Fuu {
+    private:
+      int a;
+    public:
+      Fuu() :a(10) {}
+      int fetch () { return a; }
+  };
 EOCPP
 
 use Inline CPP => <<'EOCPP';
 
-class Bur {
-  private:
-    int a;
-  public:
-    Bur() :a(20) {}
-    int fetch () { return a; }
-};
+  class Bur {
+    private:
+      int a;
+    public:
+      Bur() :a(20) {}
+      int fetch () { return a; }
+  };
 EOCPP
 
 package main;

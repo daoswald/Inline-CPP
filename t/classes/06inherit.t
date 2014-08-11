@@ -5,17 +5,18 @@ package Fuu;
 use strict;
 use warnings;
 
-use Inline CPP => config => namespace => '' => classes => { 'Fuu' => 'MyFuu'};
+use Inline CPP => config => namespace => q{} => classes => { 'Fuu' => 'MyFuu'};
 
 use Inline CPP => <<'EOCPP';
 
-class Fuu {
-  private:
-    int a;
-  public:
-    Fuu() :a(10) {}
-    int fetch () { return a; }
-};
+  class Fuu {
+    private:
+      int a;
+    public:
+      Fuu() :a(10) {}
+      int fetch () { return a; }
+  };
+
 EOCPP
 
 1;
@@ -31,7 +32,13 @@ use Test::More;
 
 can_ok 'MyFuu', 'new';
 my $f = new_ok 'MyFuu';
-#is ref($f), 'MyFuu', 'Our "Fuu" is a "MyFuu".';  # NEED FIX: in t/namespace/06inherit.t we did not need 'main::' package prefix as below
+TODO: {
+  local $TODO = 'We get main::MyFuu, but really want MyFoo. Generally Ok.';
+  is ref($f), 'MyFuu', 'Our "Fuu" is a "MyFuu".';
+  # NEED FIX: in t/namespace/06inherit.t we did not
+  # need 'main::' package prefix as below
+}
+
 is ref($f), 'main::MyFuu', 'Our "Fuu" is a "MyFuu".';
 is $f->fetch, '10', 'Accessor properly associated.';
 
