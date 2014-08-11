@@ -40,7 +40,7 @@ eval{ $p = Abstract->new(); };
 if( $@ ) {
     like(
         $@,
-        qr/^Can't locate object method "new" via package "[^:]+::Abstract"/,
+        qr/^Can't locate object method "new" via package "([^:]+::)*Abstract"/,
         "Classes with pure virtual functions cannot be instantiated."
     );
 } else {
