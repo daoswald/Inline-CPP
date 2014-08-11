@@ -2,7 +2,7 @@ package Inline::CPP;
 
 use strict;
 use warnings;
-use 5.006000;
+use 5.008001;
 use Fcntl qw( :DEFAULT :flock );
 
 require Inline::C;
@@ -169,7 +169,8 @@ sub _handle_classes_cfg_option {
   my ( $o, $value ) = @_;
   my $ref_value = ref($value);
   use Data::Dumper;
-  croak "CLASSES config option is not a valid code reference or hash reference of class mappings."
+  croak 'CLASSES config option is not a valid code reference or hash '
+        . 'reference of class mappings.'
     unless (($ref_value eq 'CODE') or ($ref_value eq 'HASH'));
     
   if ($ref_value eq 'HASH') {
@@ -679,8 +680,6 @@ END
 
     # Open an output file, create if necessary, then lock, then truncate.
     # This replaces the following, which wasn't lock-safe:
-      #    open my $TYPEMAP_FH, '>', $filename
-      #        or croak "Error: Can't write to $filename: $!";
 
     sysopen( my $TYPEMAP_FH, $filename, O_WRONLY | O_CREAT )
       or croak "Error: Can't write to $filename: $!";
