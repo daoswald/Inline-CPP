@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use File::Temp 'tempdir';
 
+my $tdir = tempdir( CLEANUP => 1 );
 
 my $foo__bar__myclass = <<'EOCPP';
 
@@ -18,9 +19,9 @@ my $foo__bar__myclass = <<'EOCPP';
 EOCPP
 
 
-my $foo__qux__myclass = <<'EOCPP';
+my $foo__qux__myclass = <<"EOCPP";
 
-#include "/tmp/Foo__Bar__MyClass.c"
+#include "$tdir/Foo__Bar__MyClass.c"
 
   class Foo__Qux__MyClass {
     private:
@@ -34,19 +35,17 @@ my $foo__qux__myclass = <<'EOCPP';
 EOCPP
 
 
-my $tdir = tempdir( CLEANUP => 1 );
-
 open my $fha, '>', "$tdir/Foo__Bar__MyClass.c"
-  or die "Can't open file '/tmp/Foo__Bar__MyClass.c' for writing $!";
+  or die "Can't open file '$tdir/Foo__Bar__MyClass.c' for writing $!";
 print $fha $foo__bar__myclass;
 close $fha;
 
 open my $fhb, '>', "$tdir/Foo__Qux__MyClass.c"
-  or die "Can't open file '/tmp/Foo__Qux__MyClass.c' for writing $!";
+  or die "Can't open file '$tdir/Foo__Qux__MyClass.c' for writing $!";
 print $fhb $foo__qux__myclass;
 close $fhb;
 
-eval q[
+eval qq[
   use Inline CPP =>
     "$tdir/Foo__Qux__MyClass.c", 
     filters   => 'Preprocess', 
