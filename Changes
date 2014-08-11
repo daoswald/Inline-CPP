@@ -1,7 +1,17 @@
 Revision history for Perl extension Inline::CPP.
 
+0.56 2014-08-11
+  - Merge 0.54_001 changes into stable.
+
 0.55 2014-08-07
   - Config options are case insensitive.
+
+0.54_001 2014-08-02
+  - Added TODO tests.
+  - New dependency: ExtUtils::CppGuess.
+  - Compiler configuration / default library configuration now provided by
+    ExtUtils::CppGuess.
+  - Test t/08cppguess.t updated to diagnose detection/configuration.
 
 0.54 2014-07-29
   - Added LICENSE file (no change to licensing, however).

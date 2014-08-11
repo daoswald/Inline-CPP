@@ -5,13 +5,13 @@ package Inline::CPP::Config;
 use strict;
 use warnings;
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 #$VERSION = eval $VERSION; ## no critic (eval)
 
 
 # DO NOT MANUALLY ALTER THE FOLLOWING TWO LINES: Makefile.PL locates them by
 # matching their syntax and identifier names.
-our $compiler = 'g++';
+our $compiler = 'g++ -xc++  -D_FILE_OFFSET_BITS=64';
 our $libs     = '-lstdc++';
 
 

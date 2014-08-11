@@ -1,5 +1,7 @@
 use ExtUtils::MakeMaker;
-use Config;
+use FindBin;
+use lib "$FindBin::Bin/inc";
+use ILCPPConfig::CompilerGuess 'guess_compiler';
 use Fcntl qw( :DEFAULT :flock );
 use strict;
 # use 5.006000
@@ -10,7 +12,7 @@ use strict;
 ## no critic (two-argument open)
 
 # The next line is verified via t/13version_numbers.t. Retain single quoting.
-my $DIST_VERSION = '0.55';                        # DRY in Makefile.PL.
+my $DIST_VERSION    = '0.56';                        # DRY in Makefile.PL.
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
 my $test_cpp_filename = 'ilcpptest';        # '.cpp' appended via open.
@@ -52,14 +54,17 @@ WriteMakefile(
     'English'    => '0',       # Core.
   },
   CONFIGURE_REQUIRES => {
+    'ExtUtils::CppGuess'  => '0.07',    # Beginning IL::CPP 0.54_001.
     'ExtUtils::MakeMaker' => '6.56',    # Minimum version.
+    'FindBin'             => '0',       # Core.
     'Config'              => '0',       # Core.
   },
   META_MERGE => {
     'meta-spec' => {
       version => 2,
       url     => 'http://search.cpan.org/perldoc?CPAN::Meta::Spec',
-     },
+    },
+    no_index   => { directory => [ 'inc' ], },
     resources   => {
       license    => 'http://dev.perl.org/licenses/artistic.html',
       bugtracker => 'http://github.com/daoswald/Inline-CPP/issues',
@@ -116,85 +121,6 @@ sub check_prereqs {
     }
   }
   return $prereqs_ok;
-}
-
-
-#============================================================================
-# Make an intelligent guess about what compiler to use
-#============================================================================
-
-sub guess_compiler {
-
-  my( $cc_guess, $libs_guess );
-  
-  if ( $Config{osname} eq 'darwin' ) {
-    my $stdlib_query
-        = 'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p )';
-    my $stdcpp = `$stdlib_query`;
-    +$stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
-    $cc_guess   = 'g++';
-    $libs_guess = "-L$stdcpp -lstdc++";
-  }
-  elsif ( $Config{osname} ne 'darwin'
-    and $Config{gccversion}
-    and $Config{cc} =~ m#\bgcc\b[^/]*$#
-  ) {
-    ( $cc_guess = $Config{cc} ) =~ s[\bgcc\b([^/]*)$(?:)][g\+\+$1];
-    $libs_guess = '-lstdc++';
-  }
-  elsif ( $Config{osname} =~ m/^MSWin/ ) {
-    $cc_guess   = 'cl -TP -EHsc';
-    $libs_guess = 'MSVCIRT.LIB';
-  }
-  elsif ( $Config{osname} eq 'linux' ) {
-    $cc_guess   = 'g++';
-    $libs_guess = '-lstdc++';
-  }
-# Dragonfly patch is just a hunch... (still doesn't work)
-  elsif ( $Config{osname} eq 'netbsd' || $Config{osname} eq 'dragonfly' ) {
-    $cc_guess   = 'g++';
-    $libs_guess = '-lstdc++ -lgcc_s';
-  }
-  elsif ( $Config{osname} eq 'cygwin' ) {
-    $cc_guess   = 'g++';
-    $libs_guess = '-lstdc++';
-  }
-  elsif ( $Config{osname} eq 'solaris' or $Config{osname} eq 'SunOS' ) {
-    if ( $Config{cc} eq 'gcc'
-      || ( exists( $Config{gccversion} ) && $Config{gccversion} > 0 ) )
-    {
-        $cc_guess   = 'g++';
-        $libs_guess = '-lstdc++';
-    }
-    else {
-        $cc_guess   = 'CC';
-        $libs_guess = '-lCrun';
-    }
-  }
-
-  # MirBSD: Still problematic.
-  elsif ( $Config{osname} eq 'mirbsd' ) {
-    my $stdlib_query
-      = 'find /usr/lib/gcc -name "libstdc++*" | grep $( uname -p ) | head -1';
-    my $stdcpp = `$stdlib_query`;
-    +$stdcpp =~ s/^(.*)\/[^\/]+$/$1/;
-    $cc_guess   = 'g++';
-    $libs_guess = "-L$stdcpp -lstdc++ -lc -lgcc_s";
-  }
-  elsif( $Config{osname} eq 'freebsd'
-    and $Config{osvers} =~ /^(\d+)/
-    and $1 >= 10
-  ){
-    $cc_guess = 'clang++';
-    $libs_guess = '-lc++';
-  }
-  # Sane defaults for other (probably unix-like) operating systems
-  else {
-    $cc_guess   = 'g++';
-    $libs_guess = '-lstdc++';
-  }
-
-  return( $cc_guess, $libs_guess );
 }
 
 

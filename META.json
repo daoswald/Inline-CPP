@@ -16,6 +16,7 @@
    "no_index" : {
       "directory" : [
          "t",
+         "inc",
          "inc"
       ]
    },
@@ -30,7 +31,9 @@
       "configure" : {
          "requires" : {
             "Config" : "0",
-            "ExtUtils::MakeMaker" : "6.56"
+            "ExtUtils::CppGuess" : "0.07",
+            "ExtUtils::MakeMaker" : "6.56",
+            "FindBin" : "0"
          }
       },
       "runtime" : {
@@ -46,15 +49,15 @@
    "provides" : {
       "Inline::CPP" : {
          "file" : "lib/Inline/CPP.pm",
-         "version" : "0.55"
+         "version" : "0.56"
       },
       "Inline::CPP::Config" : {
          "file" : "lib/Inline/CPP/Config.pm",
-         "version" : "0.55"
+         "version" : "0.56"
       },
       "Inline::CPP::Grammar" : {
          "file" : "lib/Inline/CPP/Grammar.pm",
-         "version" : "0.55"
+         "version" : "0.56"
       }
    },
    "release_status" : "stable",
@@ -69,5 +72,5 @@
          "web" : "http://github.com/daoswald/Inline-CPP"
       }
    },
-   "version" : "0.55"
+   "version" : "0.56"
 }

@@ -5,6 +5,8 @@ Makefile.PL
 README
 TESTED
 LICENSE
+inc/ILCPPConfig/OldCompilerGuess.pm
+inc/ILCPPConfig/CompilerGuess.pm
 lib/Inline/CPP.pm
 lib/Inline/CPP.pod
 lib/Inline/CPP/Grammar.pm
