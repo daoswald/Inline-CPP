@@ -39,7 +39,7 @@ use Test::More;
 
 can_ok 'MyClass', 'new';
 my $m = new_ok 'MyClass';
-is ref($m), 'main::MyClass', 'Our "MyClass" is a "main::MyClass"';
+is ref($m), 'MyClass', 'Our "MyClass" is a "main::MyClass"';
 
 can_ok 'Foo::Bar::MyClass', 'new';
 my $fb = new_ok 'Foo::Bar::MyClass';

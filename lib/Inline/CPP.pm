@@ -339,12 +339,7 @@ sub xs_bindings {
 
     warn "Warning: No Inline C++ functions or classes bound to Perl\n"
          . "Check your C++ for Inline compatibility.\n\n"
-        if (
-                ( not defined $data->{classes}   )
-            and ( not defined $data->{functions} )
-            and ( $^W )
-        );
-
+        if ! defined $data->{classes} && ! defined $data ->{functions} && $^W;
     for my $class ( @{ $data->{classes} } ) {
         my $proper_pkg;
         # Possibly override package and class names
@@ -368,7 +363,10 @@ sub xs_bindings {
         else {  # Do not override package or class names
             $proper_pkg = $pkg . '::' . $class;
         }
- 
+
+        # Strip main:: from packages.  There cannot be a package main::Foo!
+        $proper_pkg =~ s/^main::(.+)/$1/;
+        
         # Set up the proper namespace
         push @XS, _build_namespace( $module, $proper_pkg );
         push @XS,

@@ -32,14 +32,7 @@ use Test::More;
 
 can_ok 'MyFuu', 'new';
 my $f = new_ok 'MyFuu';
-TODO: {
-  local $TODO = 'We get main::MyFuu, but really want MyFoo. Generally Ok.';
-  is ref($f), 'MyFuu', 'Our "Fuu" is a "MyFuu".';
-  # NEED FIX: in t/namespace/06inherit.t we did not
-  # need 'main::' package prefix as below
-}
-
-is ref($f), 'main::MyFuu', 'Our "Fuu" is a "MyFuu".';
+is ref($f), 'MyFuu', 'Our "Fuu" is a "MyFuu".';
 is $f->fetch, '10', 'Accessor properly associated.';
 
 

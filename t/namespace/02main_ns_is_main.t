@@ -33,14 +33,14 @@ use Test::More;
 can_ok 'Foo', 'new';
 can_ok 'main::Foo', 'new';
 my $f = new_ok 'Foo';
-is ref($f), 'main::Foo', 'Our "Foo" is a "main::Foo"';
+is ref($f), 'Foo', 'Our "Foo" is a "Foo"';
 
 can_ok 'Bar', 'new';
 can_ok 'main::Bar', 'new';
 my $fb = new_ok 'Bar';
-is ref($fb), 'main::Bar', 'Our "Bar" is a "main::Bar"';
+is ref($fb), 'Bar', 'Our "Bar" is a "Bar"';
 
-is $f->fetch, 10, 'Proper object method association from main::Foo.';
-is $fb->fetch, 20, 'Proper object method association from main::Bar.';
+is $f->fetch, 10, 'Proper object method association from Foo.';
+is $fb->fetch, 20, 'Proper object method association from Bar.';
 
 done_testing();
