@@ -470,9 +470,11 @@ each operating on the output of the previous one. You can pass in a code
 reference or the name of a prepackaged filter.
 
     use Inline CPP => config => filters => [Strip_POD => \&myfilter];
+    use Inline CPP => config => filters => 'Preprocess';  # Inline::Filters
 
 The filter may do anything. The code is passed as the first argument, and
-it returns the filtered code.
+it returns the filtered code.  For a set of prefabricated filters, consider
+using L<Inline::Filters>.
 
 =head2 inc
 
@@ -600,13 +602,6 @@ configuration:
     package main;
     my $b = Foo->new();
     print $b->fetch, "\n"; # 20.
-
-
-Note: Due to an XS implementation detail, C<ref($b)> will return C<main::Foo>
-if the C<namespace> configuration has been set to an empty string; XS doesn't
-allow for its internal C<PACKAGE> specification to be empty.  From a caller's
-standpoint this is probably not relevant; A class named C<main::Foo> can be
-referred to as C<Foo>, even from outside of package C<main>.
 
 =head2 prefix
 

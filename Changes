@@ -1,13 +1,16 @@
 Revision history for Perl extension Inline::CPP.
 
-0.58 ??????????
-  - main:: is no longer prepended to top level of single-level classnames
-    per wbraswell's suggestion.
+0.58 2014-08-11
+  - main:: is no longer prepended to top level of single-level 
+    classnames, per wbraswell's suggestion.
+  - Documentation for main:: quirk no longer needed; removed.
+  - Explicitly support Perl 5.8.1+ (was 5.6.1, but Inline now requires
+    a minimum version of 5.8.1, so we too must.
 
 0.57 2014-08-11
   - Adapt and apply patches from William Braswell (wbraswell) implementing,
-    documenting, and testing new "classes" configuration option for control over
-    C++ => Perl class name mappings.
+    documenting, and testing new "classes" configuration option for control
+    over C++ => Perl class name mappings.
 
 0.56 2014-08-11
   - Merge 0.54_001 changes into stable.
