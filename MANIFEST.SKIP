@@ -28,3 +28,4 @@
 \.gz$
 MYMETA\b
 ^Inline-CPP-\d+\.\d+/
+\.perltidyrc
