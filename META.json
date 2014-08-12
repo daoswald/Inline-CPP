@@ -43,22 +43,22 @@
             "Inline" : "0.67",
             "Inline::C" : "0.62",
             "Parse::RecDescent" : "0",
-            "perl" : "5.006001"
+            "perl" : "5.008001"
          }
       }
    },
    "provides" : {
       "Inline::CPP" : {
          "file" : "lib/Inline/CPP.pm",
-         "version" : "0.57"
+         "version" : "0.58"
       },
       "Inline::CPP::Config" : {
          "file" : "lib/Inline/CPP/Config.pm",
-         "version" : "0.57"
+         "version" : "0.58"
       },
       "Inline::CPP::Grammar" : {
          "file" : "lib/Inline/CPP/Grammar.pm",
-         "version" : "0.57"
+         "version" : "0.58"
       }
    },
    "release_status" : "stable",
@@ -73,5 +73,5 @@
          "web" : "http://github.com/daoswald/Inline-CPP"
       }
    },
-   "version" : "0.57"
+   "version" : "0.58"
 }
