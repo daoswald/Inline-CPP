@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use Test::More tests => 5;
 
-use Inline (CPP => 'DATA', classes => sub { @_ = split( '__', shift ); ( pop, join( '::', @_ ) ); } );  # FAILURE
-#use Inline (CPP => 'DATA', classes => { 'Inline__Test__Inline_CPP_Debug' => 'Inline::Test::Inline_CPP_Debug'} );  # SUCCESS
+use Inline (CPP => 'DATA', classes => sub { join('::', split('__', shift)); } );  # AUTOMATIC
+#use Inline (CPP => 'DATA', classes => { 'Inline__Test__Inline_CPP_Debug' => 'Inline::Test::Inline_CPP_Debug'} );  # MANUAL
 
 can_ok 'Inline::Test::Inline_CPP_Debug', 'new';
 my $my_object = new_ok 'Inline::Test::Inline_CPP_Debug';
