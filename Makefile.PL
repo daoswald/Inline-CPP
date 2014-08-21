@@ -14,7 +14,9 @@ use strict;
 ## no critic (two-argument open)
 
 # The next line is verified via t/13version_numbers.t. Retain single quoting.
-my $DIST_VERSION    = '0.59';                        # DRY in Makefile.PL.
+
+my $DIST_VERSION    = '0.61';                        # DRY in Makefile.PL.
+
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
 my $test_cpp_filename = 'ilcpptest';        # '.cpp' appended via open.
@@ -48,7 +50,7 @@ WriteMakefile(
   AUTHOR         => 'David Oswald <davido@cpan.org>',
   VERSION_FROM   => 'lib/Inline/CPP.pm',
   ABSTRACT_FROM  => 'lib/Inline/CPP.pod',
-  LICENSE        => 'artistic',
+  LICENSE        => 'artistic_2',
   PREREQ_PM      => \%PREREQ_PM,
   BUILD_REQUIRES => {
     'Test::More' => '0.98',    # Core. Minimum version.
