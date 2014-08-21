@@ -1389,14 +1389,32 @@ L<https://github.com/daoswald/Inline-CPP>
 
 Ingy döt Net <INGY@cpan.org> is the author of C<Inline>, and C<Inline::C>.
 
+=head1 CONTRIBUTING
+
+Issues are tracked, and may be reported at the distribution's
+L<GitHub issue tracker|https://github.com/daoswald/Inline-CPP/issues>.
+
+Contributors may also fork the repo and issue a pull requests.  Tests
+should accompany pull requests, and effort should be made to minimize the
+scope of any single pull request.
+
+Code and POD contributions are made with the agreement that rights to 
+the contribution will be released and tranferred to the distribution's 
+copyright holders. Non-trivial contributions generally warrant attribution 
+in the log maintained in the C<Changes> file, though the decision to do 
+so is solely that of the copyright holders.
+
+Please refer to the Artistic 2.0 license, contained in the L<LICENSE> file,
+included with this distribution for further explanation.
+
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2000 - 2003 Neil Watkiss.
+Copyright (c) 2000 - 2014 Neil Watkiss.
 Copyright (c) 2011 - 2014 David Oswald.
 
-All Rights Reserved. This module is free software. It may be used,
-redistributed and/or modified under the same terms as Perl itself.
+All Rights Reserved. This module is free software, licensed under
+the Artistic license, version 2.0.
 
-See http://www.perl.com/perl/misc/Artistic.html
+See http://www.perlfoundation.org/artistic_license_2_0
 
 =cut

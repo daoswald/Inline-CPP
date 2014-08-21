@@ -1,5 +1,14 @@
 Revision history for Perl extension Inline::CPP.
 
+0.60 2014-08-20
+  - Shift from Artistic 1.0 to Artistic 2.0 license.
+    Artistic 2 notes: http://www.perlfoundation.org/artistic_2_0_notes
+    Artistic 2 license: http://www.perlfoundation.org/artistic_license_2_0
+
+0.59 2014-08-14
+  - Restore logic to handle FreeBSD v10+ use of clang++
+    (Until EU::CG is fixed to handle this for us)
+
 0.58 2014-08-11
   - main:: is no longer prepended to top level of single-level 
     classnames, per wbraswell's suggestion.

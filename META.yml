@@ -14,7 +14,7 @@ configure_requires:
   FindBin: '0'
 dynamic_config: 1
 generated_by: 'ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.140640'
-license: artistic
+license: artistic_2
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: '1.4'
@@ -27,13 +27,13 @@ no_index:
 provides:
   Inline::CPP:
     file: lib/Inline/CPP.pm
-    version: '0.58'
+    version: '0.60'
   Inline::CPP::Config:
     file: lib/Inline/CPP/Config.pm
-    version: '0.58'
+    version: '0.60'
   Inline::CPP::Grammar:
     file: lib/Inline/CPP/Grammar.pm
-    version: '0.58'
+    version: '0.60'
 requires:
   Carp: '0'
   Inline: '0.67'
@@ -44,4 +44,4 @@ resources:
   homepage: http://github.com/daoswald/Inline-CPP
   license: http://dev.perl.org/licenses/artistic.html
   repository: http://github.com/daoswald/Inline-CPP.git
-version: '0.58'
+version: '0.60'

@@ -6,7 +6,7 @@
    "dynamic_config" : 1,
    "generated_by" : "ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.140640",
    "license" : [
-      "artistic_1"
+      "artistic_2"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
@@ -50,15 +50,15 @@
    "provides" : {
       "Inline::CPP" : {
          "file" : "lib/Inline/CPP.pm",
-         "version" : "0.58"
+         "version" : "0.60"
       },
       "Inline::CPP::Config" : {
          "file" : "lib/Inline/CPP/Config.pm",
-         "version" : "0.58"
+         "version" : "0.60"
       },
       "Inline::CPP::Grammar" : {
          "file" : "lib/Inline/CPP/Grammar.pm",
-         "version" : "0.58"
+         "version" : "0.60"
       }
    },
    "release_status" : "stable",
@@ -73,5 +73,5 @@
          "web" : "http://github.com/daoswald/Inline-CPP"
       }
    },
-   "version" : "0.58"
+   "version" : "0.60"
 }
