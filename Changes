@@ -1,5 +1,8 @@
 Revision history for Perl extension Inline::CPP.
 
+0.61 2014-08-21
+  - POD refinement in CONTRIBUTING.
+
 0.60 2014-08-20
   - Shift from Artistic 1.0 to Artistic 2.0 license.
     Artistic 2 notes: http://www.perlfoundation.org/artistic_2_0_notes

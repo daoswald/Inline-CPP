@@ -15,7 +15,7 @@ use strict;
 
 # The next line is verified via t/13version_numbers.t. Retain single quoting.
 
-my $DIST_VERSION    = '0.60';                        # DRY in Makefile.PL.
+my $DIST_VERSION    = '0.61';                        # DRY in Makefile.PL.
 
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
