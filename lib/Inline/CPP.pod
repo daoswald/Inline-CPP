@@ -459,8 +459,7 @@ underscore to the '::' double-colon scope token.
 
 For more information, please see the runnable examples:
 C<t/classes/07conflict_avoid.t>
-C<t/classes/08conflict_encounter.t>
-C<t/classes/09auto.t>
+C<t/classes/08auto.t>
 
 =head2 filters
 

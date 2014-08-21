@@ -13,23 +13,32 @@ our $VERSION   = '0.01';
 # to Inline::CPP's Makefile.PL.
 
 sub guess_compiler {
+
   my( $cc_guess, $libs_guess, $guesser, %configuration );
 
-  $guesser = ExtUtils::CppGuess->new;
-  %configuration = $guesser->module_build_options;
-  if( $guesser->is_gcc ) {
-    $cc_guess = 'g++';
+  if( $Config::Config{osname} eq 'freebsd'
+    && $Config::Config{osvers} =~ /^(\d+)/
+    && $1 >= 10
+  ){
+    $cc_guess = 'clang++';
+    $libs_guess = '-lc++';
   }
-  elsif ( $guesser->is_msvc ) {
-    $cc_guess = 'cl';
+  else {
+    $guesser = ExtUtils::CppGuess->new;
+    %configuration = $guesser->module_build_options;
+    if( $guesser->is_gcc ) {
+      $cc_guess = 'g++';
+    }
+    elsif ( $guesser->is_msvc ) {
+      $cc_guess = 'cl';
+    }
+
+    $cc_guess .= $configuration{extra_compiler_flags};
+    $libs_guess = $configuration{extra_linker_flags};
+
+    ( $cc_guess, $libs_guess )
+      = map { _trim_whitespace($_) } ( $cc_guess, $libs_guess );
   }
-
-  $cc_guess .= $configuration{extra_compiler_flags};
-  $libs_guess = $configuration{extra_linker_flags};
-
-  ( $cc_guess, $libs_guess )
-    = map { _trim_whitespace($_) } ( $cc_guess, $libs_guess );
-
   return ( $cc_guess, $libs_guess );
 }
 
