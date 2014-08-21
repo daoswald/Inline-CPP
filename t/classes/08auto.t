@@ -3,11 +3,7 @@ package Ball;    ## no critic (package)
 use strict;
 use warnings;
 
-use Inline CPP => config =>
-  classes => sub {
-    @_ = split('__', shift);
-    ( pop, join( '::', @_ ) );
-  };
+use Inline CPP => config => classes => sub { join('::', split('__', shift)); };
 
 use Inline CPP => <<'EOCPP';
   class MyClass {

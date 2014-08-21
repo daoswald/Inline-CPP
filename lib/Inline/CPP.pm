@@ -334,11 +334,8 @@ sub xs_bindings {
       elsif ($ref_classes_override eq 'CODE')
       {
         # Override both package and class names
-        (my $class_auto, my $pkg_auto)
-          = &{$o->{API}{classes_override}}($class);
-        if   ($pkg_auto eq '') { $pkg = 'main'; }
-        else                   { $pkg = $pkg_auto; }
-        $proper_pkg = $pkg . '::' . $class_auto;
+        $proper_pkg = &{$o->{API}{classes_override}}($class);
+        if   ($proper_pkg eq '') { $proper_pkg = 'main'; }
       }
     }
     else {        # Do not override package or class names
