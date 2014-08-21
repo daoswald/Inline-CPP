@@ -1391,7 +1391,6 @@ Ingy döt Net <INGY@cpan.org> is the author of C<Inline>, and C<Inline::C>.
 
 Copyright (c) 2000 - 2003 Neil Watkiss.
 Copyright (c) 2011 - 2014 David Oswald.
-Copyright (c) 2014 William Braswell, Jr.
 
 All Rights Reserved. This module is free software. It may be used,
 redistributed and/or modified under the same terms as Perl itself.
