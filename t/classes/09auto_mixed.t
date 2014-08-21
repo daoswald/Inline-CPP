@@ -15,6 +15,7 @@ done_testing();
 
 __DATA__
 __CPP__
+
 SV* my_subroutine() { return(newSVpv("RETVAL FROM my_subroutine()", 27)); }
 
 class Inline__Test__Inline_CPP_Debug

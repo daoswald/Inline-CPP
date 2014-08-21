@@ -1398,14 +1398,14 @@ scope of any single pull request.
 
 Pull requests should not add author names. Non-trivial contributions 
 generally warrant attribution in the log maintained in the C<Changes> 
-file, though the decision to do at the discression of the maintainers.
+file, though the decision to do at the discretion of the maintainers.
 
 Please refer to the Artistic 2.0 license, contained in the C<LICENSE> file,
 included with this distribution for further explanation.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2000 - 2014 Neil Watkiss.
+Copyright (c) 2000 - 2003 Neil Watkiss.
 Copyright (c) 2011 - 2014 David Oswald.
 
 All Rights Reserved. This module is free software, licensed under

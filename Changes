@@ -1,5 +1,13 @@
 Revision history for Perl extension Inline::CPP.
 
+0.62 2014-08-21
+  - Merge pull request from William N. Braswell, Jr. fixing a problem with
+    'classes' config option.
+    Problem is documented: https://github.com/daoswald/Inline-CPP/issues/18
+    Pull request: https://github.com/daoswald/Inline-CPP/pull/20
+  - Fix typos and spelling errors in POD (Suggested by wbraswell)
+    (Typo in copyright year for Neil, misspelling in CONTRIBUTING section.)
+
 0.61 2014-08-21
   - POD refinement in CONTRIBUTING.
 

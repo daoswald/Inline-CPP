@@ -35,6 +35,7 @@ t/classes/05invalid_classes.t
 t/classes/06inherit.t
 t/classes/07conflict_avoid.t
 t/classes/08auto.t
+t/classes/09auto_mixed.t
 t/grammar/00pod_coverage.t
 t/grammar/01nherit.t
 t/grammar/02scope.t
