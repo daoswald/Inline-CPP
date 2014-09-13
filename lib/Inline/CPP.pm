@@ -415,8 +415,42 @@ sub _handle_inheritance {
   my ($o, $type, $scope, $pkg, $class, $name) = @_;
   if ($type eq 'inherits' and $scope eq 'public') {
     $o->{ILSM}{XS}{BOOT} ||= q{};
-    my $ISA_name = "${pkg}::${class}::ISA";
-    my $parent   = "${pkg}::${name}";
+    
+    my $ISA_name;
+    my $parent;
+
+    # Possibly override package and class names
+    if (exists $o->{API}{classes_override}) {
+      my $ref_classes_override = ref($o->{API}{classes_override});
+      if ($ref_classes_override eq 'HASH') {
+        if (exists $o->{API}{classes_override}->{$class})
+        {    # Override class name only
+          $ISA_name = $pkg . '::' . $o->{API}{classes_override}->{$class} . '::ISA';
+          $parent   = $pkg . '::' . $o->{API}{classes_override}->{$name};
+        }
+        else {
+          # Do not override package or class names
+          $ISA_name = $pkg . '::' . $class . '::ISA';
+          $parent = $pkg . '::' . $name;
+        }
+      }
+      elsif ($ref_classes_override eq 'CODE')
+      {
+        # Override both package and class names
+        $ISA_name = &{$o->{API}{classes_override}}($class) . '::ISA';
+        $parent = &{$o->{API}{classes_override}}($name);
+        if   ($ISA_name eq '') { croak 'Have empty string for \$ISA_name, croaking' }
+      }
+    }
+    else {        # Do not override package or class names
+      $ISA_name = $pkg . '::' . $class . '::ISA';
+      $parent = $pkg . '::' . $name;
+    }
+
+    # Strip main:: from packages.  There cannot be a package main::Foo!
+    $ISA_name =~ s/^main::(.+)/$1/;
+    $parent =~ s/^main::(.+)/$1/;
+    
     $o->{ILSM}{XS}{BOOT} .= <<"END";
 {
 #ifndef get_av
