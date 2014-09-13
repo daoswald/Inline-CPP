@@ -36,6 +36,7 @@ t/classes/06inherit.t
 t/classes/07conflict_avoid.t
 t/classes/08auto.t
 t/classes/09auto_mixed.t
+t/classes/10auto_inherit.t
 t/grammar/00pod_coverage.t
 t/grammar/01nherit.t
 t/grammar/02scope.t
@@ -64,4 +65,3 @@ t/namespace/05invalid_ns.t
 t/namespace/06inherit.t
 META.yml                            Module YAML meta-data (added by MakeMaker)
 META.json                           Module JSON meta-data (added by MakeMaker)
-

@@ -1,5 +1,9 @@
 Revision history for Perl extension Inline::CPP.
 
+0.63 2014-09-13
+  - Merge pull request from William N. Braswell, Jr, fixing inheritance
+    for 'classes' config option.  (PR6 - wbraswell).
+
 0.62 2014-08-21
   - Merge pull request from William N. Braswell, Jr. fixing a problem with
     'classes' config option.
