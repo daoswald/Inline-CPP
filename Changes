@@ -1,5 +1,8 @@
 Revision history for Perl extension Inline::CPP.
 
+0.65 2014-10-23
+  - Identifiers may start with _ (Pre-5.120 regression in 0.64).
+
 0.64 2014-10-23
   - Fix GH Issue #24: Downgrade gracefully if \p{XID_Start} and 
     \p{XID_Continue} aren't available (pre-Perl 5.120).
