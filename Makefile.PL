@@ -4,8 +4,7 @@ use lib "$FindBin::Bin/inc";
 use ILCPPConfig::CompilerGuess 'guess_compiler';
 use Fcntl qw( :DEFAULT :flock );
 use strict;
-# use 5.008001
-# Inline v0.62 now requires 5.008001.
+use 5.008001;
 
 
 # We're using bareword file handles and two arg open for backward
@@ -15,7 +14,7 @@ use strict;
 
 # The next line is verified via t/13version_numbers.t. Retain single quoting.
 
-my $DIST_VERSION    = '0.63';                        # DRY in Makefile.PL.
+my $DIST_VERSION    = '0.64';                        # DRY in Makefile.PL.
 
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 

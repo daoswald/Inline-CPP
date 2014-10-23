@@ -8,7 +8,7 @@ use vars qw($TYPEMAP_KIND $class_part $class_decl $star);
 # Dev versions will have a _0xx suffix.
 # We eval the $VERSION to accommodate dev version numbering as described in
 # perldoc perlmodstyle
-our $VERSION = '0.63';
+our $VERSION = '0.64';
 #$VERSION = eval $VERSION;  ## no critic (eval)
 
 # Parse::RecDescent 1.90 and later have an incompatible change
