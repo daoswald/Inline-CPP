@@ -19,7 +19,7 @@ our @ISA = qw( Inline::C );    ## no critic (ISA)
 # Development releases will have a _0xx version suffix.
 # We eval the version number to accommodate dev. version numbering, as
 # described in perldoc perlmodstyle.
-our $VERSION = '0.65';
+our $VERSION = '0.66';
 # $VERSION = eval $VERSION; ## no critic (eval)
 
 my $TYPEMAP_KIND;
@@ -145,8 +145,8 @@ sub _handle_namespace_cfg_option {
   # Perl 5.12 indroduced \p{XID_Start} and \p{XID_Continue}. Prior to that
   # we should downgrade gracefully.
   my $ident = $] ge '5.0120'
-    ? qr{[\p{XID_Start}_][\p{XID_Continue}_]+}
-    : qr{[\p{Alpha}_][\p{Alpha}\p{Digit}_]+};
+    ? qr{[\p{XID_Start}_][\p{XID_Continue}_]*}
+    : qr{[\p{Alpha}_][\p{Alpha}\p{Digit}_]*};
 
   croak "$value is an invalid package name."
     unless length $value == 0

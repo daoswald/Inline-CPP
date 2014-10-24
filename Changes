@@ -1,5 +1,8 @@
 Revision history for Perl extension Inline::CPP.
 
+0.66 2014-10-24
+  - Package identifiers may be single character.
+
 0.65 2014-10-23
   - Identifiers may start with _ (Pre-5.120 regression in 0.64).
 

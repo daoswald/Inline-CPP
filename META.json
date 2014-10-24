@@ -50,15 +50,15 @@
    "provides" : {
       "Inline::CPP" : {
          "file" : "lib/Inline/CPP.pm",
-         "version" : "0.65"
+         "version" : "0.66"
       },
       "Inline::CPP::Config" : {
          "file" : "lib/Inline/CPP/Config.pm",
-         "version" : "0.65"
+         "version" : "0.66"
       },
       "Inline::CPP::Grammar" : {
          "file" : "lib/Inline/CPP/Grammar.pm",
-         "version" : "0.65"
+         "version" : "0.66"
       }
    },
    "release_status" : "stable",
@@ -73,5 +73,5 @@
          "web" : "http://github.com/daoswald/Inline-CPP"
       }
    },
-   "version" : "0.65"
+   "version" : "0.66"
 }
