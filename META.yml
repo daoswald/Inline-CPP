@@ -27,13 +27,13 @@ no_index:
 provides:
   Inline::CPP:
     file: lib/Inline/CPP.pm
-    version: '0.67'
+    version: '0.68'
   Inline::CPP::Config:
     file: lib/Inline/CPP/Config.pm
-    version: '0.67'
+    version: '0.68'
   Inline::CPP::Grammar:
     file: lib/Inline/CPP/Grammar.pm
-    version: '0.67'
+    version: '0.68'
 requires:
   Carp: '0'
   Inline: '0.67'
@@ -44,4 +44,4 @@ resources:
   homepage: http://github.com/daoswald/Inline-CPP
   license: http://dev.perl.org/licenses/artistic.html
   repository: http://github.com/daoswald/Inline-CPP.git
-version: '0.67'
+version: '0.68'

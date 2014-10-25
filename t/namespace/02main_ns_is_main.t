@@ -38,7 +38,7 @@ ok( (ref($f) eq 'Foo' || ref($f) eq 'main::Foo'), 'Our "Foo" is a "Foo"');
 can_ok 'Bar', 'new';
 can_ok 'main::Bar', 'new';
 my $fb = new_ok 'Bar';
-is ref($fb), 'Bar', 'Our "Bar" is a "Bar"';
+ok( (ref($fb) eq 'Bar' || ref($fb) eq 'main::Bar' ), 'Our "Bar" is a "Bar"');
 
 is $f->fetch, 10, 'Proper object method association from Foo.';
 is $fb->fetch, 20, 'Proper object method association from Bar.';

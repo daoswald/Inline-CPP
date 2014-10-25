@@ -1,5 +1,8 @@
 Revision history for Perl extension Inline::CPP.
 
+0.68 2014-10-25
+  - Found one more namespace test in need of relaxation.
+
 0.67 2014-10-24
   - Relax namespace tests with respect to ref returning Foo or main::Foo.
     The distinction is unimportant, and different Perls act differently.
