@@ -35,11 +35,11 @@ can_ok 'main::Foo', 'new';
 can_ok 'Foo', 'fetch';
 can_ok 'main::Foo', 'fetch';
 my $f = new_ok 'Foo';
-is ref($f), 'Foo', 'Our "Foo" is a "Foo"';
+ok( ( ref($f) eq 'Foo' || ref($f) eq 'main::Foo' ), 'Our "Foo" is a "Foo"');
 
 can_ok 'Bar', 'new';
 my $fb = Bar->new;
-is ref($fb), 'Bar', 'Our "Bar" is a "Bar"';
+ok( ( ref($fb) eq 'Bar' || ref($fb) eq 'main::Bar' ), 'Our "Bar" is a "Bar"');
 
 is $f->fetch, 10, 'Proper object method association from Foo.';
 is $fb->fetch, 20, 'Proper object method association from Bar.';

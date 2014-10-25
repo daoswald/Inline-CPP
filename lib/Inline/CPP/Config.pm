@@ -5,7 +5,7 @@ package Inline::CPP::Config;
 use strict;
 use warnings;
 
-our $VERSION = '0.66';
+our $VERSION = '0.67';
 #$VERSION = eval $VERSION; ## no critic (eval)
 
 

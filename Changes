@@ -1,5 +1,9 @@
 Revision history for Perl extension Inline::CPP.
 
+0.67 2014-10-24
+  - Relax namespace tests with respect to ref returning Foo or main::Foo.
+    The distinction is unimportant, and different Perls act differently.
+
 0.66 2014-10-24
   - Package identifiers may be single character.
 

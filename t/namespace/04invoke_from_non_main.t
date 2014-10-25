@@ -27,7 +27,7 @@ can_ok 'main::Foo', 'new';
 can_ok 'Foo', 'fetch';
 can_ok 'main::Foo', 'fetch';
 my $f = new_ok 'Foo';
-is ref($f), 'Foo', 'Our "Foo" is a "Foo"';
+ok( (ref($f) eq 'Foo' || ref($f) eq 'main::Foo'), 'Our "Foo" is a "Foo"');
 is $f->fetch, 10, 'Proper object method association from Foo.';
 
 done_testing();
