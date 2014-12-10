@@ -1,15 +1,36 @@
-package Inline::CPP::Grammar;    ## no critic (Package)
-
-use strict;
-use warnings;
-
-use vars qw($TYPEMAP_KIND $class_part $class_decl $star);
+use strict; use warnings;
+package Inline::CPP::Parser::RecDescent;
 
 # Dev versions will have a _0xx suffix.
 # We eval the $VERSION to accommodate dev version numbering as described in
 # perldoc perlmodstyle
 our $VERSION = '0.68';
 #$VERSION = eval $VERSION;  ## no critic (eval)
+
+use Carp;
+
+sub register {
+    {
+     extends => [qw(CPP)],
+     overrides => [qw(get_parser)],
+    }
+}
+
+sub get_parser {
+    Inline::CPP::Parser::RecDescent::get_parser_recdescent();
+}
+
+sub get_parser_recdescent {
+    eval { require Parse::RecDescent };
+    croak <<END if $@;
+This invocation of Inline requires the Parse::RecDescent module.
+$@
+END
+    $main::RD_HINT++;
+    Parse::RecDescent->new(grammar())
+}
+
+use vars qw($TYPEMAP_KIND $class_part $class_decl $star);
 
 # Parse::RecDescent 1.90 and later have an incompatible change
 # 'The key of an %item entry for a repeated subrule now includes
@@ -65,7 +86,7 @@ $string
 $number
   = qr'(?:(?i)(?:[+-]?)(?:(?=[0123456789]|[.])(?:[0123456789]*)(?:(?:[.])(?:[0123456789]{0,}))?)(?:(?:[E])(?:(?:[+-]?)(?:[0123456789]+))|))|(?:(?i)(?:[+-]?)(?:(?=[0123456789ABCDEF]|[.])(?:[0123456789ABCDEF]*)(?:(?:[.])(?:[0123456789ABCDEF]{0,}))?)(?:(?:[G])(?:(?:[+-]?)(?:[0123456789ABCDEF]+))|))|(?:(?:[+-]?)(?:\d+))';
 $funccall
-  = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*(?:$Inline::CPP::Grammar::parens)?/;
+  = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*(?:$Inline::CPP::Parser::RecDescent::parens)?/;
 
 #============================================================================
 # Inline::CPP's grammar
@@ -86,7 +107,7 @@ sub grammar {
             unless defined $thisparser->{data}{class}{$class};
         $thisparser->{data}{class}{$class} = \@parts;
 #   print "Class $class:\n", Dumper \@parts;
-        Inline::CPP::Grammar::typemap($thisparser, $class);
+        Inline::CPP::Parser::RecDescent::typemap($thisparser, $class);
         [$class, \@parts];
     }
     sub handle_typedef {
@@ -101,7 +122,7 @@ sub grammar {
             && !exists($thisparser->{data}{class}{$name})) {
             push @{$thisparser->{data}{classes}}, $name;
             $thisparser->{data}{class}{$name} = $thisparser->{data}{class}{$type};
-            Inline::CPP::Grammar::typemap($thisparser, $name);
+            Inline::CPP::Parser::RecDescent::typemap($thisparser, $name);
         }
         $t;
     }
@@ -138,7 +159,7 @@ part: comment
      for my $arg (@{$item[1]->{args}}) {
         $arg->{name} = 'dummy' . ++$i unless defined $arg->{name};
      }
-     Inline::CPP::Grammar::strip_ellipsis($thisparser,
+     Inline::CPP::Parser::RecDescent::strip_ellipsis($thisparser,
                           $item[1]->{args});
      push @{$thisparser->{data}{functions}}, $name
            unless defined $thisparser->{data}{function}{$name};
@@ -152,7 +173,7 @@ typedef: 'typedef' class IDENTIFIER(?) '{' <commit> class_part(s?) '}' IDENTIFIE
        {
      my ($class, $parts);
          $class = $item[3][0] || 'anon_class'.($thisparser->{data}{anonclass}++);
-         ($class, $parts)= handle_class_def($thisparser, [$class, $item{$Inline::CPP::Grammar::class_part}]);
+         ($class, $parts)= handle_class_def($thisparser, [$class, $item{$Inline::CPP::Parser::RecDescent::class_part}]);
      { thing => 'typedef', name => $item[8], type => $class, body => $parts }
        }
        | 'typedef' IDENTIFIER IDENTIFIER ';'
@@ -176,13 +197,13 @@ enum_item: IDENTIFIER '=' <commit> /[0-9]+/
 
 class_def: class IDENTIFIER '{' <commit> class_part(s?) '}' ';'
            {
-              [@item{'IDENTIFIER',$Inline::CPP::Grammar::class_part}]
+              [@item{'IDENTIFIER',$Inline::CPP::Parser::RecDescent::class_part}]
        }
      | class IDENTIFIER ':' <commit> <leftop: inherit ',' inherit>
             '{' class_part(s?) '}' ';'
        {
-          push @{$item{$Inline::CPP::Grammar::class_part}}, [$item{__DIRECTIVE2__}];
-          [@item{'IDENTIFIER',$Inline::CPP::Grammar::class_part}]
+          push @{$item{$Inline::CPP::Parser::RecDescent::class_part}}, [$item{__DIRECTIVE2__}];
+          [@item{'IDENTIFIER',$Inline::CPP::Parser::RecDescent::class_part}]
        }
 
 inherit: scope IDENTIFIER
@@ -191,10 +212,10 @@ inherit: scope IDENTIFIER
 class_part: comment { [ {thing => 'comment'} ] }
       | scope ':' <commit> class_decl(s?)
             {
-          for my $part (@{$item{$Inline::CPP::Grammar::class_decl}}) {
+          for my $part (@{$item{$Inline::CPP::Parser::RecDescent::class_decl}}) {
                   $_->{scope} = $item[1] for @$part;
           }
-          $item{$Inline::CPP::Grammar::class_decl}
+          $item{$Inline::CPP::Parser::RecDescent::class_decl}
         }
       | class_decl(s)
             {
@@ -221,7 +242,7 @@ class_decl: comment { [{thing => 'comment'}] }
           for my $arg (@{$item[1]->{args}}) {
         $arg->{name} = 'dummy' . ++$i unless defined $arg->{name};
           }
-          Inline::CPP::Grammar::strip_ellipsis($thisparser,
+          Inline::CPP::Parser::RecDescent::strip_ellipsis($thisparser,
                            $item[1]->{args});
           [$item[1]];
         }
@@ -373,7 +394,7 @@ type: type2 | type1
 type1: TYPE star(s?)
         {
          $return = $item[1];
-         $return .= join '',' ',@{$item{$Inline::CPP::Grammar::star}} if @{$item{$Inline::CPP::Grammar::star}};
+         $return .= join '',' ',@{$item{$Inline::CPP::Parser::RecDescent::star}} if @{$item{$Inline::CPP::Parser::RecDescent::star}};
 #    print "type1: $return\n";
 #          return undef
 #            unless(defined$thisparser->{data}{typeconv}{valid_types}{$return});
@@ -382,7 +403,7 @@ type2: modifier(s) TYPE star(s?)
     {
          $return = $item{TYPE};
          $return = join ' ',grep{$_}@{$item[1]},$return if @{$item[1]};
-         $return .= join '',' ',@{$item{$Inline::CPP::Grammar::star}} if @{$item{$Inline::CPP::Grammar::star}};
+         $return .= join '',' ',@{$item{$Inline::CPP::Parser::RecDescent::star}} if @{$item{$Inline::CPP::Parser::RecDescent::star}};
 #    print "type2: $return\n";
 #          return undef
 #            unless(defined$thisparser->{data}{typeconv}{valid_types}{$return});
@@ -423,7 +444,7 @@ class: 'class' { $thisparser->{data}{defaultscope} = 'private'; $item[1] }
 
 star: '*' | '&'
 
-code_block: /$Inline::CPP::Grammar::code_block/
+code_block: /$Inline::CPP::Parser::RecDescent::code_block/
 
 # Consume expressions
 expr: <leftop: subexpr OP subexpr> {
@@ -431,9 +452,9 @@ expr: <leftop: subexpr OP subexpr> {
 #   print "expr: $o\n";
     $o;
 }
-subexpr: /$Inline::CPP::Grammar::funccall/ # Matches a macro, too
-       | /$Inline::CPP::Grammar::string/
-       | /$Inline::CPP::Grammar::number/
+subexpr: /$Inline::CPP::Parser::RecDescent::funccall/ # Matches a macro, too
+       | /$Inline::CPP::Parser::RecDescent::string/
+       | /$Inline::CPP::Parser::RecDescent::number/
        | UOP subexpr
 OP: '+' | '-' | '*' | '/' | '^' | '&' | '|' | '%' | '||' | '&&'
 UOP: '~' | '!' | '-' | '*' | '&'
@@ -455,7 +476,7 @@ $TYPEMAP_KIND = 'O_Inline_CPP_Class';
 sub typemap {
   my ($parser, $typename) = @_;
 
-#    print "Inline::CPP::Grammar::typemap(): typename=$typename\n";
+#    print "Inline::CPP::Parser::RecDescent::typemap(): typename=$typename\n";
 
   my ($TYPEMAP, $INPUT, $OUTPUT);
   $TYPEMAP = "$typename *\t\t$TYPEMAP_KIND\n";
@@ -505,10 +526,16 @@ sub strip_ellipsis {
   return;
 }
 
+my $hack = sub { # Appease -w using Inline::Files
+    print Parse::RecDescent::IN '';
+    print Parse::RecDescent::IN '';
+    print Parse::RecDescent::TRACE_FILE '';
+    print Parse::RecDescent::TRACE_FILE '';
+};
+
 1;
 
-__END__
-=head1 Inline::CPP::Grammar
+=head1 Inline::CPP::Parser::RecDescent
 
 All functions are internal.  No documentation necessary.
 
