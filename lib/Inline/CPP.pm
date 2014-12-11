@@ -287,17 +287,7 @@ sub info {
 # Generate a C++ parser
 #============================================================================
 sub get_parser {
-  my $o       = shift;
-  die 42;
-  my $grammar = Inline::CPP::Parser::RecDescent::grammar()
-    or croak "Can't find C++ grammar\n";
-  no warnings qw/ once /;    ## no critic (warnings)
-  $::RD_HINT = 1;    # Turns on Parse::RecDescent's warnings/diagnostics.
-  require Parse::RecDescent;
-  my $parser = Parse::RecDescent->new($grammar);
-  $parser->{data}{typeconv} = $o->{ILSM}{typeconv};
-  $parser->{ILSM} = $o->{ILSM};    # give parser access to config options
-  return $parser;
+  return Inline::CPP::Parser::RecDescent->get_parser_recdescent();
 }
 
 #============================================================================

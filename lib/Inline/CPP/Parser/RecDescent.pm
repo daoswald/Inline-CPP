@@ -17,7 +17,7 @@ sub register {
 }
 
 sub get_parser {
-    Inline::CPP::Parser::RecDescent::get_parser_recdescent();
+    return Inline::CPP::Parser::RecDescent::get_parser_recdescent();
 }
 
 sub get_parser_recdescent {
@@ -68,13 +68,13 @@ use vars qw( $code_block $string $number $parens $funccall );
 
 # $RE{balanced}{-parens=>q|{}()[]"'|}
 eval <<'END';    ## no critic (eval)
-$code_block = qr'(?-xism:(?-xism:(?:[{](?:(?>[^][)(}{]+)|(??{$Inline::CPP::Grammar::code_block}))*[}]))|(?-xism:(?-xism:(?:[(](?:(?>[^][)(}{]+)|(??{$Inline::CPP::Grammar::code_block}))*[)]))|(?-xism:(?-xism:(?:[[](?:(?>[^][)(}{]+)|(??{$Inline::CPP::Grammar::code_block}))*[]]))|(?-xism:(?!)))))';
+$code_block = qr'(?-xism:(?-xism:(?:[{](?:(?>[^][)(}{]+)|(??{$Inline::CPP::Parser::RecDescent::code_block}))*[}]))|(?-xism:(?-xism:(?:[(](?:(?>[^][)(}{]+)|(??{$Inline::CPP::Parser::RecDescent::code_block}))*[)]))|(?-xism:(?-xism:(?:[[](?:(?>[^][)(}{]+)|(??{$Inline::CPP::Parser::RecDescent::code_block}))*[]]))|(?-xism:(?!)))))';
 END
 $code_block = qr'{[^}]*}' if $@;    # For the stragglers: here's a lame regexp.
 
 # $RE{balanced}{-parens=>q|()"'|}
 eval <<'END';                       ## no critic (eval)
-$parens = qr'(?-xism:(?-xism:(?:[(](?:(?>[^)(]+)|(??{$Inline::CPP::Grammar::parens}))*[)]))|(?-xism:(?!)))';
+$parens = qr'(?-xism:(?-xism:(?:[(](?:(?>[^)(]+)|(??{$Inline::CPP::Parser::RecDescent::parens}))*[)]))|(?-xism:(?!)))';
 END
 $parens = qr'\([^)]*\)' if $@;      # For the stragglers: here's another
 
