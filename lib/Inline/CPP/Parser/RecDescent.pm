@@ -17,17 +17,23 @@ sub register {
 }
 
 sub get_parser {
-    return Inline::CPP::Parser::RecDescent::get_parser_recdescent();
+    my $o = shift;
+    return Inline::CPP::Parser::RecDescent::get_parser_recdescent($o);
 }
 
 sub get_parser_recdescent {
+    my $o = shift;
     eval { require Parse::RecDescent };
     croak <<END if $@;
 This invocation of Inline requires the Parse::RecDescent module.
 $@
 END
-    $main::RD_HINT++;
-    Parse::RecDescent->new(grammar())
+    no warnings qw/ once /;    ## no critic (warnings)
+    $::RD_HINT = 1;    # Turns on Parse::RecDescent's warnings/diagnostics.
+    my $parser = Parse::RecDescent->new(grammar());
+    $parser->{data}{typeconv} = $o->{ILSM}{typeconv};
+    $parser->{ILSM} = $o->{ILSM};    # give parser access to config options
+    return $parser;
 }
 
 use vars qw($TYPEMAP_KIND $class_part $class_decl $star);

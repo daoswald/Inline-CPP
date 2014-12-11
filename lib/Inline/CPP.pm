@@ -287,7 +287,8 @@ sub info {
 # Generate a C++ parser
 #============================================================================
 sub get_parser {
-  return Inline::CPP::Parser::RecDescent->get_parser_recdescent();
+  my $o = shift;
+  return Inline::CPP::Parser::RecDescent::get_parser_recdescent($o);
 }
 
 #============================================================================
