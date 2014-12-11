@@ -4,7 +4,7 @@ package Inline::CPP::Parser::RecDescent;
 # Dev versions will have a _0xx suffix.
 # We eval the $VERSION to accommodate dev version numbering as described in
 # perldoc perlmodstyle
-our $VERSION = '0.68';
+our $VERSION = '0.69';
 #$VERSION = eval $VERSION;  ## no critic (eval)
 
 use Carp;

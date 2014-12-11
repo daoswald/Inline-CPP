@@ -1,5 +1,9 @@
 Revision history for Perl extension Inline::CPP.
 
+0.69 2014-12-11
+  - Moved CPP/Grammar.pm to CPP/Parser/RecDescent.pm to facilitate 'using'
+    option for pluggable parsers (INGY++).
+
 0.68 2014-10-25
   - Found one more namespace test in need of relaxation.
 

@@ -19,19 +19,19 @@ BEGIN {
 };
 
 require Inline::CPP;
-require Inline::CPP::Grammar;
+require Inline::CPP::Parser::RecDescent;
 require Inline::CPP::Config;
 
 use FindBin;
 
 # Eval version numbers to eliminate underscore ambiguity in dev dists.
 my $TARGET_VERSION = eval $Inline::CPP::VERSION;
-my $grammar_version = eval $Inline::CPP::Grammar::VERSION;
+my $grammar_version = eval $Inline::CPP::Parser::RecDescent::VERSION;
 my $config_version  = eval $Inline::CPP::Config::VERSION;
 
 
 is( $grammar_version, $TARGET_VERSION, 
-    'Inline::CPP and Inline::CPP::Grammar version numbers match.' );
+    'Inline::CPP and Inline::CPP::Parser::RecDescent version numbers match.' );
 
 
 

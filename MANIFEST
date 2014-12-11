@@ -9,7 +9,7 @@ inc/ILCPPConfig/OldCompilerGuess.pm
 inc/ILCPPConfig/CompilerGuess.pm
 lib/Inline/CPP.pm
 lib/Inline/CPP.pod
-lib/Inline/CPP/Grammar.pm
+lib/Inline/CPP/Parser/RecDescent.pm
 lib/Inline/CPP/Config.pm
 t/00load_prereqs.t
 t/01fn_cans.t

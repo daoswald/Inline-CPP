@@ -14,7 +14,7 @@ use 5.008001;
 
 # The next line is verified via t/13version_numbers.t. Retain single quoting.
 
-my $DIST_VERSION    = '0.68';                        # DRY in Makefile.PL.
+my $DIST_VERSION    = '0.69';                        # DRY in Makefile.PL.
 
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
@@ -25,8 +25,8 @@ int main(){ return 0; }
 END_TEST_CPP
 
 my %PREREQ_PM = (
-  'Inline'            => '0.67', # Case insensitivity.
-  'Inline::C'         => '0.62',
+  'Inline'            => '0.78', # Case insensitivity.
+  'Inline::C'         => '0.67',
   'Parse::RecDescent' => '0',
   'Carp'              => '0',
 );
@@ -52,14 +52,14 @@ WriteMakefile(
   LICENSE        => 'artistic_2',
   PREREQ_PM      => \%PREREQ_PM,
   BUILD_REQUIRES => {
-    'Test::More' => '0.98',    # Core. Minimum version.
-    'Config'     => '0',       # Core.
-    'English'    => '0',       # Core.
-    'File::Temp' => '0',       # Core.
+    'Test::More' => '1.001009',    # Core. Minimum version.
+    'Config'     => '0',           # Core.
+    'English'    => '0',           # Core.
+    'File::Temp' => '0',           # Core.
   },
   CONFIGURE_REQUIRES => {
     'ExtUtils::CppGuess'  => '0.07',    # Beginning IL::CPP 0.54_001.
-    'ExtUtils::MakeMaker' => '6.56',    # Minimum version.
+    'ExtUtils::MakeMaker' => '7.04',    # Core.
     'FindBin'             => '0',       # Core.
     'Config'              => '0',       # Core.
   },
@@ -84,8 +84,8 @@ WriteMakefile(
         file    => 'lib/Inline/CPP.pm',
         version => $DIST_VERSION,
       },
-      'Inline::CPP::Grammar' => {
-        file    => 'lib/Inline/CPP/Grammar.pm',
+      'Inline::CPP::Parser::RecDescent' => {
+        file    => 'lib/Inline/CPP/Parser/RecDescent.pm',
         version => $DIST_VERSION,
       },
       'Inline::CPP::Config' => {
