@@ -4,10 +4,10 @@ use Test::More;
 
 # Satisfy CPANTS, even though all functions are internal.
 
+
 eval "use Test::Pod::Coverage 1.00";  ## no critic (eval)
 plan skip_all => "Test::Pod::Coverage 1.00 required for testing POD coverage"
-    if $@;
-
+    if $@ || ! $ENV{RELEASE_TESTING};
 
 # Test for Inline::grammar.
 
