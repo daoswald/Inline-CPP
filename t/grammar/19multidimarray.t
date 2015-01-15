@@ -6,7 +6,7 @@ use Test::More;
 
 # Test multidimensional arrays as member data.
 
-my $rv = eval <<'EOILCPP';
+eval <<'EOILCPP';
   use Inline CPP => q/
     class Foo {
       public:
@@ -25,7 +25,7 @@ EOILCPP
 TODO: {
   local $TODO = 'C++ multi-dimensional arrays as member data not supported.';
 
-  is( $rv, 1, 'Compilation completed without exception.' );
+  is( $@, '', 'Compilation completed without exception.' );
 
   my $f = new_ok( 'Foo' );
   can_ok( 'Foo', qw( new tl bl tr br ) );
