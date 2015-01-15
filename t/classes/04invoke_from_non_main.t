@@ -27,7 +27,7 @@ can_ok 'main::MyFuu', 'new';
 can_ok 'MyFuu', 'fetch';
 can_ok 'main::MyFuu', 'fetch';
 my $f = new_ok 'MyFuu';
-is ref($f), 'MyFuu', 'Our "Fuu" is a "MyFuu"';
+isa_ok $f, 'MyFuu', 'Our "Fuu" is a "MyFuu"';
 is $f->fetch, 10, 'Proper object method association from MyFuu.';
 
 done_testing();
