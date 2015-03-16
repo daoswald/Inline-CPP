@@ -682,7 +682,9 @@ END
   flock $TYPEMAP_FH, LOCK_EX
     or croak "Error: Can't obtain lock for $filename: $!";
   truncate $TYPEMAP_FH, 0 or croak "Error: Can't truncate $filename: $!";
-
+  flock $TYPEMAP_FH, LOCK_UN
+    or croak "Error: Can't unlock $filename: $!";
+  
   # End of new lock-safe code.
 
   print {$TYPEMAP_FH} $tm_output;
