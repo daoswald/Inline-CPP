@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use ExtUtils::CppGuess;
 use Exporter;
+use Config;
 
 our @ISA       = 'Exporter';
 our @EXPORT_OK = 'guess_compiler';
@@ -27,7 +28,11 @@ sub guess_compiler {
     $guesser = ExtUtils::CppGuess->new;
     %configuration = $guesser->module_build_options;
     if( $guesser->is_gcc ) {
-      $cc_guess = 'g++';
+      if( $Config{cc} eq 'clang' ) {
+        $cc_guess = 'clang++';
+      } else {
+        $cc_guess = 'g++';
+      }
     }
     elsif ( $guesser->is_msvc ) {
       $cc_guess = 'cl';

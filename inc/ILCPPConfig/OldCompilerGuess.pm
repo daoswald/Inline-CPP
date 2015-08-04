@@ -94,6 +94,10 @@ sub guess_compiler {
     $cc_guess   = 'g++';
     $libs_guess = '-lstdc++';
   }
+  
+  if( $cc_guess eq 'g++' && $Config{cc} eq 'clang') {
+    $cc_guess = 'clang++';
+  }
 
   return( $cc_guess, $libs_guess );
 }
