@@ -48,9 +48,9 @@ close $fhb;
 
 eval qq[
   use Inline CPP =>
-    "$tdir/Foo__Qux__MyClass.c", 
-    filters   => 'Preprocess', 
-    namespace => 'Foo', 
+    '$tdir/Foo__Qux__MyClass.c',
+    filters   => 'Preprocess',
+    namespace => 'Foo',
     classes   => {
       'Foo__Bar__MyClass' => 'Bar::MyClass',
       'Foo__Qux__MyClass' => 'Qux::MyClass'
