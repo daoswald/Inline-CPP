@@ -14,7 +14,7 @@ use 5.008001;
 
 # The next line is verified via t/13version_numbers.t. Retain single quoting.
 
-my $DIST_VERSION    = '0.73';                        # DRY in Makefile.PL.
+my $DIST_VERSION    = '0.74';                        # DRY in Makefile.PL.
 
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
@@ -38,7 +38,7 @@ my( $cc_guess, $libs_guess ) = guess_compiler();
 
 my $cpp_compiler
   = prompt( "What C++ compiler would you like to use?", $cc_guess );
-  
+
 my $libs
   = prompt( "What default libraries would you like to include?", $libs_guess );
 
@@ -58,7 +58,7 @@ WriteMakefile(
     'File::Temp' => '0',           # Core.
   },
   CONFIGURE_REQUIRES => {
-    'ExtUtils::CppGuess'  => '0.07',    # Beginning IL::CPP 0.54_001.
+    'ExtUtils::CppGuess'  => '0.11',    # Beginning IL::CPP 0.54_001.
     'ExtUtils::MakeMaker' => '7.04',    # Core.
     'FindBin'             => '0',       # Core.
     'Config'              => '0',       # Core.
@@ -135,7 +135,7 @@ sub check_prereqs {
 
 sub configure_distribution {
   my( $test_cpp_filename, $cpp_compiler, $libs ) = @_;
-  
+
   # Obtain a sentinel lock. Hold it until file work is done.
 
   sysopen TESTCPP_LOCK, "$test_cpp_filename.cpp.lock", O_WRONLY | O_CREAT
@@ -143,7 +143,7 @@ sub configure_distribution {
            "as a lock sentinel:\n$!";
   flock TESTCPP_LOCK, LOCK_EX
     or die "Makefile.PL: Couldn't flock $test_cpp_filename.cpp.lock:\n$!\n";
-    
+
   # Test whether the compiler prefers <iostream> or <iostream.h>.
 
   sysopen TESTCPP, "$test_cpp_filename.cpp", O_WRONLY | O_CREAT

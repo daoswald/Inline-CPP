@@ -1,5 +1,8 @@
 Revision history for Perl extension Inline::CPP.
 
+0.74 2015-09-10
+  - Require ExtUtils::CppGuess v0.11 or newer.
+
 0.73 2015-08-08
   - Better handling of spaces in filenames.
 
@@ -31,7 +34,7 @@ Revision history for Perl extension Inline::CPP.
   - Identifiers may start with _ (Pre-5.120 regression in 0.64).
 
 0.64 2014-10-23
-  - Fix GH Issue #24: Downgrade gracefully if \p{XID_Start} and 
+  - Fix GH Issue #24: Downgrade gracefully if \p{XID_Start} and
     \p{XID_Continue} aren't available (pre-Perl 5.120).
 
 0.63 2014-09-13
@@ -59,7 +62,7 @@ Revision history for Perl extension Inline::CPP.
     (Until EU::CG is fixed to handle this for us)
 
 0.58 2014-08-11
-  - main:: is no longer prepended to top level of single-level 
+  - main:: is no longer prepended to top level of single-level
     classnames, per wbraswell's suggestion.
   - Documentation for main:: quirk no longer needed; removed.
   - Explicitly support Perl 5.8.1+ (was 5.6.1, but Inline now requires
@@ -139,7 +142,7 @@ Revision history for Perl extension Inline::CPP.
     Inline's RT # 11748, and Inline::CPP's RT#84762.
   - No changes from 0.42_002 (dev) other than to bump the version number to a
     'production' number.
-    
+
 0.42_002 2013-04-24
   - Require Inline::C version 0.52_02, to test a fix for the bug raised in
     Inline's RT #11748, and Inline::CPP's RT #84762: Typemaps were causing INC
@@ -150,7 +153,7 @@ Revision history for Perl extension Inline::CPP.
   - Added documentation on the Some::Foo::Foo problem (See the POD section,
     "The Perl Namespace Hack").
   - Removed version number from README; fewer places to make a mistake.
-  
+
 0.42 2012-11-02
   - POD enhancements: Explanation of what parts of C++11 do and don't map
     to Perl.  Better explanation of why templates don't work for Perl
@@ -160,7 +163,7 @@ Revision history for Perl extension Inline::CPP.
   - Fixed an error in the AUTO_INCLUDE documentation.
 
 0.41 2012-09-05
-  - POD enhancements: Better description of compilation, _Inline/, and 
+  - POD enhancements: Better description of compilation, _Inline/, and
     code-reuse (modules, distributions).
 
 0.40_001 2012-08-24
