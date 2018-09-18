@@ -222,7 +222,7 @@ sub _add_libs {
 #============================================================================
 sub info {
   my $o    = shift;
-  my $info = q{};
+  my $info = $o->SUPER::info;
 
   $o->parse unless $o->{ILSM}{parser};
   my $data = $o->{ILSM}{parser}{data};
