@@ -93,6 +93,17 @@ WriteMakefile(
         version => $DIST_VERSION,
       },
     },
+    prereqs => {
+      develop => {
+        requires => {
+          'Test::Pod' => '1.00',
+          'Test::Perl::Critic' => 0,
+          'Test::Pod::Coverage' => '1.00',
+          'Test::Kwalitee' => 0,
+          'Test::CPAN::Changes' => 0,
+        },
+      },
+    },
   },
   MIN_PERL_VERSION => '5.008001',  # Modern Inline versions require 5.8.1.
   test  => {RECURSIVE_TEST_FILES => 1},
