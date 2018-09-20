@@ -14,18 +14,11 @@ lib/Inline/CPP/Config.pm.in
 t/00load_prereqs.t
 t/01fn_cans.t
 t/02basic.t
-t/05pod.t
 t/03prefix.t
 t/04charptr.t
 t/06fn_regress.t
-t/07perlcritic.t
 t/08cppguess.t
-t/09pod_coverage.t
-t/10kwalitee.t
-t/11rewrite_config.t
 t/12custom_libs.t
-t/13version_numbers.t
-t/14changes.t
 t/15config_case.t
 t/16info.t
 t/classes/01empty_ns_is_main.t
@@ -65,3 +58,10 @@ t/namespace/05invalid_ns.t
 t/namespace/06inherit.t
 META.yml                            Module YAML meta-data (added by MakeMaker)
 META.json                           Module JSON meta-data (added by MakeMaker)
+xt/05pod.t
+xt/07perlcritic.t
+xt/09pod_coverage.t
+xt/10kwalitee.t
+xt/11rewrite_config.t
+xt/13version_numbers.t
+xt/14changes.t
