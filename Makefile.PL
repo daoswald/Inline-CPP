@@ -4,7 +4,7 @@ use lib "$FindBin::Bin/inc";
 use ILCPPConfig::CompilerGuess 'guess_compiler';
 use Fcntl qw(:DEFAULT);
 use strict;
-use 5.008001;
+use 5.010000;
 
 
 # We're using bareword file handles and two arg open for backward
@@ -106,7 +106,7 @@ WriteMakefile(
       },
     },
   },
-  MIN_PERL_VERSION => '5.008001',  # Modern Inline versions require 5.8.1.
+  MIN_PERL_VERSION => '5.010000',  # Inline::C~0.77 requires 5.10.0.
   test  => {RECURSIVE_TEST_FILES => 1},
   clean => {FILES => join q{ }, $CPP_Config_path, qw{
     _Inline/            t/_Inline
