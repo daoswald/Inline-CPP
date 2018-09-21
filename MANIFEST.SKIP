@@ -31,3 +31,4 @@ MYMETA\b
 \.perltidyrc
 ^lib/Inline/CPP/Config.pm$
 \.swp$
+^\.travis\.yml$
