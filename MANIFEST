@@ -63,3 +63,4 @@ xt/10kwalitee.t
 xt/11rewrite_config.t
 xt/13version_numbers.t
 xt/14changes.t
+xt/manifest.t

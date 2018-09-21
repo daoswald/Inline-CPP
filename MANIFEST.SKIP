@@ -29,3 +29,5 @@
 MYMETA\b
 ^Inline-CPP-\d+\.\d+/
 \.perltidyrc
+^lib/Inline/CPP/Config.pm$
+\.swp$
