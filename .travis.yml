@@ -25,7 +25,7 @@ install:
 before_script:
   - coverage-setup
 script:
-  - prove -b -j1 $(test-files)   # NO parallel testing as Inline has a race-condition making its config-$ARCH-$PERLVER files in parallel
+  - make && prove -b -j1 $(test-files)   # NO parallel testing as Inline has a race-condition making its config-$ARCH-$PERLVER files in parallel
 after_success:
   - coverage-report
 notifications:
