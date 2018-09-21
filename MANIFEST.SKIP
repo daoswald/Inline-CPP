@@ -7,7 +7,7 @@
 ^.gitignore$
 
 # Makemaker generated files and dirs.
-^MANIFEST\.
+^MANIFEST\.bak
 ^Makefile$
 ^blib/
 ^MakeMaker-\d
