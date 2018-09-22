@@ -2,9 +2,9 @@ use ExtUtils::MakeMaker;
 use FindBin;
 use lib "$FindBin::Bin/inc";
 use ILCPPConfig::CompilerGuess 'guess_compiler';
-use Fcntl qw(:DEFAULT :flock);
+use Fcntl qw(:DEFAULT);
 use strict;
-use 5.008001;
+use 5.010000;
 
 
 # We're using bareword file handles and two arg open for backward
@@ -93,10 +93,22 @@ WriteMakefile(
         version => $DIST_VERSION,
       },
     },
+    prereqs => {
+      develop => {
+        requires => {
+          'Test::Pod' => '1.00',
+          'Test::Perl::Critic' => 0,
+          'Test::Pod::Coverage' => '1.00',
+          'Test::Kwalitee' => 0,
+          'Test::CPAN::Changes' => 0,
+          'Test::CheckManifest' => '0.9',
+        },
+      },
+    },
   },
-  MIN_PERL_VERSION => '5.008001',  # Modern Inline versions require 5.8.1.
+  MIN_PERL_VERSION => '5.010000',  # Inline::C~0.77 requires 5.10.0.
   test  => {RECURSIVE_TEST_FILES => 1},
-  clean => {FILES => join q{ }, qw{
+  clean => {FILES => join q{ }, $CPP_Config_path, qw{
     _Inline/            t/_Inline
     t/classes/_Inline   t/grammar/_Inline
     t/namespace/_Inline Inline-CPP-*/
@@ -137,31 +149,29 @@ sub check_prereqs {
 # Configure distribution defaults in Inline::CPP::Config.pm.
 ###############################################################################
 
+sub to_file {
+  my ($file, @data) = @_;
+  local *FH;
+  sysopen FH, $file, O_WRONLY | O_CREAT
+    or die "Makefile.PL: Couldn't open $file for output: $!\n";
+  truncate FH, 0 or die "Makefile.PL: Couldn't truncate $file: $!\n";
+  print FH @data;
+  close FH or die "Makefile.PL: Couldn't close $file: $!\n";
+}
+
+sub from_file {
+  my ($file) = @_;
+  local *FH;
+  open FH, '<', $file
+    or die "Makefile.PL: Can't read from $file: $!";
+  <FH>;
+}
+
 sub configure_distribution {
   my( $test_cpp_filename, $cpp_compiler, $libs ) = @_;
 
-  # Obtain a sentinel lock. Hold it until file work is done.
-
-  sysopen TESTCPP_LOCK, "$test_cpp_filename.cpp.lock", O_WRONLY | O_CREAT
-    or die "Makefile.PL: Couldn't open $test_cpp_filename.cpp.lock " .
-           "as a lock sentinel:\n$!";
-  flock TESTCPP_LOCK, LOCK_EX
-    or die "Makefile.PL: Couldn't flock $test_cpp_filename.cpp.lock:\n$!\n";
-
   # Test whether the compiler prefers <iostream> or <iostream.h>.
-
-  sysopen TESTCPP, "$test_cpp_filename.cpp", O_WRONLY | O_CREAT
-    or die "Makefile.PL: Couldn't open $test_cpp_filename.cpp"
-         . " for output:\n$!\n";
-
-  truncate TESTCPP, 0
-    or die "Makefile.PL: Couldn't truncate $test_cpp_filename.cpp:\n$!\n";
-
-  print TESTCPP $test_cpp;
-
-  close TESTCPP
-    or die "Makefile.PL: Couldn't close $test_cpp_filename:\n$!\n";
-
+  to_file "$test_cpp_filename.cpp", $test_cpp;
   # Compile our test C++ program that includes the <iostream> header.
   my $result;
   if ($cpp_compiler =~ m/^cl/) {
@@ -175,7 +185,6 @@ sub configure_distribution {
         qq{$cpp_compiler -o $test_cpp_filename.exe $test_cpp_filename.cpp}
     );
   }
-
   my $iostream_fname = 'iostream';
   my $comment        = '';
   if ($result != 0) {
@@ -189,19 +198,10 @@ sub configure_distribution {
     print "Detected <iostream> style headers. ('.h' not needed.)\n";
     unlink "$test_cpp_filename.exe" or warn $!;     # Unlink the executable.
   }
-
   unlink "$test_cpp_filename.cpp" or warn $!;         # Unlink the test source.
 
   # Apply the distribution defaults:
-
-  open CPP_CONFIG, '<', $CPP_Config_path
-    or die "Makefile.PL: Can't read from $CPP_Config_path"
-         . " for configuration!\n$!";
-
-  my @lines = <CPP_CONFIG>;
-
-  close CPP_CONFIG;
-
+  my @lines = from_file("$CPP_Config_path.in");
   for (@lines) {
     s{(our \s* \$compiler    \s* = \s* ['"]) [^'"]+}{$1$cpp_compiler}x;
     s{(our \s* \$libs        \s* = \s* ['"]) [^'"]+}{$1$libs}x;
@@ -209,26 +209,5 @@ sub configure_distribution {
     s{^ [^#]* (\#define \s+ __INLINE_CPP_NAMESPACE_STD   )}{$comment$1}x;
     s{^ [^#]* (\#define \s+ __INLINE_CPP_STANDARD_HEADERS)}{$comment$1}x;
   }
-
-
-  # Lock friendly open for output.
-  sysopen CPP_CONFIG, $CPP_Config_path, O_WRONLY | O_CREAT
-    or die "Makefile.PL: Can't open $CPP_Config_path "
-         . "to write configuration:\n$!";
-
-  truncate CPP_CONFIG, 0
-    or die "Makefile.PL: Can't truncate $CPP_Config_path to write config:\n$!";
-
-  print CPP_CONFIG @lines
-    or die "Can't write to $CPP_Config_path for configuration!\n$!";
-
-  close CPP_CONFIG
-    or die "Can't close $CPP_Config_path after config output!\n$!";
-
-  close TESTCPP_LOCK; # Release lock only after test compilation, and output to
-                      # Config.pm.
-
-  unlink "$test_cpp_filename.cpp.lock" or warn $!;  # Unlink the test sentinel.
-
-  return;
+  to_file $CPP_Config_path, @lines;
 }
