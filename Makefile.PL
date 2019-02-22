@@ -101,7 +101,6 @@ WriteMakefile(
           'Test::Pod::Coverage' => '1.00',
           'Test::Kwalitee' => 0,
           'Test::CPAN::Changes' => 0,
-          'Test::CheckManifest' => '0.9',
         },
       },
     },
