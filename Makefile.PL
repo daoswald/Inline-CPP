@@ -28,6 +28,7 @@ my %PREREQ_PM = (
   'Inline::C'         => '0.67',
   'Parse::RecDescent' => '0',
   'Carp'              => '0',
+  'Config'            => '0',
 );
 
 
@@ -50,17 +51,14 @@ WriteMakefile(
   ABSTRACT_FROM  => 'lib/Inline/CPP.pod',
   LICENSE        => 'artistic_2',
   PREREQ_PM      => \%PREREQ_PM,
-  BUILD_REQUIRES => {
+  TEST_REQUIRES => {
     'Test::More' => '1.001009',    # Core. Minimum version.
-    'Config'     => '0',           # Core.
-    'English'    => '0',           # Core.
     'File::Temp' => '0',           # Core.
   },
   CONFIGURE_REQUIRES => {
     'ExtUtils::CppGuess'  => '0.11',    # Beginning IL::CPP 0.54_001.
     'ExtUtils::MakeMaker' => '7.04',    # Core.
     'FindBin'             => '0',       # Core.
-    'Config'              => '0',       # Core.
   },
   META_MERGE => {
     'meta-spec' => {
@@ -100,6 +98,7 @@ WriteMakefile(
           'Test::Pod::Coverage' => '1.00',
           'Test::Kwalitee' => 0,
           'Test::CPAN::Changes' => 0,
+          'English' => '0',
         },
       },
     },
