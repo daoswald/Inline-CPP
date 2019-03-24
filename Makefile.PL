@@ -157,10 +157,9 @@ sub to_file {
 
 sub from_file {
   my ($file) = @_;
-  local *FH;
-  open FH, '<', $file
-    or die "Makefile.PL: Can't read from $file: $!";
-  <FH>;
+  local $/;
+  open my $fh, '<', $file or die "Makefile.PL: Can't read from $file: $!";
+  <$fh>;
 }
 
 sub configure_distribution {
@@ -197,13 +196,12 @@ sub configure_distribution {
   unlink "$test_cpp_filename.cpp" or warn $!;         # Unlink the test source.
 
   # Apply the distribution defaults:
-  my @lines = from_file("$CPP_Config_path.in");
-  for (@lines) {
-    s{(our \s* \$compiler    \s* = \s* ['"]) [^'"]+}{$1$cpp_compiler}x;
-    s{(our \s* \$libs        \s* = \s* ['"]) [^'"]+}{$1$libs}x;
-    s{(our \s* \$iostream_fn \s* = \s* ['"]) [^'"]+}{$1$iostream_fname}x;
-    s{^ [^#]* (\#define \s+ __INLINE_CPP_NAMESPACE_STD   )}{$comment$1}x;
-    s{^ [^#]* (\#define \s+ __INLINE_CPP_STANDARD_HEADERS)}{$comment$1}x;
-  }
-  to_file $CPP_Config_path, @lines;
+  my $text = from_file("$CPP_Config_path.in");
+  to_file $CPP_Config_path, sprintf $text,
+    $cpp_compiler,
+    $libs,
+    $iostream_fname,
+    $comment,
+    $comment,
+    ;
 }
