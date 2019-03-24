@@ -2,7 +2,6 @@ use ExtUtils::MakeMaker;
 use FindBin;
 use lib "$FindBin::Bin/inc";
 use ILCPPConfig::CompilerGuess 'guess_compiler';
-use Fcntl qw(:DEFAULT);
 use strict;
 use 5.010000;
 
@@ -150,12 +149,10 @@ sub check_prereqs {
 
 sub to_file {
   my ($file, @data) = @_;
-  local *FH;
-  sysopen FH, $file, O_WRONLY | O_CREAT
+  open my $fh, '>', $file
     or die "Makefile.PL: Couldn't open $file for output: $!\n";
-  truncate FH, 0 or die "Makefile.PL: Couldn't truncate $file: $!\n";
-  print FH @data;
-  close FH or die "Makefile.PL: Couldn't close $file: $!\n";
+  print $fh @data or die "Makefile.PL: Couldn't write $file: $!\n";
+  close $fh or die "Makefile.PL: Couldn't close $file: $!\n";
 }
 
 sub from_file {
