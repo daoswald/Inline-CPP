@@ -198,6 +198,7 @@ sub configure_distribution {
   # Apply the distribution defaults:
   my $text = from_file("$CPP_Config_path.in");
   to_file $CPP_Config_path, sprintf $text,
+    $DIST_VERSION,
     $cpp_compiler,
     $libs,
     $iostream_fname,
