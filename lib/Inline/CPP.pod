@@ -120,9 +120,6 @@ from Perl space. If the function's signature is not recognized, it will not
 be available from Perl, but will be available from other functions or classes
 within the C++ code.
 
-For more information about the grammar used to parse C++ code, see the
-section called "Grammar".
-
 The following example shows how C++ snippets map to Perl:
 
 Example 1:
