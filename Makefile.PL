@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 use FindBin;
 use lib "$FindBin::Bin/inc";
-use ILCPPConfig::CompilerGuess 'guess_compiler';
+use ILCPPConfig::CompilerGuess;
 use strict;
 use 5.010000;
 
@@ -34,7 +34,7 @@ my %PREREQ_PM = (
 
 check_prereqs(\%PREREQ_PM) or warn "!!! PREREQUISITES NOT MET !!!";
 
-my($cc_guess, $libs_guess) = guess_compiler();
+my($cc_guess, $libs_guess) = ILCPPConfig::CompilerGuess::guess_compiler();
 
 my $cpp_compiler
   = prompt("What C++ compiler would you like to use?", $cc_guess);

@@ -3,11 +3,8 @@ package ILCPPConfig::CompilerGuess;
 use strict;
 use warnings;
 use ExtUtils::CppGuess;
-use Exporter;
 use Config;
 
-our @ISA       = 'Exporter';
-our @EXPORT_OK = 'guess_compiler';
 our $VERSION   = '0.01';
 
 # Repackage results from ExtUtils::CppGuess into a form that is most useful
