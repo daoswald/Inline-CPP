@@ -756,7 +756,7 @@ BADTYPE: while (1) {
   warn "No typemap for type $badtype. "
     . "Skipping $thing->{return_type} $thing->{name}("
     . join(', ', @{ $thing->{arg_types} }) . ")\n"
-    if 0;
+    if 1;
   return 0;
 }
 

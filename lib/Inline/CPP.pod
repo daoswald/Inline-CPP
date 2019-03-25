@@ -713,6 +713,62 @@ Inline::Struct does not understand any C++ features, so constructors
 and member functions are not supported. See L<Inline::Struct> for more
 details.
 
+=head2 Example
+
+Say you want to use a C++ standard C<string> type. A C++ method that
+takes or returns such will be ignored unless you tell Perl how to map
+it to and from Perl data types.
+
+Put this in a file called F<typemap>:
+
+  TYPEMAP
+  string  T_CPPSTRING
+
+  INPUT
+
+  T_CPPSTRING
+          $var = ($type)SvPV_nolen($arg)
+
+  OUTPUT
+
+  T_CPPSTRING
+          sv_setpv((SV*)$arg, $var.c_str());
+
+Then this script will work:
+
+  use Inline CPP => config => typemaps => "typemap";
+  use Inline CPP => <<'END';
+
+  #ifdef __INLINE_CPP_STANDARD_HEADERS
+  #include <string>
+  #else
+  #include <string.h>
+  #endif
+
+  #ifdef __INLINE_CPP_NAMESPACE_STD
+  using namespace std;
+  #endif
+
+  class Abstract {
+    public:
+          virtual string greet2() {
+              string retval = "yo";
+              return retval;
+          }
+  };
+
+  class Impl : public Abstract {
+    public:
+      Impl() {}
+      ~Impl() {}
+  };
+  END
+
+  my $o = Impl->new;
+  print $o->greet2, "\n";
+
+See F<t/grammar/09purevt.t> for this within the test suite.
+
 =head1 <iostream>, Standard Headers, C++ Namespaces, and Portability Solutions
 
 Inline::CPP automatically includes <iostream>, or <iostream.h>, depending on the
