@@ -1,6 +1,7 @@
 Revision history for Perl extension Inline::CPP.
 
 0.76
+  - Better handling of PRD <1.90 - fix #47
   - just use EU::CppG, not roll own
   - make I::CPP data structure right for I::C::info - fix #45
 

@@ -36,7 +36,7 @@ END
     return $parser;
 }
 
-use vars qw($TYPEMAP_KIND $class_part $class_decl $star);
+use vars qw($TYPEMAP_KIND $fixkey);
 
 # Parse::RecDescent 1.90 and later have an incompatible change
 # 'The key of an %item entry for a repeated subrule now includes
@@ -54,9 +54,8 @@ require Parse::RecDescent;
       # Use that "stable release" version number as the basis for our numeric
       # comparison.
   my $stable_version = eval $Parse::RecDescent::VERSION;    ## no critic (eval)
-  ($class_part, $class_decl, $star)
-    = map { ($stable_version > 1.89) ? "$_(s?)" : $_ }
-    qw ( class_part class_decl star );
+  $fixkey = ($stable_version > 1.89)
+    ? sub{ $_[0] } : sub{ local $_=shift; s/\(.*\)$//; $_ };
 }    # End lexical scope.
 
 
@@ -101,6 +100,10 @@ sub grammar {
   return <<'END';
 
 { use Data::Dumper; }
+
+{
+  sub fixkey { &$Inline::CPP::Parser::RecDescent::fixkey }
+}
 
 {
     sub handle_args {
@@ -190,7 +193,7 @@ typedef: 'typedef' class IDENTIFIER(?) '{' <commit> class_part(s?) '}' IDENTIFIE
        {
      my ($class, $parts);
          $class = $item[3][0] || 'anon_class'.($thisparser->{data}{anonclass}++);
-         ($class, $parts)= handle_class_def($thisparser, [$class, $item{$Inline::CPP::Parser::RecDescent::class_part}]);
+         ($class, $parts)= handle_class_def($thisparser, [$class, $item{fixkey('class_part(s?)')}]);
      { thing => 'typedef', name => $item[8], type => $class, body => $parts }
        }
        | 'typedef' IDENTIFIER IDENTIFIER ';'
@@ -203,7 +206,7 @@ typedef: 'typedef' class IDENTIFIER(?) '{' <commit> class_part(s?) '}' IDENTIFIE
 
 enum: 'enum' IDENTIFIER(?) '{' <leftop: enum_item ',' enum_item> '}' ';'
        {
-    { thing => 'enum', name => $item{IDENTIFIER}[0],
+    { thing => 'enum', name => $item{fixkey('IDENTIFIER(?)')}[0],
           body => $item{__DIRECTIVE1__} }
        }
 
@@ -214,13 +217,13 @@ enum_item: IDENTIFIER '=' <commit> /[0-9]+/
 
 class_def: class IDENTIFIER '{' <commit> class_part(s?) '}' ';'
            {
-              [@item{'IDENTIFIER',$Inline::CPP::Parser::RecDescent::class_part}]
-       }
+              [@item{'IDENTIFIER',fixkey('class_part(s?)')}]
+           }
      | class IDENTIFIER ':' <commit> <leftop: inherit ',' inherit>
             '{' class_part(s?) '}' ';'
        {
-          push @{$item{$Inline::CPP::Parser::RecDescent::class_part}}, [$item{__DIRECTIVE2__}];
-          [@item{'IDENTIFIER',$Inline::CPP::Parser::RecDescent::class_part}]
+          push @{$item{fixkey('class_part(s?)')}}, [$item{__DIRECTIVE2__}];
+          [@item{'IDENTIFIER',fixkey('class_part(s?)')}]
        }
 
 inherit: scope IDENTIFIER
@@ -229,10 +232,10 @@ inherit: scope IDENTIFIER
 class_part: comment { [ {thing => 'comment'} ] }
       | scope ':' <commit> class_decl(s?)
             {
-          for my $part (@{$item{$Inline::CPP::Parser::RecDescent::class_decl}}) {
+          for my $part (@{$item{fixkey('class_decl(s?)')}}) {
                   $_->{scope} = $item[1] for @$part;
           }
-          $item{$Inline::CPP::Parser::RecDescent::class_decl}
+          $item{fixkey('class_decl(s?)')}
         }
       | class_decl(s)
             {
@@ -413,7 +416,7 @@ type: type2 | type1
 type1: TYPE star(s?)
         {
          $return = $item[1];
-         $return .= join '',' ',@{$item{$Inline::CPP::Parser::RecDescent::star}} if @{$item{$Inline::CPP::Parser::RecDescent::star}};
+         $return .= join '',' ',@{$item{fixkey('star(s?)')}} if @{$item{fixkey('star(s?)')}};
 #    print "type1: $return\n";
 #          return undef
 #            unless(defined$thisparser->{data}{typeconv}{valid_types}{$return});
@@ -422,7 +425,7 @@ type2: modifier(s) TYPE star(s?)
     {
          $return = $item{TYPE};
          $return = join ' ',grep{$_}@{$item[1]},$return if @{$item[1]};
-         $return .= join '',' ',@{$item{$Inline::CPP::Parser::RecDescent::star}} if @{$item{$Inline::CPP::Parser::RecDescent::star}};
+         $return .= join '',' ',@{$item{fixkey('star(s?)')}} if @{$item{fixkey('star(s?)')}};
 #    print "type2: $return\n";
 #          return undef
 #            unless(defined$thisparser->{data}{typeconv}{valid_types}{$return});
