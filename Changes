@@ -1,5 +1,9 @@
 Revision history for Perl extension Inline::CPP.
 
+0.76
+  - just use EU::CppG, not roll own
+  - make I::CPP data structure right for I::C::info - fix #45
+
 0.75 2018-09-18
   - Fix info (print_info) to call super. (https://github.com/daoswald/Inline-CPP/issues/40)
 

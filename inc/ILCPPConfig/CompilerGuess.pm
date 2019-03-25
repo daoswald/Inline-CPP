@@ -1,3 +1,4 @@
+# this is obsolete as of EU::CppG 0.13, and will be removed in a future version
 package ILCPPConfig::CompilerGuess;
 
 use strict;

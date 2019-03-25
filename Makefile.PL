@@ -1,15 +1,7 @@
 use ExtUtils::MakeMaker;
-use FindBin;
-use lib "$FindBin::Bin/inc";
-use ILCPPConfig::CompilerGuess;
+use ExtUtils::CppGuess;
 use strict;
 use 5.010000;
-
-
-# We're using bareword file handles and two arg open for backward
-# compatibility in Makefile.PL.  Here we disable those tests in Perl::Critic.
-## no critic (bareword file handle)
-## no critic (two-argument open)
 
 # The next line is verified via t/13version_numbers.t. Retain single quoting.
 
@@ -31,10 +23,10 @@ my %PREREQ_PM = (
   'Config'            => '0',
 );
 
-
 check_prereqs(\%PREREQ_PM) or warn "!!! PREREQUISITES NOT MET !!!";
 
-my($cc_guess, $libs_guess) = ILCPPConfig::CompilerGuess::guess_compiler();
+my $guess = ExtUtils::CppGuess->new;
+my($cc_guess, $libs_guess) = map $guess->$_, qw(compiler_command linker_flags);
 
 my $cpp_compiler
   = prompt("What C++ compiler would you like to use?", $cc_guess);
@@ -54,11 +46,11 @@ WriteMakefile(
   TEST_REQUIRES => {
     'Test::More' => '1.001009',    # Core. Minimum version.
     'File::Temp' => '0',           # Core.
+    'FindBin'    => '0',           # Core.
   },
   CONFIGURE_REQUIRES => {
-    'ExtUtils::CppGuess'  => '0.11',    # Beginning IL::CPP 0.54_001.
+    'ExtUtils::CppGuess'  => '0.13',
     'ExtUtils::MakeMaker' => '7.04',    # Core.
-    'FindBin'             => '0',       # Core.
   },
   META_MERGE => {
     'meta-spec' => {
