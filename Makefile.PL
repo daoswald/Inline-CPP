@@ -1,7 +1,6 @@
 use ExtUtils::MakeMaker;
 use ExtUtils::CppGuess;
 use strict;
-use 5.010000;
 
 # The next line is verified via t/13version_numbers.t. Retain single quoting.
 

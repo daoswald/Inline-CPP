@@ -2,8 +2,7 @@ Revision history for Perl extension Inline::CPP.
 
 0.79
   - Whitespace cleanup in POD.
-
-0.76
+  - support Perl 5.8.1
   - show how to use typemaps - fix #36
   - doc tweak - fix #46
   - Better handling of PRD <1.90 - fix #47
