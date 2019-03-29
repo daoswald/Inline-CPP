@@ -23,6 +23,7 @@ using namespace std;
 
 class Abstract {
   public:
+        Abstract() {}
         virtual char *text() = 0;
         virtual int greet(char *name) {
             printf("# Hello, %s.\n", name);
