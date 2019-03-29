@@ -17,7 +17,7 @@ END_TEST_CPP
 
 my %PREREQ_PM = (
   'Inline'            => '0.78',
-  'Inline::C'         => '0.67',
+  'Inline::C'         => '0.78_003', # supports 5.8.1
   'Parse::RecDescent' => '0',
   'Carp'              => '0',
   'Config'            => '0',
@@ -95,7 +95,7 @@ WriteMakefile(
       },
     },
   },
-  MIN_PERL_VERSION => '5.010000',  # Inline::C~0.77 requires 5.10.0.
+  MIN_PERL_VERSION => '5.008001',
   test  => {RECURSIVE_TEST_FILES => 1},
   clean => {FILES => join q{ }, $CPP_Config_path, qw{
     _Inline/            t/_Inline
