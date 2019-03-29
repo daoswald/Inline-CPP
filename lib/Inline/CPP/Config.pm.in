@@ -14,10 +14,7 @@ our $libs     = '%s';
 our $iostream_fn = '%s';
 
 our $cpp_flavor_defs =  <<'END_FLAVOR_DEFINITIONS';
-
-%s#define __INLINE_CPP_STANDARD_HEADERS 1
-%s#define __INLINE_CPP_NAMESPACE_STD 1
-
+%s
 END_FLAVOR_DEFINITIONS
 
 1;

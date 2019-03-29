@@ -25,15 +25,15 @@ my %PREREQ_PM = (
 check_prereqs(\%PREREQ_PM) or warn "!!! PREREQUISITES NOT MET !!!";
 
 my $guess = ExtUtils::CppGuess->new;
-my($cc_guess, $libs_guess) = map $guess->$_, qw(compiler_command linker_flags);
+my @info = map $guess->$_,
+  qw(compiler_command linker_flags iostream_fname cpp_flavor_defs);
 
-my $cpp_compiler
-  = prompt("What C++ compiler would you like to use?", $cc_guess);
+$info[0] = prompt("What C++ compiler would you like to use?", $info[0]);
 
-my $libs
-  = prompt("What default libraries would you like to include?", $libs_guess);
+$info[1]
+  = prompt("What default libraries would you like to include?", $info[1]);
 
-configure_distribution($test_cpp_filename, $cpp_compiler, $libs);
+configure_distribution(@info);
 
 WriteMakefile(
   NAME           => 'Inline::CPP',
@@ -48,7 +48,7 @@ WriteMakefile(
     'FindBin'    => '0',           # Core.
   },
   CONFIGURE_REQUIRES => {
-    'ExtUtils::CppGuess'  => '0.13',
+    'ExtUtils::CppGuess'  => '0.15',
     'ExtUtils::MakeMaker' => '7.04',    # Core.
   },
   META_MERGE => {
@@ -153,38 +153,7 @@ sub from_file {
 }
 
 sub configure_distribution {
-  my( $test_cpp_filename, $cpp_compiler, $libs ) = @_;
-
-  # Test whether the compiler prefers <iostream> or <iostream.h>.
-  to_file "$test_cpp_filename.cpp", $test_cpp;
-  # Compile our test C++ program that includes the <iostream> header.
-  my $result;
-  if ($cpp_compiler =~ m/^cl/) {
-    # MS compilers don't support -o (or -o is deprecated for them).
-    $result = system(
-        qq{$cpp_compiler -Fe:$test_cpp_filename.exe $test_cpp_filename.cpp}
-    );
-  }
-  else {
-    $result = system(
-        qq{$cpp_compiler -o $test_cpp_filename.exe $test_cpp_filename.cpp}
-    );
-  }
-  my $iostream_fname = 'iostream';
-  my $comment        = '';
-  if ($result != 0) {
-    # Compiling with <iostream> failed, so we'll assume .h headers.
-    print "Detected <iostream.h> style headers. ('.h' needed.)\n";
-    $iostream_fname = 'iostream.h';
-    $comment        = '//';                 # Prepend a comment to a #define.
-  }
-  else {
-    # Compiling with <iostream> passed, so we'll assume Standard headers.
-    print "Detected <iostream> style headers. ('.h' not needed.)\n";
-    unlink "$test_cpp_filename.exe" or warn $!;     # Unlink the executable.
-  }
-  unlink "$test_cpp_filename.cpp" or warn $!;         # Unlink the test source.
-
+  my( $cpp_compiler, $libs, $iostream_fname, $cpp_flavor_defs ) = @_;
   # Apply the distribution defaults:
   my $text = from_file("$CPP_Config_path.in");
   to_file $CPP_Config_path, sprintf $text,
@@ -192,7 +161,6 @@ sub configure_distribution {
     $cpp_compiler,
     $libs,
     $iostream_fname,
-    $comment,
-    $comment,
+    $cpp_flavor_defs,
     ;
 }
