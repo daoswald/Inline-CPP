@@ -8,12 +8,6 @@ my $DIST_VERSION    = '0.75';                        # DRY in Makefile.PL.
 
 my $CPP_Config_path = 'lib/Inline/CPP/Config.pm';
 
-my $test_cpp_filename = 'ilcpptest';        # '.cpp' appended via open.
-my $test_cpp          = <<'END_TEST_CPP';
-#include <iostream>
-int main(){ return 0; }
-END_TEST_CPP
-
 my %PREREQ_PM = (
   'Inline'            => '0.78',
   'Inline::C'         => '0.78_003', # supports 5.8.1
