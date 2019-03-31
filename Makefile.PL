@@ -53,7 +53,7 @@ WriteMakefile(
     no_index   => { directory => [ 'inc' ], },
     resources   => {
       license    => 'http://dev.perl.org/licenses/artistic.html',
-      bugtracker => 'http://github.com/daoswald/Inline-CPP/issues',
+      bugtracker => {web=>'http://github.com/daoswald/Inline-CPP/issues'},
       homepage   => 'http://github.com/daoswald/Inline-CPP',
       repository => {
         type => 'git',
