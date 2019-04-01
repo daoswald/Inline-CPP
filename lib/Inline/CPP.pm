@@ -380,7 +380,13 @@ sub _generate_member_xs_wrappers {
   my ($o, $pkg, $class, $proper_pkg) = @_;
   my @XS;
   my $data = $o->{ILSM}{parser}{data};
-  my ($ctor, $dtor, $abstract) = (0, 0, 0);    ## no critic (ambiguous)
+  my ($ctor, $dtor) = (0, 0);    ## no critic (ambiguous)
+
+  # Look ahead to see if the class is abstract, i.e., has unimplemented
+  # virtual methods and therefore can never be instantiated directly
+  my $abstract = grep $_->{thing} eq 'method' && $_->{abstract},
+    @{$data->{class}{$class}};
+
   for my $thing (@{$data->{class}{$class}}) {
     my ($name, $scope, $type) = @{$thing}{qw| name scope thing |};
 
@@ -388,7 +394,7 @@ sub _generate_member_xs_wrappers {
 
     # Get/set methods will go here:
     # Cases we skip:
-    $abstract ||= ($type eq 'method' and $thing->{abstract});
+    next if $abstract && ($name eq $class || $name eq "~$class");
     next if ($type eq 'method' and $thing->{abstract});
     next if $scope ne 'public';
     if ($type eq 'enum') {
