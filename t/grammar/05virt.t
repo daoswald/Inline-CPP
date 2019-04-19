@@ -14,12 +14,26 @@ class Foo {
 
     virtual const char *get_data_ro() { return "Hello Sally!\n"; }
 };
+
+class Foo2 {
+  public:
+    Foo2() { }
+    virtual ~Foo2() { }
+
+    virtual const char *get_data_ro() { return "Hello Sue!\n"; }
+};
+
 END
 
 
 is(
     Foo->new->get_data_ro, "Hello Sally!\n",
     "Define and invoke virtual function."
+);
+
+is(
+    Foo2->new->get_data_ro, "Hello Sue!\n",
+    "Use class with virtual dtor."
 );
 
 done_testing();

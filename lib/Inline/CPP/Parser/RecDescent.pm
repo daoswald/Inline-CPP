@@ -102,7 +102,7 @@ sub grammar {
 { use Data::Dumper; }
 
 {
-  sub fixkey { &$Inline::CPP::Parser::RecDescent::fixkey }
+    sub fixkey { &$Inline::CPP::Parser::RecDescent::fixkey }
 }
 
 {
@@ -302,10 +302,10 @@ method_def: operator <commit> method_imp
                $item[1];
             }
 
-          | IDENTIFIER '(' <commit> <leftop: arg ',' arg>(s?) ')' method_imp
+          | ('virtual')(?) IDENTIFIER '(' <commit> <leftop: arg ',' arg>(s?) ')' method_imp
             {
-#         print "con-/de-structor found: $item[1]\n";
-              {name => $item[1], args => $item{__DIRECTIVE2__}, abstract => ${$item{method_imp}} };
+#         print "con-/de-structor found: $item[2]\n";
+              {name => $item[2], args => $item{__DIRECTIVE2__}, abstract => ${$item{method_imp}} };
             }
           | return_type IDENTIFIER '(' <leftop: arg ',' arg>(s?) ')' method_imp
             {
@@ -454,7 +454,7 @@ comment: m{\s* // [^\n]* \n }x
 # be parsed correctly here.
 modifier: tmod
         | smod { ++$thisparser->{data}{smod}{$item[1]}; ''}
-    | nmod { '' }
+        | nmod { '' }
 tmod: 'unsigned' # | 'long' | 'short'
 smod: 'const' | 'static'
 nmod: 'extern' | 'virtual' | 'mutable' | 'volatile' | 'inline'
