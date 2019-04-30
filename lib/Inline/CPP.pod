@@ -676,7 +676,7 @@ binds C structs to Perl.
 Specifies extra typemap files to use. These types will modify the
 behaviour of C++ parsing. Corresponds to the MakeMaker parameter.
 
-    use Inline CPP config => typemaps => '/your/path/typemap';
+    use Inline CPP => config => typemaps => '/your/path/typemap';
 
 =head1 C++-Perl Bindings
 
