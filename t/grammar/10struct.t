@@ -23,11 +23,15 @@ struct Fizzle {
 
 END
 
+$SIG{__WARN__} = sub{ die "\nWARNING TRAPPED:",@_ };
+
 my $o = new_ok( 'Fizzle' );
 
 is(
     $o->get_q, 0,
     "Struct with public member function."
 );
+
+my $o1 = Fizzle->new(42, 6.75, 123);
 
 done_testing();
