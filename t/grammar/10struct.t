@@ -23,11 +23,18 @@ struct Fizzle {
 
 END
 
+$SIG{__WARN__} = sub{ warn "\nWARNING TRAPPED:",@_; fail };
+
 my $o = new_ok( 'Fizzle' );
 
 is(
     $o->get_q, 0,
     "Struct with public member function."
 );
+
+my $o1 = Fizzle->new(42, 6.75, 123);
+is($o1->get_q, 42, "Struct with passed ctor args (int)");
+is($o1->get_foozle, 6.75, "Struct with passed ctor args (double)");
+is($o1->get_quack, 123, "Struct with passed ctor args (another int)");
 
 done_testing();
