@@ -17,11 +17,14 @@ Foo::Foo(int a, int b) {
 
 int add(int, int);
 int add(int a, int b) { return a + b; }
+const char *getstr() { return "Hello Bob!"; }
 
 END
 
 new_ok( 'Foo', [ 10, 11 ] );
 
-is( add( 2, 3 ), 5, "Simple function." );
+is( add( 2, 3 ), 5, "Simple function returning int." );
+
+is( getstr(), "Hello Bob!", "Simple function returning const char *." );
 
 done_testing();
